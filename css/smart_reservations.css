@@ -1,0 +1,311 @@
+/* Forms - general elements */
+
+/* Form - default rates */
+
+.default_rates_description {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+/* Form - rates per night */
+
+.smart-reservations-form {
+  float: left;
+  margin-right: 20px;
+}
+
+.smart-reservations-form-submit {
+  margin-top: 1.7em;
+}
+
+.smart-reservations-form-filters {
+  /*border: 1px solid blue;*/
+  margin-bottom: 2em;
+  border-bottom: 1px solid #eee;
+}
+
+.smart-reservations-form-filters .form-item {
+  float: left;
+  padding: .5em 1em 0 0;
+}
+
+.smart-reservations-form-filters .form-submit {
+  margin-top: 1.6em;
+}
+
+.smart-reservations-form-actions {
+  clear: both;
+}
+
+
+/* ******* Form Search results ****** */
+
+/* Form Search results - form elements general */
+
+#reservations-multiform-wrapper .form-wrapper {
+  margin: 0;
+}
+
+#reservations-multiform-wrapper .form-item {
+  float: left;
+  margin-right: 8px;
+  /*border: 1px solid yellow;*/
+}
+
+#reservations-multiform-wrapper .form-type-date {
+  float: left;
+  margin-top: 1px;
+  margin-right: 10px;
+  /*border: 1px solid yellow;*/
+}
+
+/* Form Search results - header */
+.sr-results-header-options {
+  /*clear: both;*/
+  /*border: 1px solid red;*/
+  margin-top: 0em;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 1em;
+}
+.sr-results-header-options .fieldset-wrapper {
+  border: 0px solid gray;
+  padding: 0;
+  margin: 0;
+}
+.sr-results-header-options .form-wrapper {
+  border: 0px solid red;
+  padding: 0;
+  margin: 0;
+}
+.sr-results-header-options .form-wrapper .form-item {
+  padding: 0;
+  margin: 0;
+}
+
+#edit-search-results-header-options-submit {
+  /*border: 1px solid yellow;*/
+  margin-left: 18px;
+  margin-top: 17px;
+}
+
+/* Form Search results - accommodations */
+
+.sr-search-results-accommodation {
+  clear: both;
+  /*padding-bottom: 4em;*/
+  /*border: 1px solid blue;*/
+  margin-bottom: 1.5em;
+}
+
+.sr-accommodation-description {
+  border: 0px solid blue;
+  /*margin-bottom: 2em;*/
+}
+
+.sr-accommodation-options {
+  clear: both;
+  border: 0px solid red;
+  margin: 0;
+  padding: 0;
+  /*margin-bottom: 2em;*/
+}
+.sr-accommodation-options .fieldset-wrapper {
+  margin: 0;
+  padding: 0;
+}
+
+.sr-accommodation-details {
+  padding: 0;
+  margin-top: 1.2em;
+  font-weight: 800;
+  border: 0px solid brown;
+}
+
+.sr-accommodation-calendar {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  /*border: 1px solid yellow;*/
+}
+
+.sr-accommodation-summary {
+  /*margin-top: 1em;*/
+  clear: both;
+  /*border: 1px solid blue;*/
+}
+
+.sr-accommodation-buttons {
+  clear: both;
+  border: 0px solid green;
+  padding: 0;
+  margin-top: 1em;
+  /*margin-bottom: 2em;*/
+}
+.sr-accommodation-buttons .fieldset-wrapper {
+  border: 0px solid gray;
+  padding: 0;
+  margin: 0;
+}
+.sr-accommodation-buttons .form-wrapper {
+  border: 0px solid red;
+  padding: 0;
+  margin-bottom: 0px;
+}
+
+/* Form Search results - messages */
+.sr-results-warning {
+  background-color: #f6f6f6;
+  background-color: #FFC2B0;
+  background-color: #FFE1D6;
+  background-color: #FFE9D9;
+  padding: 1em;
+  border-radius: 6px;
+  margin-bottom: 1em;
+  font-weight: 500;
+  /*color: #4F0B02 ;*/
+}
+.sr-results-warning-header {
+  margin-top: 1em;
+  margin-bottom: 1.2em;
+  padding-top: 1.2em;
+  padding-bottom: 1.2em;
+}
+
+
+/* Form Search results - calendar */
+.cal-sr-results-footer {
+  margin-top: 15px;
+  margin-bottom: 10px;
+
+}
+
+.cal-sr-results-cell {
+  border: 0px solid #efefef;
+  background-color: #cbfdb0;
+  height: 50px;
+  border-radius: 8px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  padding-top: 5px;
+  width: 230px;
+}
+
+.cal-sr-results-cell-info {
+  background-color: #f6f6f6;
+  color: #aaa;
+}
+
+.cal-sr-results-cell-empty {
+  background-color: transparent;
+  color: none;
+  border: 0px;
+}
+
+.cal-sr-results-cell-header {
+  border: 0px;
+  background-color: #ffffff;
+  height: auto;
+  padding: 0;
+}
+
+.cal-sr-results-cell-footer {
+  background-color: #eee;
+  margin-top: 10px;
+  padding: 10px 0px;
+  min-height: 200px;
+  height: auto;
+
+}
+
+.cal-sr-results-cell-footer-total {
+  float: right;
+  font-size: 1.1em;
+}
+
+
+/* ***** Reservation subbmitted * *****/
+.reservation-customer-info {
+  font-size: 1.2em;
+  margin-bottom: 1em;
+}
+.reservation-submit-title {
+  margin-bottom: 1em;
+}
+.sr-accommodation-submit-reservation-details {
+  margin-top: 2em;
+}
+.sr-accommodation-submit-actions {
+  border: 0px solid blue;
+  margin-top: 2em;
+}
+
+.sr-accommodation-submit-add-comment,
+.sr-accommodation-submit-comment {
+  clear: both;
+}
+
+.sr-accommodation-submit-comment {
+  margin-bottom: 5px;
+}
+.sr-accommodation-submit-comment .form-wrapper{
+  border: 0px solid red;
+  margin: 0;
+  padding: 0;
+}
+
+/* Form search results calendar columns */
+.col-sr-results-summary,
+.col-xs-17,
+.col-sm-17,
+.col-md-17,
+.col-lg-17 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.col-xs-17 {
+  width: 10.2%;
+  float: left;
+}
+
+/* Media */
+
+/* Mobile first */
+.cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .col-sm-17 {
+    width: 10.4%;
+    float: left;
+  }
+  .col-sr-results-summary {
+    float: left;
+    width: 19%;
+  }
+  .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
+    display: block;
+  }
+}
+@media (min-width: 992px) {
+  .col-md-17 {
+    width: 10.4%;
+    float: left;
+  }
+  .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
+    display: block;
+  }
+}
+@media (min-width: 1200px) {
+  .col-lg-17 {
+    width: 10.4%;
+    float: left;
+  }
+  .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
+    display: block;
+  }
+}

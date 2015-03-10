@@ -1,0 +1,426 @@
+<?php
+/**
+ * @file
+ * Smart Reservations module.
+ *
+ * This module implements a reservation sytem.
+ * @author Ramon Pujol Cots (ray17n) <ramonpujolcots at gmail dot com>
+ */
+
+
+/**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ */
+function smart_reservations_help($path, $arg) {
+  $return_value = "";
+
+  switch ($path) {
+    case "admin/help#smartreservations":
+      $return_value = '<p>' . t("This is a custom module that handles reservations.") . '</p>';
+      break;
+  }
+  return $return_value;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function smart_reservations_block_info() {
+  $blocks['search-reservations'] = array(
+    'info' => t('Search reservations'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Prepares the contents of the block.
+ */
+function smart_reservations_block_view($delta = '') {
+  switch ($delta) {
+    case 'search-reservations':
+      if (user_access('access content')) {
+        $block['subject'] = t('Search availability');
+        $block['content'] = drupal_get_form('smart_reservations_search_form');
+      }
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function smart_reservations_menu() {
+  /* Reminder: there's no need to used t() in title and description.  */
+  $items = array();
+
+  $items['admin/config/content/smart-reservations'] = array(
+    'title' => 'Smart Reservations',
+    'description' => 'Smart Reservations settings, rates and log.',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('access administration pages'),
+    'file' => 'smart_reservations_settings.inc',
+    'page arguments' => array('smart_reservations_configuration_form'),
+  );
+
+  $items['admin/config/content/smart-reservations/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Settings of Smart Reservations',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('access administration pages'),
+    'file' => 'smart_reservations_settings.inc',
+    'page arguments' => array('smart_reservations_configuration_form'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 1,
+  );
+
+  $items['admin/config/content/smart-reservations/default-rates'] = array(
+    'title' => 'Default rates',
+    'description' => 'Configure default rates.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_default_rates_form'),
+    'access callback' => TRUE,
+    'file' => 'smart_reservations_rates.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+  );
+
+  $items['admin/config/content/smart-reservations/rates'] = array(
+    'title' => 'Rates per night',
+    'description' => 'Configure rates per night.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_rates_form'),
+    'access callback' => TRUE,
+    'file' => 'smart_reservations_rates.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 3,
+  );
+
+  $items['admin/config/content/smart-reservations/search-log'] = array(
+    'title' => 'Log',
+    // 'page callback' => '_smart_reservations_list_search_log',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_log_form'),
+    'file' => 'smart_reservations_logs.inc',
+    'access arguments' => array('access smart_reservations content'),
+    // Will appear in Navigation menu.
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 4,
+  );
+
+  $items['search-available'] = array(
+    'title' => 'Availability',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_multiform'),
+    'access callback' => TRUE,
+    'file' => 'smart_reservations_reservations.inc',
+    'access arguments' => array('access content'),
+    // 'page callback' => '_smart_reservations_search_results',
+    // 'page arguments' => array(1),
+    // 'access arguments' => array('access smart_reservations content'),
+    // 'type' => MENU_NORMAL_ITEM,
+    // 'page arguments' => array(),
+    // 'access arguments'  => array('access smart_reservations'),
+    // 'type' => MENU_LOCAL_TASK,
+    // 'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    // 'file' => 'menu.admin.inc',
+  );
+
+  // Alternative tests.
+  // $items['make-reservation'] = array(
+  //   'title' => 'Make reservation',
+  //   'page callback' => 'drupal_get_form',
+  //   'page arguments' => array('smart_reservations_make_reservation_form'),
+  //   'file' => 'smart_reservations_reservations.inc',
+  //   'access callback' => TRUE,
+  //   // 'type' => MENU_CALLBACK,
+  // );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function smart_reservations_permission() {
+  return array(
+    'access smart_reservations content' => array(
+      'title' => t('Access content for the Smart Reservations module'),
+    ),
+  );
+}
+
+/**
+ * Page callback: Search Reservations.
+ *
+ * @see smart_reservations_block_view()
+ */
+function smart_reservations_search_form($form, &$form_state) {
+
+  $format = 'd/m/Y';
+
+  // $form['checkin_date_title'] = array(
+  //   '#type' => 'markup',
+  //   '#markup' => "<strong>" . t('Check-In Date') . " *</strong>",);
+  $form['checkin_date'] = array(
+    '#type' => 'date_popup',
+    '#date_format' => $format,
+    '#date_label_position' => 'invisible',
+    '#required' => TRUE,
+    '#date_timezone' => date_default_timezone(),
+    '#date_year_range' => '0:+2',
+    '#title' => t('Check-In'),
+  );
+
+  // $form['checkout_date_title'] = array(
+  //   '#type' => 'markup',
+  //   '#markup' => "<strong>" . t('Check-Out Date') . "*</strong>",);
+  $form['checkout_date'] = array(
+    '#title' => t('Check-Out'),
+    '#type' => 'date_popup',
+    '#date_format' => $format,
+    '#date_label_position' => 'invisible',
+    '#required' => FALSE,
+    '#date_timezone' => date_default_timezone(),
+    '#date_year_range' => '0:+2',
+  );
+
+  $form['number_of_adults'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of adults'),
+    '#options' => array_combine(
+        range(1, variable_get('sr_max_number_of_guests_to_search', 15)),
+        range(1, variable_get('sr_max_number_of_guests_to_search', 15))),
+    '#default_value' => variable_get('sr_default_number_of_adults_to_search', 2),
+  );
+  $form['number_of_children'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of children'),
+    '#options' => array_combine(
+        range(0, variable_get('sr_max_number_of_guests_to_search', 15)),
+        range(0, variable_get('sr_max_number_of_guests_to_search', 15))),
+    '#default_value' => variable_get('sr_default_number_of_children_to_search', 0),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Search'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements validation from the Form API.
+ *
+ * @param form $form
+ *   A structured array containing the elements and properties of the form.
+ * @param form $form_state
+ *   An array that stores information about the form's current state
+ *   during processing.
+ */
+function smart_reservations_search_form_validate($form, &$form_state) {
+  // internal date format is Y-m-d.
+  $checkin_date = str_replace('-', '', $form_state['values']['checkin_date']);
+  $checkout_date = str_replace('-', '', $form_state['values']['checkout_date']);
+  $today = format_date(REQUEST_TIME, 'custom', 'Ymd');
+
+  if ($checkin_date < $today) {
+    form_set_error('checkin_date', t("The Check-In Date can't be in the past."));
+  }
+}
+
+/**
+ * Implements submission logic from the Form API.
+ *
+ * @param form $form
+ *   A structured array containing the elements and properties of the form.
+ * @param form $form_state
+ *   An array that stores information about the form's current state
+ *   during processing.
+ */
+function smart_reservations_search_form_submit($form, &$form_state) {
+  // Submission logic.
+  if ($form_state['submitted']) {
+
+    $d1 = '_';
+    $d2 = '__';
+
+    $url_params = '/checkin' . $d1 . $form_state['values']['checkin_date'] . $d2;
+    $url_params .= 'checkout' . $d1 . $form_state['values']['checkout_date'] . $d2;
+    $url_params .= 'adults' . $d1 . $form_state['values']['number_of_adults'] . $d2;
+    $url_params .= 'children' . $d1 . $form_state['values']['number_of_children'] . $d2;
+    $url_params .= 'babies' . $d1 . '0' . $d2;
+    $url_params .= 'dogs' . $d1 . '0' . $d2;
+    $url_params .= 'cats' . $d1 . '0';
+    drupal_goto('search-available' . $url_params);
+  }
+}
+
+
+/**
+ * Implements hook_theme().
+ *
+ * We need run our forms through custom theme functions in order to build the
+ * table structure which is required by tabledrag.js.  Before we can use our
+ * custom theme functions, we need to implement hook_theme in order to register
+ * them with Drupal.
+ *
+ * We are defining our theme hooks with the same name as the form generation
+ * function so that Drupal automatically calls our theming function when the
+ * form is displayed.
+ */
+function smart_reservations_theme() {
+  return array(
+    // Theme function for the rates form.
+    'smart_reservations_rates_form' => array(
+      'render element' => 'form',
+      'file' => 'smart_reservations_rates.inc',
+    ),
+    // Theme function for the log form.
+    'smart_reservations_log_form' => array(
+      'render element' => 'form',
+      'file' => 'smart_reservations_logs.inc',
+    ),
+    // Theme function for the search_reservations form.
+    // 'smart_reservations_search_results_form' => array(
+    //   'render element' => 'form',
+    //   'file' => 'smart_reservations_reservations.inc',
+    // ),
+    'example_node_color' => array(
+      'variables' => array('color' => NULL),
+    ),
+  );
+}
+
+
+/**
+ * Custom page callback function, declared in smart_reservations_menu().
+ */
+function _smart_reservations_page() {
+  $page_array['smart_reservations_page'] = array(
+    // Title serves as page subtitle.
+    '#title' => t('All reservations'),
+    '#markup' => t('No reservations available.'),
+  );
+  return $page_array;
+}
+
+
+/**
+ * Content types definition.
+ *
+ * At absolute minimum, we have to implement hook_node_info()
+ * and hook_form().
+ */
+
+/**
+ * Implements hook_node_info().
+ *
+ * We use hook_node_info() to define our node content type.
+ */
+function smart_reservations_node_info() {
+  // We define the node type as an associative array.
+  return array(
+    'sr_accommodation_unit' => array(
+      'name' => t('Accommodation Unit'),
+      'base' => 'node_content',
+      'description' => t('Holiday Apartments, Villas, Rooms, Bungalows, Lodges, etc.'),
+      'has_title' => '1',
+      'title_label' => t('Name'),
+      'help' => '',
+      'locked' => TRUE,
+    ),
+    'sr_reservation' => array(
+      'name' => t('Reservation'),
+      'base' => 'node_content',
+      'description' => t('A reservation of an accommodation Unit (holiday apartments, villas, bungalow, rooms, etc.)'),
+      'has_title' => '1',
+      'title_label' => t('Reservation code'),
+      'help' => '',
+      'locked' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_delete().
+ *
+ * When a node is deleted, we need to remove all related records from our table,
+ * including all revisions. For the delete operations we use node->nid.
+ */
+function smart_reservations_node_delete($node) {
+  if ($node->type = 'sr_reservation') {
+    db_delete('smart_reservations_reservation_items')
+      ->condition('reservation_id', $node->nid)
+      ->execute();
+  }
+}
+
+
+/**
+ * Implement hook_form
+ * nodetype_
+ *  */
+function sr_accommodation_unit_form($node, $form_state) {
+  return node_content_form($node, $form_state);
+}
+
+
+/* FROM HERE - commented code - ideas pending to develop */
+
+/**
+ * Implement hook_form
+ * nodetype_
+ *  */
+// function sr_reservation_form($node, $form_state) {
+//   // dpm($node);
+//     return node_content_form($node, $form_state);
+// }
+
+
+/*
+ * Node creation forms  - alter
+ **/
+
+// function smart_reservations_form_node_form_alter(&$form, $form_state) {
+//   $type = $form['#node']->type;
+//   // if ($type == 'sr_accommodation_unit') {
+//   //   $form['title']['#title_display'] = FALSE;
+//   //   // $form['smres_total_amount']['#default_value'] = 2;
+
+//   // }
+
+
+//   // if ($type == 'reservation') {
+//   //   drupal_set_title('Create a new reservation.');
+//   //   $form['title']['#title_display'] = FALSE;
+//   //   // $form['title']['#title'] = "Reservation code";
+//   //   // $form['title']['#default_value'] = "";
+//   //   $form['title']['#required'] = FALSE;
+//   //   $form['title']['#disabled'] = TRUE;
+
+//   //   $form['smres_total_amount']['#default_value'] = 2;
+
+//   // }
+// }
+
+/**
+ * Implements hook_formalter().
+ */
+// function smart_reservations_form_alter(&$form, &$form_state, $form_id) {
+//  dpm($form_id);
+//  dpm($form);
+// // print "<pre>";
+// // print $form_id;
+// // print_r($form);
+//     // if($form_id=='FORM-ID'){
+//     //   if($_GET['nid']){
+//     //     $form['YOUR-FIELD-VALUE']['und']['#default_value']=$_GET['nid'];
+//     //   }
+//     // }
+// }

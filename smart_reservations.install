@@ -1,0 +1,1309 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function smart_reservations_schema() {
+  $schema['smart_reservations_custom_rates_per_night'] = array(
+    'description' => 'Table that stores custom rates per night.',
+    'fields' => array(
+      'date' => array(
+        'description' => 'The date when we apply the rate.',
+        'type' => 'varchar',
+        'length' => '10',
+        'not null' => TRUE,
+      ),
+      'base_rate' => array(
+        'description' => 'Base rate.',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => TRUE,
+      ),
+      'children_discount' => array(
+        'description' => 'Child discount',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'dogs_fee' => array(
+        'description' => 'Child discount',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'low_occupancy_fee' => array(
+        'description' => 'Low occupancy fee',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'low_occupancy_threshold' => array(
+        'description' => 'Low occupancy fee threshold',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'single_night_fee' => array(
+        'description' => 'Single day fee',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'date_creation' => array(
+        'description' => 'Date/time of the creation (timestamp).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'date_modification' => array(
+        'description' => 'Date/time of the last modification.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'comments' => array(
+        'description' => 'Additional comments.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary_key' => array(
+      'date' => array('date'),
+    ),
+    'indexes' => array(
+      'date' => array('date'),
+    ),
+  );
+
+  $schema['smart_reservations_reservation_items'] = array(
+    'description' => 'Table that stores reservation items (per date) for a specific reservation.',
+    'fields' => array(
+      'date' => array(
+        'description' => 'The date of the night.',
+        'type' => 'varchar',
+        'length' => '10',
+        'not null' => TRUE,
+      ),
+      'reservation_id' => array(
+        'description' => 'Reservation id.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'accommodation_unit_id' => array(
+        'description' => 'Accommodation unit.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'number_of_adults' => array(
+        'description' => 'Number of adults.',
+        'type' => 'int',
+      ),
+      'number_of_children' => array(
+        'description' => 'Number of children.',
+        'type' => 'int',
+      ),
+      'number_of_babies' => array(
+        'description' => 'Number of babies.',
+        'type' => 'int',
+      ),
+      'number_of_dogs' => array(
+        'description' => 'Number of dogs.',
+        'type' => 'int',
+      ),
+      'number_of_cats' => array(
+        'description' => 'Number of cats.',
+        'type' => 'int',
+      ),
+      'comments' => array(
+        'description' => 'Additional comments.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'base_rate' => array(
+        'description' => 'Base rate.',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'children_discount' => array(
+        'description' => 'Child discount',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'dogs_fee' => array(
+        'description' => 'Child discount',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'low_occupancy_fee' => array(
+        'description' => 'Low occupancy fee',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'low_occupancy_threshold' => array(
+        'description' => 'Low occupancy fee threshold',
+        'type' => 'int',
+        'not null' => FALSE,
+      ),
+      'single_night_fee' => array(
+        'description' => 'Single day fee',
+        'type' => 'numeric',
+        'precision' => '6',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'date_creation' => array(
+        'description' => 'Date/time of the creation (timestamp).',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'date_modification' => array(
+        'description' => 'Date/time of the last modification.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary_key' => array(
+      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
+    ),
+    'unique_keys' => array(
+      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
+    ),
+    'indexes' => array(
+      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
+      'reservation_id' => array('reservation_id'),
+    ),
+  );
+  $schema['smart_reservations_search_log'] = array(
+
+    'description' => 'Table that stores reservation search queries submitted.',
+    'fields' => array(
+      'search_log_id' => array(
+        'description' => 'Identifier of each entry with autoincrement values.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'ip_address' => array(
+        'description' => 'IP address of the user who did the query.',
+        'type' => 'varchar',
+        'length' => '45',
+        'not null' => FALSE,
+      ),
+      'checkin_date' => array(
+        'description' => 'Check In date searched.',
+        'type' => 'varchar',
+        'length' => '10',
+        'not null' => FALSE,
+      ),
+      'checkout_date' => array(
+        'description' => 'Check Out date searched.',
+        'type' => 'varchar',
+        'length' => '10',
+        'not null' => FALSE,
+      ),
+      'num_of_adults' => array(
+        'description' => 'Number of adults searched.',
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => FALSE,
+      ),
+      'num_of_children' => array(
+        'description' => 'Number of children searched.',
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => FALSE,
+      ),
+      'num_of_babies' => array(
+        'description' => 'Number of babies searched.',
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => FALSE,
+      ),
+      'num_of_dogs' => array(
+        'description' => 'Number of dogs searched.',
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => FALSE,
+      ),
+      'num_of_cats' => array(
+        'description' => 'Number of cats searched.',
+        'type' => 'varchar',
+        'length' => '4',
+        'not null' => FALSE,
+      ),
+      'url_query' => array(
+        'description' => 'Query submitted.',
+        'type' => 'varchar',
+        'length' => '300',
+        'not null' => FALSE,
+      ),
+      'timestamp' => array(
+        'description' => 'Date/time of the search submission.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'search_log_id' => array('search_log_id'),
+      'timestamp' => array('timestamp'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function smart_reservations_install() {
+
+  // 1) Variables.
+  // Initialize variables with important default values.
+
+  // General.
+  variable_set('sr_max_nights_reservation', 40);
+  variable_set('sr_next_reservation_number', 1);
+  variable_set('sr_reservation_prefix', 'RES');
+  variable_set('sr_week_starts_on', 0);
+  variable_set('sr_email_customer_submitted', FALSE);
+  variable_set('sr_email_admin_submitted', FALSE);
+  variable_set('sr_log_reservations_searched', FALSE);
+  variable_set('sr_date_format_search_results', 'M, d');
+
+  // Default rates.
+  variable_set('sr_default_base_rate', 35);
+  variable_set('sr_default_children_discount', 5);
+  variable_set('sr_default_dogs_fee', 4);
+  variable_set('sr_default_single_night_fee', 10);
+  variable_set('sr_default_low_occupancy_fee', 10);
+  variable_set('sr_default_low_occupancy_threshold', 2);
+
+  // Currency.
+  variable_set('sr_currency_sign', '$');
+  variable_set('sr_currency_sign_after_amount', FALSE);
+  variable_set('sr_currency_thousands_separator', ',');
+  variable_set('sr_currency_decimal_point', '.');
+  variable_set('sr_currency_decimal_places', 2);
+
+  // Search parameters.
+  variable_set('sr_max_checkin_date', 365);
+  variable_set('sr_default_number_of_nights_to_search', 2);
+  variable_set('sr_default_number_of_adults_to_search', 4);
+  variable_set('sr_default_number_of_children_to_search', 0);
+  variable_set('sr_default_number_of_babies_to_search', 0);
+  variable_set('sr_default_number_of_dogs_to_search', 0);
+  variable_set('sr_default_number_of_cats_to_search', 0);
+  variable_set('sr_max_number_of_guests_to_search', 15);
+
+  // Texts.
+  variable_set('sr_txt_capacity_exceeded', 'For capacity reasons, you will need to reserve more than one apartment.');
+
+  // 2) Content types.
+  node_types_rebuild();
+  // $types = node_type_get_types();
+  // node_add_body_field($types['sr_accommodation_unit']);
+  smart_reservations_add_custom_fields();
+  sr_create_sample_accommodation_units(2);
+  variable_set(‘comment_sr_accommodation_unit’, COMMENT_NODE_DISABLED);
+
+  // 3) Message to the admin. Installation finished.
+  $t = get_t();
+  drupal_set_message($t("Smart Reservations installed successfully. Please !link before starting to use it. ", array(
+    '!link' => l($t('configure Smart Reservations'), 'admin/config/content/smart-reservations'),
+  )));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function smart_reservations_uninstall() {
+
+  // 0) Delete specific schemas (tables).
+  db_drop_table('smart_reservations_search_log');
+  db_drop_table('smart_reservations_custom_rates_per_night');
+  db_drop_table('smart_reservations_reservation_items');
+
+  // 1) Delete global variables.
+  global $conf;
+  foreach (array_keys($conf) as $key) {
+    if (strpos($key, 'sr_') === 0) {
+      variable_del($key);
+    }
+    if (strpos($key, 'smart_reservations_') === 0) {
+      variable_del($key);
+    }
+  }
+
+  // 2) Delete content types.
+  // Accommodation.
+  smart_reservations_delete_content_type('sr_accommodation_unit');
+  // Reservation.
+  smart_reservations_delete_content_type('sr_reservation');
+}
+
+/**
+ * Create sample accommodation units.
+ */
+function sr_create_sample_accommodation_units($num) {
+  global $user;
+  $i = 1;
+  while ($i <= $num) {
+    $node = new stdClass();
+    $node->type = 'sr_accommodation_unit';
+    node_object_prepare($node);
+    $node->uid = $user->uid;
+    $node->language = LANGUAGE_NONE;
+    $node->title = 'Holiday apartment sample ' . $i;
+    $node->body['und'][0]['value'] = 'Sample description - Holiday apartment with 3 bedrooms, 2 bathrooms and a dining/living room and kitchen. Equipped with heaters, a fireplace, a lcd tv, a fridge, a dishwasher, a microwave, an oven, a coffee maker, a washing machine, one hairdryer in each bathroom, kitchen utensilsand linen.';
+    $node = node_submit($node);
+    node_save($node);
+    $i++;
+  }
+}
+
+/**
+ * Delete content types.
+ */
+function smart_reservations_delete_content_type($type) {
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $result = db_query($sql, array(':type' => $type));
+  $nodeids = array();
+  foreach ($result as $row) {
+    $nodeids[] = $row->nid;
+  }
+  node_delete_multiple($nodeids);
+  smart_reservations_delete_custom_fields($type);
+  node_type_delete($type);
+  field_purge_batch(500);
+}
+
+/**
+ * Add custom fields.
+ */
+function smart_reservations_add_custom_fields() {
+  foreach (_sr_installed_fields() as $field) {
+    field_create_field($field);
+  }
+  $content_type = 'sr_accommodation_unit';
+  foreach (_sr_installed_instances($content_type) as $fieldinstance) {
+    $fieldinstance['entity_type'] = 'node';
+    $fieldinstance['bundle'] = $content_type;
+    field_create_instance($fieldinstance);
+  }
+
+  $content_type = 'sr_reservation';
+  foreach (_sr_installed_instances($content_type) as $fieldinstance) {
+    $fieldinstance['entity_type'] = 'node';
+    $fieldinstance['bundle'] = $content_type;
+    field_create_instance($fieldinstance);
+  }
+
+}
+
+/**
+ * Delete custom fields.
+ */
+function smart_reservations_delete_custom_fields($content_type) {
+  foreach (array_keys(_sr_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+  $instances = field_info_instances('node', $content_type);
+  foreach ($instances as $instance_name => $fieldinstance) {
+    field_delete_instance($fieldinstance);
+  }
+}
+
+/**
+ * Content types: field bases.
+ */
+function _sr_installed_fields() {
+  $t = get_t();
+  $field_bases = array();
+
+  $field_bases['smres_comments'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_comments',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  $field_bases['smres_contact_email'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_contact_email',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 90,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  $field_bases['smres_contact_name'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_contact_name',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 90,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  $field_bases['smres_contact_phone'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_contact_phone',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 20,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  $field_bases['smres_contact_tax_identifier'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_contact_tax_identifier',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 25,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
+  $field_bases['smres_image'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_image',
+    'indexes' => array(
+      'fid' => array(
+        0 => 'fid',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'image',
+    'settings' => array(
+      'default_image' => 0,
+      'description_field' => 0,
+      'list_default' => 1,
+      'list_field' => 0,
+      'uri_scheme' => 'public',
+    ),
+    'translatable' => 0,
+    'type' => 'image',
+    'type_name' => 'oferta',
+  );
+
+  $field_bases['smres_maximum_number_of_dogs'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_maximum_number_of_dogs',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'number_integer',
+  );
+
+  $field_bases['smres_maximum_number_of_people'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_maximum_number_of_people',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'number_integer',
+  );
+
+  $field_bases['smres_minimum_number_of_people'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_minimum_number_of_people',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'number_integer',
+  );
+
+  $field_bases['smres_rate_multiplier'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_rate_multiplier',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(
+      'decimal_separator' => '.',
+      'precision' => 10,
+      'scale' => 2,
+    ),
+    'translatable' => 0,
+    'type' => 'number_decimal',
+  );
+
+  $field_bases['smres_reservation_details'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_reservation_details',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  $field_bases['smres_total_amount'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_total_amount',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(
+      'decimal_separator' => '.',
+      'precision' => 10,
+      'scale' => 2,
+    ),
+    'translatable' => 0,
+    'type' => 'number_decimal',
+  );
+  return $field_bases;
+}
+
+/**
+ * Content types: field instances.
+ */
+function _sr_installed_instances($content_type) {
+  $t = get_t();
+  $field_instances = array();
+
+  $field_instances['sr_accommodation_unit']['body'] = array(
+    'bundle' => 'accommodation_unit',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'trim_length' => 600,
+        ),
+        'type' => 'text_summary_or_trimmed',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'body',
+    'label' => 'Body',
+    'required' => FALSE,
+    'settings' => array(
+      'display_summary' => TRUE,
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 20,
+        'summary_rows' => 5,
+      ),
+      'type' => 'text_textarea_with_summary',
+      'weight' => 3,
+    ),
+  );
+
+  $field_instances['sr_accommodation_unit']['smres_image'] = array(
+    'bundle' => 'accommodation_unit',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'image',
+        'settings' => array(
+          'image_link' => '',
+          'image_style' => '',
+        ),
+        'type' => 'image',
+        'weight' => 6,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_image',
+    'label' => 'Image',
+    'required' => 0,
+    'settings' => array(
+      'alt_field' => 0,
+      'default_image' => 0,
+      'file_directory' => 'smart_reservations',
+      'file_extensions' => 'png gif jpg jpeg',
+      'max_filesize' => '',
+      'max_resolution' => '',
+      'min_resolution' => '',
+      'title_field' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'image',
+      'settings' => array(
+        'preview_image_style' => 'thumbnail',
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'image_image',
+      'weight' => 9,
+    ),
+  );
+
+  $field_instances['sr_accommodation_unit']['smres_maximum_number_of_dogs'] = array(
+    'bundle' => 'accommodation_unit',
+    'default_value' => array(
+      0 => array(
+        'value' => 4,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 0,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_integer',
+        'weight' => 4,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_maximum_number_of_dogs',
+    'label' => 'Maximum number of dogs',
+    'required' => 1,
+    'settings' => array(
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 6,
+    ),
+  );
+
+  $field_instances['sr_accommodation_unit']['smres_maximum_number_of_people'] = array(
+    'bundle' => 'accommodation_unit',
+    'default_value' => array(
+      0 => array(
+        'value' => 4,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 0,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_integer',
+        'weight' => 3,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_maximum_number_of_people',
+    'label' => 'Maximum number of guests',
+    'required' => 1,
+    'settings' => array(
+      'max' => '',
+      'min' => 1,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 5,
+    ),
+  );
+
+  $field_instances['sr_accommodation_unit']['smres_minimum_number_of_people'] = array(
+    'bundle' => 'accommodation_unit',
+    'default_value' => array(
+      0 => array(
+        'value' => 2,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 0,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_integer',
+        'weight' => 2,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_minimum_number_of_people',
+    'label' => 'Minimum number of guests',
+    'required' => 1,
+    'settings' => array(
+      'max' => '',
+      'min' => 1,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 4,
+    ),
+  );
+
+  $field_instances['sr_accommodation_unit']['smres_rate_multiplier'] = array(
+    'bundle' => 'accommodation_unit',
+    'default_value' => array(
+      0 => array(
+        'value' => 1,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 2,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_decimal',
+        'weight' => 5,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_rate_multiplier',
+    'label' => 'Rate multiplier',
+    'required' => 1,
+    'settings' => array(
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 7,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_comments'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 4,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_comments',
+    'label' => 'Comments',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 3,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 5,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_contact_email'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 1,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_contact_email',
+    'label' => 'Contact email',
+    'required' => 1,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 2,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_contact_name'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_contact_name',
+    'label' => 'Contact name',
+    'required' => 1,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 1,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_contact_phone'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_contact_phone',
+    'label' => 'Contact phone',
+    'required' => 1,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 3,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_contact_tax_identifier'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 3,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_contact_tax_identifier',
+    'label' => 'Contact tax identifier',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 4,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_reservation_details'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 6,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_reservation_details',
+    'label' => 'Reservation details',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 7,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_total_amount'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => 0,
+          'scale' => 2,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_decimal',
+        'weight' => 5,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_total_amount',
+    'label' => 'Total amount',
+    'required' => 0,
+    'settings' => array(
+      'max' => '',
+      'min' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 6,
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  $t('Body');
+  $t('Comments');
+  $t('Contact email');
+  $t('Contact name');
+  $t('Contact phone');
+  $t('Contact tax identifier');
+  $t('Image');
+  $t('Maximum number of dogs');
+  $t('Maximum number of people');
+  $t('Minimum number of people');
+  $t('Rate multiplier');
+  $t('Reservation details');
+  $t('Total amount');
+
+  return $field_instances[$content_type];
+
+}
+
+// function smart_reservations_update_7011() {
+//   // db_drop_table('smart_reservations_custom_rates_per_night');
+//   // $schema['smart_reservations_custom_rates_per_night'] = array(
+//   //   'description' => 'Table that stores rates per date for a specifi accommodation unit. When there is no entry for a date, we use default rates.',
+//   // );
+//   // db_create_table('smart_reservations_custom_rates_per_night', $schema['smart_reservations_custom_rates_per_night']);
+// }
