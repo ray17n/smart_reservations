@@ -93,11 +93,12 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 ### v7.x-1.0
 Date: 2015-03-02
 
-- Public available / GNU licence.
+- Public available with GNU licence.
 - Simplified workflow for making a new reservation.
 - Form settings with vertical tabs.
-- Default rates for
-- AJAX support in Search available form. Add/Remove accomodation unit. Improved functionalities.
+- Default rates and Custom rates combined list.
+- AJAX support in Search available.
+- AJAX support in Add/Remove accomodation unit buttons.
 
 
 ###v7.x-0.2
