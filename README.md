@@ -1,5 +1,4 @@
-Smart Reservations
-===================
+# Smart Reservations
 
 Smart Reservations is a Drupal module consisting of a reservation system of holiday apartments, hotel rooms, villas or any type of accommodation.
 
@@ -10,14 +9,13 @@ Originally created for Casafont rural holiday apartments by [ray17n](http://www.
 More info at www.ramon.click/smart-reservations.
 
 
-Rates
------
+## Rates
 
 ### Calculation
 
-- When there is no Custom rate / fee for a specific date, the system uses the Default rates / fees to calculate the rates per night.
-- When there is no Default rate / fee for a specific night of the week (Sun, Mon, Tue, Wed, Thu, Fri, Sat), the system uses the General default rates / fees to calculate the rates per night.
-- The system applies a final Rate multiplier for each specific accommodation unit.
+- When there is no **Custom rate / fee** for a specific date, the system uses the **Default rates / fees** to calculate the rates per night.
+- When there is no **Default rate / fee for a specific night** of the week (Sun, Mon, Tue, Wed, Thu, Fri, Sat), the system uses the **General default rates / fees** to calculate the rates per night.
+- The system applies a final **Rate multiplier** for each specific accommodation unit.
 
 ### Parameters
 
@@ -30,8 +28,7 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 
 
-Data model
-----------
+## Data model
 
 ### Entities
 
@@ -46,17 +43,41 @@ Data model
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-entity-relationship.png "smart reservations model")
 
 
-Todos
-----------------------------
+##Installation
 
-### Ideas or new features to add:
+- Option 1:
+  - git clone https://github.com/ray17n/smart_reservations.gitand your_drupal_website/sites/all/modules
+- Option 2:
+  - Download the module from https://github.com/ray17n/smart_reservations/archive/master.zip and uncompress the file into your_drupal_website/sites/all/modules
+
+  You can also install it into your_drupal_website/sites/all/modules/contrib.
+
+- Enable the module.
+- Configure the general settings and rates:
+  - **Settings**: your_drupal/admin/config/content/smart-reservations
+  - **Default rates**: your_drupal/admin/config/content/smart-reservations/default-rates
+  - **Custom rates** (and calculated default values): your_drupal/admin/config/content/smart-reservations/rates
+  - **Search log**: your_drupal/admin/config/content/smart-reservations/log
+
+- Create the accommodation units you need: Content - Add content - Accommodation Unit. The module also creates two sample ones, you can edit these ones or delete them.
+
+- The module also creates a block for searching reservations. The name of the block is **Search reservations**. You can also find it at your_drupal/admin/structure/block/manage/smart_reservations/search-reservations/configure
+
+- After submitting a search the block redirects to the page **your_drupal/search-available/search_parms...**
+
+- You can also use the page **your_drupal/search-available** without using the block, and add a menu entry of this url to your main menu.
+
+
+##Todos
+
+### Ideas or new features to add
   - Accomodation units. Show an image in search results form.
   - Ubercart support.
   - Support for other pets and options.
   - Limit submission searches per hour.
 
 
-### To improve:
+### To improve
   - Reservations:
     - create an automatic alias reservations/*,
   - Accommodation units:
@@ -67,8 +88,7 @@ Todos
   - Rates per night. Improve entry data workflow.
 
 
-Change log
---------------------
+## Change log
 
 ### v7.x-1.0
 Date: 2015-03-02
@@ -95,11 +115,14 @@ Date: 2012-06-14
 
 
 
-Screenshots
+## Screenshots
 -------------------
 
 #### Reservations
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation.png "smart reservations screenshot")
+
+#### Search reservations block
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-search-block.png "smart reservations screenshot")
 
 #### Default rates
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-default-rates-2.png "smart reservations screenshot")
