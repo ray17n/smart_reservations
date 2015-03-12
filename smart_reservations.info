@@ -2,7 +2,7 @@ name = Smart Reservations
 description = Provides a reservation system of accomodation units (holiday apartments, bungalows, hotel rooms, villas, etc.).
 core = "7.x"
 package = "Smart Reservations"
-version = "7.x-1.0"
+version = "7.x-1.1"
 configure = admin/config/content/smart-reservations
 
 dependencies[] = date

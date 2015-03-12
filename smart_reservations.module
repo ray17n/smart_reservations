@@ -113,7 +113,7 @@ function smart_reservations_menu() {
     'weight' => 4,
   );
 
-  $items['search-available'] = array(
+  $items[variable_get('sr_search_available_url')] = array(
     'title' => 'Availability',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_multiform'),
@@ -255,7 +255,7 @@ function smart_reservations_search_form_submit($form, &$form_state) {
     $url_params .= 'babies' . $d1 . '0' . $d2;
     $url_params .= 'dogs' . $d1 . '0' . $d2;
     $url_params .= 'cats' . $d1 . '0';
-    drupal_goto('search-available' . $url_params);
+    drupal_goto(variable_get('sr_search_available_url') . $url_params);
   }
 }
 

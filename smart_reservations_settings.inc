@@ -33,7 +33,6 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#description' => t('The maximum days of a reservation.'),
     '#required' => TRUE,
   );
-  // $d = t('The prefix of the reservation codes. For instance, with RES will have RES000001.');
   $res_number = variable_get('sr_next_reservation_number');
   $prefix = variable_get('sr_reservation_prefix');
   $res_code = $prefix . sprintf("%06d", $res_number);
@@ -174,6 +173,20 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#title' => t('Search parameters'),
     '#collapsible' => TRUE,
     '#group' => 'settings',
+  );
+  global $base_url;
+  $url = $base_url . '/' . variable_get('sr_search_available_url');
+  $form['search_params']['sr_search_available_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL of the search results form'),
+    '#default_value' => variable_get('sr_search_available_url'),
+    '#size' => 5,
+    '#maxlength' => 150,
+    // '#description' => t('With the current value the search results form appears at:')
+    // . ' ' . $base_url . '/' . variable_get('sr_search_available_url') ,
+    '#description' => t('Very important: after changing this setting you will have to clear the cache. With the current value the search results form appears at')
+    . ' ' . l($url, variable_get('sr_search_available_url')),
+    '#required' => TRUE,
   );
   $form['search_params']['sr_max_checkin_date'] = array(
     '#type' => 'textfield',

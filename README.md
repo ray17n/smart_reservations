@@ -70,7 +70,25 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 ##To dos
 
-### Ideas or new features to add
+### Currently working on it (7.x-v1.1)
+  - Buttons in Search available results page with background color. Make reservation / Add to the reservation (green), Remove (red).
+  - Database schema:
+    - check unique indexes/keys for tables
+  - Reservations:
+    - create an automatic alias reservations/*,
+    - improve status logic: created, submitted, finished
+    - after submitting, add more info to the message to the administrator.
+    - after submitting, add more info to the message to the client.
+    - align total amount to the right.
+    - improve internal storage data when submitting a new reservation.
+  - Accommodation units:
+    - create an automatic alias accommodation_units/*,
+    - show a calculated rate sample applying the multiplier rate.
+  - Rates per night. Improve entry data workflow.
+  - Avoid new Accommodation Unit samples to be published to the front page.
+  - When making a reservation, control if user goes back with the back button of the web browser.
+
+### Ideas / new features to add
   - Accomodation units. Show an image in search results form.
   - Ubercart support.
   - Support for other pets and options.
@@ -83,29 +101,10 @@ Children discount. Discount applied for each child per night. Example. with a Ba
   - When listing rates, add a calendar view.
   - Change module structure folder to allow having other modules in the same main folder.
 
-
-### Working on it / to improve
-  - Create a parameter for the URL of search available results page. Default value is 'search-available'.
-  - Colorize buttons in Search available results page. Make reservation / Add to the reservation (Green), Remove (red).
-  - Database schema:
-    - check unique indexes/keys for tables
-  - Reservations:
-    - create an automatic alias reservations/*,
-    - status field: created, submitted, finished
-    - after submitting, add more info to the message to the administrator.
-    - after submitting, add more info to the message to the client.
-    - align total amount to the right.
-  - Accommodation units:
-    - create an automatic alias accommodation_units/*,
-    - show a calculated rate sample applying the multiplier rate.
-  - Settings
-  - Rates per night. Improve entry data workflow.
-  - Avoid new Accommodation Units samples to be published to the front page.
-  - When making a reservation, control if user goes back with the back button of the sufer.
-  - Improve storage data when submitting a new reservation.
-
-
 ## Change log
+
+### v7.x-1.1
+  - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
 
 ### v7.x-1.0
 Date: 2015-03-02
