@@ -72,8 +72,6 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 ### Currently working (7.x-v1.1)
   - Buttons in Search available results page with background color. Make reservation / Add to the reservation (green), Remove (red).
-  - Database schema:
-    - check unique indexes/keys for tables
   - Reservations:
     - create an automatic alias reservations/*,
     - improve status logic: created, submitted, finished
@@ -104,6 +102,7 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 ## Change log
 
 ### v7.x-1.1
+  - Schema. Primary keys and indexes revised.
   - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
 
 ### v7.x-1.0
