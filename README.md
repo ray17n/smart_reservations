@@ -70,7 +70,7 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 ##To dos
 
-### Currently working on it (7.x-v1.1)
+### Currently working (7.x-v1.1)
   - Buttons in Search available results page with background color. Make reservation / Add to the reservation (green), Remove (red).
   - Database schema:
     - check unique indexes/keys for tables
@@ -150,6 +150,6 @@ Date: 2012-06-14
 #### Currency format settings
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-2.png "smart reservations screenshot")
 #### Search parameters settings
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-3.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-3-new.png "smart reservations screenshot")
 #### Messages settings
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-4.png "smart reservations screenshot")

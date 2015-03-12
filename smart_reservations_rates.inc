@@ -929,7 +929,8 @@ function smart_reservations_rates_form_submit($form, &$form_state) {
           ':low_occupancy_fee' => $item['low_occupancy_fee'],
           ':low_occupancy_threshold' => $item['low_occupancy_threshold'],
           ':single_night_fee' => $item['single_night_fee'],
-          ':comments' => $item['comments'],
+          ':comments' => '',
+          // not enabled field: ':comments' => $item['comments'],
           ':date_modification' => time(),
           ':date' => $item['date'],
         )
