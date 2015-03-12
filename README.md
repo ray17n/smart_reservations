@@ -68,24 +68,41 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 - You can also use the page **your_drupal/search-available** without using the block, and add a menu entry of this url to your main menu.
 
 
-##Todos
+##To dos
 
 ### Ideas or new features to add
   - Accomodation units. Show an image in search results form.
   - Ubercart support.
   - Support for other pets and options.
   - Limit submission searches per hour.
+  - Calendar in search results: change range with a click.
+  - Add Discounts per date.
+  - Reports of searched reservations per day.
+  - Limit the number of search queries per minute / create a parameter.
+  - Automatically localize the first day of the week when showing results.
+  - When listing rates, add a calendar view.
+  - Change module structure folder to allow having other modules in the same main folder.
 
 
-### To improve
+### Working on it / to improve
+  - Create a parameter for the URL of search available results page. Default value is 'search-available'.
+  - Colorize buttons in Search available results page. Make reservation / Add to the reservation (Green), Remove (red).
+  - Database schema:
+    - check unique indexes/keys for tables
   - Reservations:
     - create an automatic alias reservations/*,
+    - status field: created, submitted, finished
+    - after submitting, add more info to the message to the administrator.
+    - after submitting, add more info to the message to the client.
+    - align total amount to the right.
   - Accommodation units:
     - create an automatic alias accommodation_units/*,
     - show a calculated rate sample applying the multiplier rate.
-  - Database schema:
-    - check unique indexes/keys for tables
+  - Settings
   - Rates per night. Improve entry data workflow.
+  - Avoid new Accommodation Units samples to be published to the front page.
+  - When making a reservation, control if user goes back with the back button of the sufer.
+  - Improve storage data when submitting a new reservation.
 
 
 ## Change log
