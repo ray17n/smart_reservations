@@ -180,19 +180,15 @@ function smart_reservations_schema() {
         'not null' => FALSE,
       ),
     ),
-    'primary_key' => array(
-      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
-    ),
-    'unique_keys' => array(
-      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
-    ),
+    'primary key' => array('date', 'accommodation_unit_id'),
     'indexes' => array(
-      'date_reservation_accomodation' => array('date', 'accommodation_unit_id'),
       'reservation_id' => array('reservation_id'),
+      'date' => array('date'),
+      'accommodation_unit_id' => array('accommodation_unit_id'),
     ),
   );
-  $schema['smart_reservations_search_log'] = array(
 
+  $schema['smart_reservations_search_log'] = array(
     'description' => 'Table that stores reservation search queries submitted.',
     'fields' => array(
       'search_log_id' => array(
@@ -262,8 +258,9 @@ function smart_reservations_schema() {
         'not null' => TRUE,
       ),
     ),
+
+    'primary key' => array('search_log_id'),
     'indexes' => array(
-      'search_log_id' => array('search_log_id'),
       'timestamp' => array('timestamp'),
     ),
   );
