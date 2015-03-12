@@ -46,7 +46,7 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 ##Installation
 
 - Option 1:
-  - git clone https://github.com/ray17n/smart_reservations.gitand your_drupal_website/sites/all/modules
+  - git clone https://github.com/ray17n/smart_reservations.git into your_drupal_website/sites/all/modules
 - Option 2:
   - Download the module from https://github.com/ray17n/smart_reservations/archive/master.zip and uncompress the file into your_drupal_website/sites/all/modules
 
