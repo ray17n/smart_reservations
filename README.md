@@ -63,9 +63,9 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 - The module also creates a block for searching reservations. The name of the block is **Search reservations**. You can also find it at your_drupal/admin/structure/block/manage/smart_reservations/search-reservations/configure
 
-- After submitting a search the block redirects to the page **your_drupal/search-available/search_parms...**
+- After submitting a search the block redirects to the page **your_drupal/search-available/search_parms...** You can change the URL of this page in the settings form.
 
-- You can also use the page **your_drupal/search-available** without using the block, and add a menu entry of this url to your main menu.
+- You can also use the page **your_drupal/search-available** without using the block, and add a menu entry of this url to your main menu. You can also change the URL of this page in the settings form.
 
 
 ##To dos
