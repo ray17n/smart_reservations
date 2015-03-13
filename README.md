@@ -20,7 +20,7 @@ More info at www.ramon.click/smart-reservations.
 ### Parameters
 
 - **Base rate**. The base rate per night and person.
-Children discount. Discount applied for each child per night. Example. with a Base rate of 25, and a Children discount of 5, the rate for each child will be 20.
+- **Children discount**. Discount applied for each child per night. Example. with a Base rate of 25, and a Children discount of 5, the rate for each child will be 20.
 - **Dogs fee**. Fee applied for dog per night.
 - **Single night fee**. Additional fee for single night reservations.
 - **Low occupancy fee**. Additional fee per person for low occupancy reservations.
