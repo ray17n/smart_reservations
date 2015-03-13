@@ -70,8 +70,7 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 
 ##To dos
 
-### Currently working (7.x-v1.1)
-  - Buttons in Search available results page with background color. Make reservation / Add to the reservation (green), Remove (red).
+### Currently working (v7.x-1.1)
   - Reservations:
     - create an automatic alias reservations/*,
     - improve status logic: created, submitted, finished
@@ -102,7 +101,10 @@ Children discount. Discount applied for each child per night. Example. with a Ba
 ## Change log
 
 ### v7.x-1.1
-  - Schema. Primary keys and indexes revised.
+  - Buttons are now color coded:
+    - Green: Make reservation, Add to the reservation, Submit
+    - Red: Remove
+  - Schema. Revision of primary keys and indexes.
   - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
 
 ### v7.x-1.0
@@ -134,11 +136,15 @@ Date: 2012-06-14
 ## Screenshots
 -------------------
 
-#### Reservations
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation.png "smart reservations screenshot")
+#### Search availability results
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-availability-results-0.png "smart reservations screenshot")
 
-#### Search reservations block
+#### Search availability block
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-search-block.png "smart reservations screenshot")
+
+#### Submit a reservation
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation-b.png "smart reservations screenshot")
+
 
 #### Default rates
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-default-rates-2.png "smart reservations screenshot")

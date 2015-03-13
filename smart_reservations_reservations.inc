@@ -339,6 +339,9 @@ function generate_form_elements_search_results(&$form_state, $params) {
           'callback' => 'smart_reservations_add_remove_reservation_ajax_callback',
           'wrapper' => 'sr-accommodation-buttons-' . $id,
         ),
+        '#attributes' => array(
+          'class' => array('sr-button-' . ($selected ? 'red' : 'green')),
+        ),
       );
       if ($selected) {
         $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
@@ -351,10 +354,12 @@ function generate_form_elements_search_results(&$form_state, $params) {
             'callback' => 'smart_reservations_multiform_callback',
             'effect' => 'fade',
           ),
+          '#attributes' => array(
+            'class' => array('sr-button-green'),
+          ),
+
         );
       }
-
-
     }
   }
 
@@ -391,6 +396,9 @@ function generate_form_elements_search_results(&$form_state, $params) {
           'wrapper' => 'reservations-multiform-wrapper',
           'callback' => 'smart_reservations_multiform_callback',
           'effect' => 'fade',
+        ),
+        '#attributes' => array(
+          'class' => array('sr-button-green'),
         ),
         '#weight' => -100,
       );
@@ -539,6 +547,9 @@ function generate_form_elements_customer(&$form_state) {
       'callback' => 'smart_reservations_multiform_callback',
       'effect' => 'fade',
     ),
+    '#attributes' => array(
+      'class' => array('sr-button-green'),
+    ),
   );
 
   return $form;
@@ -641,8 +652,10 @@ function smart_reservations_multiform_submit($form, &$form_state) {
     $value_message .= t('We will verify that everything is correct and we will 
       contact you to confirm it as soon as we have verified that everything is 
       correct.');
-    $value_message .= '<br><br>' . t('We also have sent an email to your inbox. ');
-    $value_message .= t("If you don't receive it, check your spam folder.");
+    if (variable_get('sr_email_customer_submitted')) {
+      $value_message .= '<br><br>' . t('We also have sent an email to your inbox.') . ' ';
+      $value_message .= t("If you don't receive it, check your spam folder.");
+    }
 
     drupal_set_message($value_message);
     $form_state['rebuild'] = TRUE;
@@ -1111,12 +1124,9 @@ function parse_url_search_params($params) {
   $range .= variable_get('sr_default_number_of_nights_to_search') . 'days';
   $def_date = date('Y-m-d', strtotime($range));
   $min_date = date('Y-m-d', strtotime($p['checkin'] . ' +1 day'));
-  $range = 'now +' . variable_get('sr_max_nights_reservation') . 'days';
+  $range = $p['checkin'] . ' +' . variable_get('sr_max_nights_reservation') . 'days';
   $max_date = date('Y-m-d', strtotime($range));
-
   $p['checkout'] = sanitize_date($p['checkout'], $min_date, $max_date, $def_date);
-
-
   if ($p['checkout'] < $p['checkin']) {
     $p['checkout'] = $def_date;
   }

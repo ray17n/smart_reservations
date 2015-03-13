@@ -120,7 +120,7 @@
   padding: 0;
   margin-top: 1.2em;
   font-weight: 800;
-  border: 0px solid brown;
+/*  border: 0px solid brown; */
 }
 
 .sr-accommodation-calendar {
@@ -172,6 +172,32 @@
   padding-bottom: 1.2em;
 }
 
+/* Color buttons */
+
+
+input[type="submit"].sr-button-green {
+  background: #3d9b2d;
+  color: #fff;
+  border: 1px solid #358727;
+}
+input[type="submit"].sr-button-green:hover {
+  background: #358727;
+  color: #fff;
+  border: 1px solid #235819;
+}
+
+input[type="submit"].sr-button-red {
+  background: #d9534f;
+  color: #fff;
+  border: 1px solid #d43f3a;
+}
+input[type="submit"].sr-button-red:hover {
+  background: #c9302c;
+  color: #fff;
+  border: 1px solid #ac2925;
+}
+
+
 
 /* Form Search results - calendar */
 .cal-sr-results-footer {
@@ -182,6 +208,8 @@
 
 .cal-sr-results-cell {
   border: 0px solid #efefef;
+
+  /* Default color: green */
   background-color: #cbfdb0;
   height: 50px;
   border-radius: 8px;
