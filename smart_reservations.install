@@ -314,13 +314,14 @@ function smart_reservations_install() {
   // Texts.
   variable_set('sr_txt_capacity_exceeded', 'For capacity reasons, you will need to reserve more than one apartment.');
 
-  // 2) Content types.
+  // 2) Custom content types (no_types_rebuild will invoke hook_node_info...)
   node_types_rebuild();
-  // $types = node_type_get_types();
-  // node_add_body_field($types['sr_accommodation_unit']);
   smart_reservations_add_custom_fields();
+  sr_set_node_type_options('sr_accommodation_unit');
+  sr_set_node_type_options('sr_reservation');
+
+  // Create sample accommodation units.
   sr_create_sample_accommodation_units(2);
-  variable_set(‘comment_sr_accommodation_unit’, COMMENT_NODE_DISABLED);
 
   // 3) Message to the admin. Installation finished.
   $t = get_t();
@@ -328,6 +329,7 @@ function smart_reservations_install() {
     '!link' => l($t('configure Smart Reservations'), 'admin/config/content/smart-reservations'),
   )));
 }
+
 
 /**
  * Implements hook_uninstall().
@@ -339,22 +341,63 @@ function smart_reservations_uninstall() {
   db_drop_table('smart_reservations_custom_rates_per_night');
   db_drop_table('smart_reservations_reservation_items');
 
-  // 1) Delete global variables.
+  // 1) Delete content types.
+  // Accommodation.
+  smart_reservations_delete_content_type('sr_accommodation_unit');
+  // Reservation.
+  smart_reservations_delete_content_type('sr_reservation');
+
+  // 2) Delete global variables.
+  // Settings.
   global $conf;
   foreach (array_keys($conf) as $key) {
     if (strpos($key, 'sr_') === 0) {
       variable_del($key);
     }
-    if (strpos($key, 'smart_reservations_') === 0) {
-      variable_del($key);
-    }
   }
+  // Content type options.
+  sr_del_node_type_options('sr_accommodation_unit');
+  sr_del_node_type_options('sr_reservation');
+}
 
-  // 2) Delete content types.
-  // Accommodation.
-  smart_reservations_delete_content_type('sr_accommodation_unit');
-  // Reservation.
-  smart_reservations_delete_content_type('sr_reservation');
+
+/**
+ * Set Smart Reservations - set default options for custom content types.
+ */
+function sr_set_node_type_options($content_type) {
+
+  // Display author and date information.
+  // 0 => Hide author and date information.
+  // 1 => Display author and date information.
+  variable_set("node_submitted_{$content_type}", 0);
+
+  // Preview before submitting.
+  // 0 => Disabled.
+  // 1 => Optional.
+  // 2 => Required.
+  variable_set("node_preview_{$content_type}", 0);
+
+  // Node_options.
+  // array('status', 'promote', 'sticky', 'revision').
+  variable_set("node_options_{$content_type}", array());
+
+  // Default comment setting for new content.
+  // 0 => hidden.
+  // 1 => closed.
+  // 2 => open.
+  if (module_exists('comment')) {
+    variable_set("comment_{$content_type}", 0);
+  }
+}
+
+/**
+ * Delete note type options variables for a custom content types.
+ */
+function sr_del_node_type_options($content_type) {
+  variable_del("node_submitted_{$content_type}");
+  variable_del("node_preview_{$content_type}");
+  variable_del("node_options_{$content_type}");
+  variable_del("comment_{$content_type}");
 }
 
 /**

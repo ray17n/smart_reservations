@@ -78,11 +78,11 @@ More info at www.ramon.click/smart-reservations.
     - after submitting, add more info to the message to the client.
     - align total amount to the right.
     - improve internal storage data when submitting a new reservation.
+    - improve workflow when creating a new reservation with an admin account.
   - Accommodation units:
     - create an automatic alias accommodation_units/*,
     - show a calculated rate sample applying the multiplier rate.
   - Rates per night. Improve entry data workflow.
-  - Avoid new Accommodation Unit samples to be published to the front page.
   - When making a reservation, control if user goes back with the back button of the web browser.
 
 ### Ideas / new features to add
@@ -101,6 +101,7 @@ More info at www.ramon.click/smart-reservations.
 ## Change log
 
 ### v7.x-1.1
+  - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
   - Buttons are now color coded:
     - Green: Make reservation, Add to the reservation, Submit
     - Red: Remove
