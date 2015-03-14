@@ -325,7 +325,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
       $build_form['accommodation_units'][$id]['data']['buttons'] = array(
         '#type' => 'fieldset',
         '#prefix' => '<div class="sr-accommodation-buttons" id="sr-accommodation-buttons-' . $id . '">',
-        '#suffix' => '</div><br>',
+        '#suffix' => '<br></div>',
         '#weight' => 60,
       );
       $selected = !empty($form_state['storage']['selected_accommodations'][$id]);

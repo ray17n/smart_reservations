@@ -76,7 +76,6 @@ More info at www.ramon.click/smart-reservations.
     - improve status logic: created, submitted, finished
     - after submitting, add more info to the message to the administrator.
     - after submitting, add more info to the message to the client.
-    - align total amount to the right.
     - improve internal storage data when submitting a new reservation.
     - improve workflow when creating a new reservation with an admin account.
   - Accommodation units:
@@ -101,6 +100,7 @@ More info at www.ramon.click/smart-reservations.
 ## Change log
 
 ### v7.x-1.1
+  - Total amount cells aligned to the right.
   - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
   - Buttons are now color coded:
     - Green: Make reservation, Add to the reservation, Submit
