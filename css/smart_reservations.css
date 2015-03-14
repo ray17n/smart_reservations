@@ -308,11 +308,11 @@ input[type="submit"].sr-button-red:hover {
 
 @media (min-width: 768px) {
   .col-sm-17 {
-    width: 10.4%;
+    width: 10.69%;
     float: left;
   }
   .col-sr-results-summary {
-    float: left;
+    float: right;
     width: 19%;
   }
   .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
@@ -321,7 +321,7 @@ input[type="submit"].sr-button-red:hover {
 }
 @media (min-width: 992px) {
   .col-md-17 {
-    width: 10.4%;
+    width: 10.69%;
     float: left;
   }
   .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
@@ -330,7 +330,7 @@ input[type="submit"].sr-button-red:hover {
 }
 @media (min-width: 1200px) {
   .col-lg-17 {
-    width: 10.4%;
+    width: 10.69%;
     float: left;
   }
   .cal-sr-results-header, .cal-sr-results-cell-info, .cal-sr-results-cell-empty {
