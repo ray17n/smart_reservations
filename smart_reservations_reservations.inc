@@ -974,11 +974,11 @@ function markup_accommodation_summary($a, $p) {
   // Start footer.
   $o = '<div class="row cal-sr-results-row-footer">';
 
+  $div_t = '<div class="col-sr-results-summary col-sr-results-summary-total cal-sr-results-cell cal-sr-results-cell-footer text-center">';
   $div = '<div class="col-sr-results-summary cal-sr-results-cell cal-sr-results-cell-footer text-center">';
-  $div2 = '<div class="col-sr-results-summary cal-sr-results-cell cal-sr-results-cell-footer text-center">';
   $cell_empty = '<div class="col-sr-results-summary cal-sr-results-cell cal-sr-results-cell-empty"></div>';
   // $o .= $cell_empty;
-  $o .= $div . '<b>' . t('Total amount') . '<br>';
+  $o .= $div_t . '<b>' . t('Total amount') . '<br>';
   $o .= sr_curr($a['summary']['total_amount']) . '</b></div>';
 
   $o .= $div . t('Nights') . ': ' . $a['summary']['total_nights'];
