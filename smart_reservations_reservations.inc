@@ -783,15 +783,11 @@ function smart_reservations_save_and_email_reservation($form_state) {
 
   $node->smres_reservation_details['und'][0]['value']
     = $form_state['storage']['reservation']['reservation_rendered'];
-
-  // 2 = Full HTML.
-  $node->smres_reservation_details['und'][0]['format'] = 2;
+  $node->smres_reservation_details['und'][0]['format'] = 'full_html';
 
   $node->smres_total_amount['und'][0]['value']
     = $form_state['storage']['reservation']['total_amount'];
-
   $node->smres_reservation_status['und'][0]['value'] = 'Submitted';
-
   $node = node_submit($node);
 
   $res_number++;
