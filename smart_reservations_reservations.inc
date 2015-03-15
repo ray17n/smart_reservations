@@ -99,7 +99,6 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
   return $form;
 }
 
-
 /**
  * Submit function for smart_reservations_multiform.
  *
@@ -181,8 +180,6 @@ function smart_reservations_multiform_submit($form, &$form_state) {
   // Otherwise, we still have work to do.
   $form_state['rebuild'] = TRUE;
 }
-
-
 
 /**
  * Form generation for Search results - Step 1.
@@ -1416,7 +1413,8 @@ function get_rates_per_date_range($acc_id, $p) {
  * Returns an array of available accommodation_units for a specific day.
  */
 function get_accommodation_units_info($p) {
-  $sql = "SELECT n.nid FROM {node} n WHERE n.type = 'sr_accommodation_unit'";
+  $sql = "SELECT n.nid FROM {node} n
+  WHERE n.type = 'sr_accommodation_unit' AND n.status = 1";
   $results = db_query($sql);
 
   $guests = $p['adults'] + $p['children'];
@@ -1455,7 +1453,6 @@ function get_accommodation_units_info($p) {
   $accommodation_data['summary']['more_than_one_needed'] = $more_than_one_needed;
   $accommodation_data['data'] = $rows;
   return $accommodation_data;
-
 }
 
 /**

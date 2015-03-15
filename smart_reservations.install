@@ -379,7 +379,13 @@ function sr_set_node_type_options($content_type) {
 
   // Node_options.
   // array('status', 'promote', 'sticky', 'revision').
-  variable_set("node_options_{$content_type}", array(1, 0, 0, 0));
+  variable_set("node_options_{$content_type}", array(
+    ($content_type == 'sr_reservation') ? 0 : 1 => 'status',
+    0 => 'promote',
+    0 => 'sticky',
+    0 => 'revision',
+    )
+  );
 
   // Default comment setting for new content.
   // 0 => hidden.
@@ -404,13 +410,12 @@ function sr_del_node_type_options($content_type) {
  * Create sample accommodation units.
  */
 function sr_create_sample_accommodation_units($num) {
-  global $user;
   $i = 1;
   while ($i <= $num) {
     $node = new stdClass();
     $node->type = 'sr_accommodation_unit';
     node_object_prepare($node);
-    $node->uid = $user->uid;
+    $node->uid = 1;
     $node->language = LANGUAGE_NONE;
     $node->title = 'Holiday apartment sample ' . $i;
     $node->body['und'][0]['value'] = 'Sample description - Holiday apartment with 3 bedrooms, 2 bathrooms and a dining/living room and kitchen. Equipped with heaters, a fireplace, a lcd tv, a fridge, a dishwasher, a microwave, an oven, a coffee maker, a washing machine, one hairdryer in each bathroom, kitchen utensilsand linen.';
