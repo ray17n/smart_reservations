@@ -697,6 +697,37 @@ function _sr_installed_fields() {
     'translatable' => 0,
     'type' => 'number_decimal',
   );
+
+  $field_bases['smres_reservation_status'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_reservation_status',
+    'indexes' => array(
+      'value' => array(
+        0 => 'value',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'list',
+    'settings' => array(
+      'allowed_values' => array(
+        'Created' => 'Created',
+        'Submitted' => 'Submitted',
+        'Pending customer verification' => 'Pending customer verification',
+        'Pending confirmation payments' => 'Pending confirmation payments',
+        'Confirmed' => 'Confirmed',
+        'Checked-in' => 'Checked-in',
+        'Completed' => 'Completed',
+        'Cancelled' => 'Cancelled',
+      ),
+      'allowed_values_function' => '',
+    ),
+    'translatable' => 0,
+    'type' => 'list_text',
+  );
+
   return $field_bases;
 }
 
@@ -1316,6 +1347,46 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
+  $field_instances['sr_reservation']['smres_reservation_status'] = array(
+    'bundle' => 'sr_reservation',
+    'default_value' => array(
+      0 => array(
+        'value' => 'Created',
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'list',
+        'settings' => array(),
+        'type' => 'list_default',
+        'weight' => 7,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_reservation_status',
+    'label' => 'Reservation status',
+    'required' => 1,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 6,
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   $t('Body');
@@ -1331,6 +1402,7 @@ function _sr_installed_instances($content_type) {
   $t('Rate multiplier');
   $t('Reservation details');
   $t('Total amount');
+  $t('Reservation status');
 
   return $field_instances[$content_type];
 
