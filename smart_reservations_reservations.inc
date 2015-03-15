@@ -46,6 +46,8 @@
 
 function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_js_use = FALSE) {
 
+  // dpm($form_state);
+
   // Provide a wrapper around the entire form, since we'll replace the whole
   // thing with each submit.
   $form['#prefix'] = '<div id="reservations-multiform-wrapper">';
@@ -59,23 +61,23 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
   $form_state['storage']['step'] = $step;
 
   switch ($step) {
-    // Search results
+    // Search results.
     case 1:
       $form['search-results']
-            = generate_form_elements_search_results($form_state, $params);
+        = generate_form_elements_search_results($form_state, $params);
       break;
 
-    // Make reservation
+    // Make reservation.
     case 2:
       $form['customer']
-            = generate_form_elements_customer($form_state);
+        = generate_form_elements_customer($form_state);
       break;
 
     // Reservation subbmitted.
     case 3:
       drupal_set_title(t('Reservation submitted'));
       $form['submitted']
-            = generate_form_elements_submitted($form_state);
+        = generate_form_elements_submitted($form_state);
       break;
   }
 
@@ -93,7 +95,8 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
   return $form;
 }
 
-/** Form generation for Search results - Step 1
+/**
+ * Form generation for Search results - Step 1.
  */
 function generate_form_elements_search_results(&$form_state, $params) {
   if (empty($form_state['storage']['search-params'])) {
@@ -349,11 +352,11 @@ function generate_form_elements_search_results(&$form_state, $params) {
           '#name' => 'make-reservation',
           '#type' => 'submit',
           '#value' => t('Make reservation'),
-          '#ajax' => array(
-            'wrapper' => 'reservations-multiform-wrapper',
-            'callback' => 'smart_reservations_multiform_callback',
-            'effect' => 'fade',
-          ),
+          // '#ajax' => array(
+          //   'wrapper' => 'reservations-multiform-wrapper',
+          //   'callback' => 'smart_reservations_multiform_callback',
+          //   'effect' => 'fade',
+          // ),
           '#attributes' => array(
             'class' => array('sr-button-green'),
           ),
@@ -392,11 +395,11 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#value' => t('Make reservation'),
         '#prefix' => '<div class="sr-accommodation-parameters-form sr-accommodation-parameters-form-button">',
         '#suffix' => '</div>',
-        '#ajax' => array(
-          'wrapper' => 'reservations-multiform-wrapper',
-          'callback' => 'smart_reservations_multiform_callback',
-          'effect' => 'fade',
-        ),
+        // '#ajax' => array(
+        //   'wrapper' => 'reservations-multiform-wrapper',
+        //   'callback' => 'smart_reservations_multiform_callback',
+        //   'effect' => 'fade',
+        // ),
         '#attributes' => array(
           'class' => array('sr-button-green'),
         ),
@@ -406,7 +409,8 @@ function generate_form_elements_search_results(&$form_state, $params) {
   return $build_form;
 }
 
-/** Form generation for Search results - Step 2
+/**
+ * Form generation for Search results - Step 2.
  */
 function generate_form_elements_customer(&$form_state) {
   $form['title'] = array(
@@ -452,12 +456,14 @@ function generate_form_elements_customer(&$form_state) {
     '#maxlength' => 25,
   );
 
+  // Comment. Retrieve if we already have it.
   if (!empty($form_state['values']['customer']['contact']['add_a_comment'])) {
     $default_value = $form_state['values']['customer']['contact']['add_a_comment'];
   }
   else {
     $default_value = array();
   }
+  // Comment. Checkbox.
   $form['contact']['add_a_comment'] = array(
     '#type' => 'checkboxes',
     '#options' => array(1 => 'Add a comment'),
@@ -475,13 +481,16 @@ function generate_form_elements_customer(&$form_state) {
     '#suffix' => '</div>',
     '#type' => 'fieldset',
   );
-  if ($default_value['1'] == 1) {
-    $form['contact']['textfields']['comments'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Comment'),
-      '#default_value' => $form_state['values']['customer']['contact']['textfields']['comments'],
-      '#attributes' => array('maxlength' => 1100),
-    );
+  // Comment. Text.
+  if (!empty($default_value)) {
+    if ($default_value['1'] == 1) {
+      $form['contact']['textfields']['comments'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Comment'),
+        '#default_value' => $form_state['values']['customer']['contact']['textfields']['comments'],
+        '#attributes' => array('maxlength' => 1100),
+      );
+    }
   }
 
   $form['reservation'] = array(
@@ -555,7 +564,8 @@ function generate_form_elements_customer(&$form_state) {
   return $form;
 }
 
-/** Form generation for Search results - Step 3
+/**
+ * Form generation for Search results - Step 3.
  */
 function generate_form_elements_submitted(&$form_state) {
 

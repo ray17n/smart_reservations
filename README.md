@@ -43,6 +43,13 @@ More info at www.ramon.click/smart-reservations.
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-entity-relationship.png "smart reservations model")
 
 
+### Reservation states
+Improved workflow, currently in development.
+
+![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-reservation-states-0.png "smart reservations states")
+
+
+
 ##Installation
 
 - Option 1:
@@ -72,7 +79,7 @@ More info at www.ramon.click/smart-reservations.
 
 ### Currently working (v7.x-1.1)
   - Reservations:
-    - improve status logic: created, submitted, finished
+    - new states workflow: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
     - after submitting, add more info to the message to the administrator.
     - after submitting, add more info to the message to the client.
     - improve internal storage data when submitting a new reservation.
@@ -100,7 +107,7 @@ More info at www.ramon.click/smart-reservations.
 
 ### v7.x-1.1
   - Reservations:
-    - Total amount cells aligned to the right.
+    - Total amount aligned to the right.
   - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
   - Buttons are now color coded:
     - Green: Make reservation, Add to the reservation, Submit
