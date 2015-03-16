@@ -73,8 +73,6 @@ More info at www.ramon.click/smart-reservations.
 
 - You can also use the page **your_drupal/search-available** without using the block, and add a menu entry of this url to your main menu. You can also change the URL of this page in the settings form.
 
-##Functionality
-
 - If an Accommodation unit is unpublished will not appear at the search availability results.
 
 
