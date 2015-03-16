@@ -404,18 +404,19 @@ function generate_form_elements_search_results(&$form_state, $params) {
     }
   }
 
-  // If there are more than one accommodation unit selected, print totals.
-  if (count($form_state['storage']['selected_accommodations']) > 1) {
-    $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
+  // If there is more than one accommodation unit selected, print totals.
+  // if (!empty($form_state['storage']['selected_accommodations'])) {
+  //   if (count($form_state['storage']['selected_accommodations']) > 1) {
+  //     $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
 
-    $o = $div . '<b>' . t('Total') . '<br>';
-    $o .= sr_curr($total_amount) . '</b></div>';
-    $build_form['totals'] = array(
-      '#type' => 'markup',
-      '#markup' => $o,
-    );
-    // dpm($build_form, 'build_form');
-  }
+  //     $o = $div . '<b>' . t('Total') . '<br>';
+  //     $o .= sr_curr($total_amount) . '</b></div>';
+  //     $build_form['totals'] = array(
+  //       '#type' => 'markup',
+  //       '#markup' => $o,
+  //     );
+  //   }
+  // }
 
   switch ($num_acc_units_available) {
     case 0:

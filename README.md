@@ -43,11 +43,10 @@ More info at www.ramon.click/smart-reservations.
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-entity-relationship.png "smart reservations model")
 
 
-### Reservation states
-Improved workflow, currently in development.
+### Reservation status
+*(currently in development)*
 
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-reservation-states-0.png "smart reservations states")
-
 
 
 ##Installation
@@ -81,16 +80,15 @@ Improved workflow, currently in development.
 
 ##To dos
 
-### Currently working (v7.x-1.1)
+### Currently working
   - Reservations:
-    - new states workflow: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
-    - after submitting, add more info to the message to the administrator.
-    - after submitting, add more info to the message to the client.
-    - improve internal storage data when submitting a new reservation.
-    - improve workflow when creating a new reservation with an admin account.
+    - After submitting, add more info to the message to the administrator.
+    - After submitting, add more info to the message to the client.
+    - Improve internal storage data when submitting a new reservation.
+    - Improve workflow when creating a new reservation with an admin account.
   - Accommodation units:
     - Not available when unpublished.
-    - show a calculated rate sample applying the multiplier rate.
+    - Show a calculated rate sample applying the multiplier rate.
   - Rates per night. Improve entry data workflow.
   - When making a reservation, control if user goes back with the back button of the web browser.
 
@@ -112,6 +110,7 @@ Improved workflow, currently in development.
 ### v7.x-1.1
   - Reservations:
     - Total amount aligned to the right.
+    - New status field: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
   - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
   - Buttons are now color coded:
     - Green: Make reservation, Add to the reservation, Submit
