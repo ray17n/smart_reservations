@@ -1,49 +1,12 @@
 <?php
 /**
  * @file
- * Rates per night and accommodation functionality.
- */
-
-
-/**
- * @file
- * Demonstrations of AJAX with graceful degradation.
+ * Reservations functionality.
  */
 
 /**
- * @defgroup ajax_degradation_example Example: AJAX Graceful Degradation
- * @ingroup examples
- * @{
- * These examples show AJAX with graceful degradation when Javascript is not
- * available.
- *
- * In each of these the key idea is that the form is rebuilt different ways
- * depending on form input. In order to accomplish that, the formbuilder
- * function is in charge of almost all logic.
+ * Main form. Three steps: Search results, make reservation, submit reservation.
  */
-
-/**
- * Wizard form.
- *
- * This example is a classic wizard, where a different and sequential form
- * is presented on each step of the form.
- *
- * In the AJAX version, the form is replaced for each wizard section. In the
- * multistep version, it causes a new page load.
- *
- * @param array $form
- *   Form API form.
- * @param array $form_state
- *   Form API form.
- * @param bool $no_js_use
- *   Used for this demonstration only. If true means that the form should be
- *   built using a simulated no-javascript approach (ajax.js will not be
- *   loaded.)
- *
- * @return array
- *   Form array.
- */
-
 function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_js_use = FALSE) {
 
   // Provide a wrapper around the entire form, since we'll replace the whole
@@ -94,28 +57,24 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
   dpm($form, 'form');
   dpm($form_state, 'form_state');
   dpm($form_state['storage'], 'storage');
-  dpm($form_state['storage']['reservation-d'], 'reservation-d');
+  dpm($form_state['storage']['reservation'], 'reservation');
 
   return $form;
 }
 
 /**
  * Submit function for smart_reservations_multiform.
- *
- * In AJAX this is only submitted when the final submit button is clicked,
- * but in the non-javascript situation, it is submitted with every
- * button click.
  */
 function smart_reservations_multiform_submit($form, &$form_state) {
-
-  // Form_state['storage']['values'] contains stored info of each step - form:
+  // Form_state['storage']['values'] contains info of the form of each step:
   // search-results or customer.
-  // We use these values to populate the subforms (via form_state['values'])
-  // when needed.
+  // We use the name of the forms to populate the subforms
+  // (via form_state['values']) when needed.
 
   $current_step = $form_state['storage']['step'];
 
   // 1) Save the current information.
+
   // Get the name of the step. It's also the name of the form (very important).
   if ($current_step == 1) {
     $current_step_name = 'search-results';
@@ -131,7 +90,7 @@ function smart_reservations_multiform_submit($form, &$form_state) {
     $form_state['storage']['values'][$current_step_name] = $form_state['values'][$current_step_name];
   }
 
-  // 2) Increment or decrement the step as needed.Recover values if they exist.
+  // 2) Increment or decrement the step as needed. Recover values if they exist.
 
   // Option 2.A) Make reservation button => we're going to the customer form.
   if ($form_state['triggering_element']['#name'] == 'make-reservation') {
@@ -142,22 +101,16 @@ function smart_reservations_multiform_submit($form, &$form_state) {
     if (!empty($form_state['storage']['values']['customer'])) {
       $form_state['values']['customer'] = $form_state['storage']['values']['customer'];
     }
-
-    // Update reservation data array.
-    $form_state['storage']['reservation-d']['reservation_status'] = 'Created';
-
-
   }
 
-  // Option B) Go back button => we're going to search-results form.
-  // Make reservation.
+  // Option 2.B) Go back button => we're going back to search-results form.
   if ($form_state['triggering_element']['#name'] == 'go-back') {
     $form_state['storage']['step']--;
-    // Recover our values from $form_state['storage'] to pre-populate them.
+    // Recover our form values from storage.
     $form_state['values']['search-results'] = $form_state['storage']['values']['search-results'];
   }
 
-  // If they're done, submit.
+  // Option 2.C) Submit button.
   if ($form_state['triggering_element']['#name'] == 'submit') {
     $form_state['storage']['step'] = 3;
     $code = smart_reservations_save_and_email_reservation($form_state);
@@ -454,13 +407,11 @@ function generate_form_elements_search_results(&$form_state, $params) {
 
         );
         // Update total_amount
-        dpm($a, 'a');
         $total_amount += $a['summary']['total_amount'];
 
-        // Update the reservation data array.
-        $form_state['storage']['reservation-d']['total_amount'] = $total_amount;
-        $form_state['storage']['reservation-d']['acc_units'][$a['id']]
-          = $a;
+        // Update the array that contains the reservation info.
+        $form_state['storage']['reservation']['reservation_status'] = 'Created';
+        $form_state['storage']['reservation']['total_amount'] = $total_amount;
       }
     }
   }
@@ -595,7 +546,7 @@ function generate_form_elements_customer(&$form_state) {
   $form['reservation'] = array(
     '#type' => 'fieldset',
     '#title' => t('Reservation details'),
-    '#prefix' => '<div class="sr-accommodation-submit-reservation-details">',
+    '#prefix' => '<div class="sr-accommodation-submit-reservationetails">',
     '#suffix' => '</div>',
   );
 
@@ -653,18 +604,11 @@ function generate_form_elements_customer(&$form_state) {
     ),
   );
 
-  // Prepare data to save (reservation-d)
-  // Pending to move in a different place.
-  $form_state['storage']['reservation'] = $form['reservation'];
+  // Save reservation details (fieldset) info into the storage array.
+  $form_state['storage']['reservation-fieldset'] = $form['reservation'];
   $form_details = $form['reservation'];
-  $form_state['storage']['reservation']['reservation_rendered']
+  $form_state['storage']['reservation-fieldset']['reservation_rendered']
     = drupal_render($form_details);
-  $form_state['storage']['reservation']['total_amount'] = $total_amount;
-
-  // New version.
-  // $form_state['storage']['reservation-d']['total_amount'] = $total_amount;
-  // $form_state['storage']['reservation-d']['reservation_status'] = 'Created';
-
 
   return $form;
 }
@@ -676,7 +620,7 @@ function generate_form_elements_submitted(&$form_state) {
 
   $m = '<h2>' . t('Reservation details') . '</h2>';
   $contact = &$form_state['storage']['values']['customer']['contact'];
-  $m .= '<div><b>' . t('Reservation code') . '</b>: ' . $form_state['storage']['reservation']['reservation_code'] . '</div>';
+  $m .= '<div><b>' . t('Reservation code') . '</b>: ' . $form_state['storage']['reservation-fieldset']['reservation_code'] . '</div>';
   $m .= '<div><b>' . t('Name') . '</b>: ' . $contact['name'] . '</div>';
   $m .= '<div><b>' . t('Phone') . '</b>: ' . $contact['phone'] . '</div>';
   $m .= '<div><b>' . t('email') . '</b>: ' . $contact['email'] . '</div>';
@@ -689,15 +633,11 @@ function generate_form_elements_submitted(&$form_state) {
     '#prefix' => '<div class="reservation-customer-info">',
     '#suffix' => '</div>',
   );
-
-  // $form['customer-info'] = $form_state['storage']['values']['customer']['contact']['name'];
-
-  // $form['reservation-info'] = $form_state['storage']['reservation']['form'];
-   $m = $form_state['storage']['reservation']['reservation_rendered'];
-   $form['reservation-info'] = array(
+  $m = $form_state['storage']['reservation-fieldset']['reservation_rendered'];
+  $form['reservation-info'] = array(
     '#type' => 'markup',
     '#markup' => $m,
-    );
+  );
   return $form;
 }
 
@@ -759,27 +699,32 @@ function smart_reservations_multiform_validate($form, &$form_state) {
  * */
 function smart_reservations_save_and_email_reservation($form_state) {
 
-  // 1) Save reservation.
-  global $user;
+  // Variables.
   $res_number = variable_get('sr_next_reservation_number');
   $prefix = variable_get('sr_reservation_prefix');
   $res_code = $prefix . sprintf("%06d", $res_number);
-
   $contact = &$form_state['values']['customer']['contact'];
+  global $user;
+
+  // 1) Save reservation.
+  // New node.
   $node = new stdClass();
+  $node->uid = $user->uid;
+  $node->title = $res_code;
   $node->type = 'sr_reservation';
   node_object_prepare($node);
-  $node->uid = $user->uid;
   $node->language = LANGUAGE_NONE;
-  $node->title = $res_code;
+
+  // Contact info.
   $node->smres_contact_name['und'][0]['value'] = $contact['name'];
   $node->smres_contact_email['und'][0]['value'] = $contact['email'];
   $node->smres_contact_phone['und'][0]['value'] = $contact['phone'];
   $node->smres_contact_tax_identifier['und'][0]['value'] = $contact['tax_identifier'];
   $node->smres_comments['und'][0]['value'] = $contact['textfields']['comments'];
 
+  // Reservation details.
   $node->smres_reservation_details['und'][0]['value']
-    = $form_state['storage']['reservation']['reservation_rendered'];
+    = $form_state['storage']['reservation-fieldset']['reservation_rendered'];
   $node->smres_reservation_details['und'][0]['format'] = 'full_html';
 
   $node->smres_total_amount['und'][0]['value']
