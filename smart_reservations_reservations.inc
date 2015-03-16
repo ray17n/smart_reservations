@@ -42,22 +42,10 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
       break;
   }
 
-  // This simply allows us to demonstrate no-javascript use without
-  // actually turning off javascript in the browser. Removing the #ajax
-  // element turns off AJAX behaviors on that element and as a result
-  // ajax.js doesn't get loaded.
-  // For demonstration only! You don't need this.
-  // if ($no_js_use) {
-  //   // Remove the #ajax from the above, so ajax.js won't be loaded.
-  //   // For demonstration only.
-  //   unset($form['make']['#ajax']);
-  //   unset($form['prev']['#ajax']);
-  // }
-  //
-  dpm($form, 'form');
-  dpm($form_state, 'form_state');
-  dpm($form_state['storage'], 'storage');
-  dpm($form_state['storage']['reservation'], 'reservation');
+  // dpm($form, 'form');
+  // dpm($form_state, 'form_state');
+  // dpm($form_state['storage'], 'storage');
+  // dpm($form_state['storage']['reservation'], 'reservation');
 
   return $form;
 }
@@ -416,6 +404,19 @@ function generate_form_elements_search_results(&$form_state, $params) {
     }
   }
 
+  // If there are more than one accommodation unit selected, print totals.
+  if (count($form_state['storage']['selected_accommodations']) > 1) {
+    $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
+
+    $o = $div . '<b>' . t('Total') . '<br>';
+    $o .= sr_curr($total_amount) . '</b></div>';
+    $build_form['totals'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+    );
+    // dpm($build_form, 'build_form');
+  }
+
   switch ($num_acc_units_available) {
     case 0:
       // There aren't any accommodation units available.
@@ -456,6 +457,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#weight' => -100,
       );
   }
+
   return $build_form;
 }
 
