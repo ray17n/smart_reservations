@@ -8,7 +8,6 @@ Originally created for Casafont rural holiday apartments by [ray17n](http://www.
 
 More info at www.ramon.click/smart-reservations.
 
-
 ## Rates
 
 ### Calculation
