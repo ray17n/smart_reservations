@@ -94,9 +94,22 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#suffix' => '<br>',
   );
 
+  // Date - search results.
   $d = '<br>' . t('Any format accepted by php function date.');
   $d .= ' ' . t('Current format sample: ');
   $d .= date(variable_get('sr_date_format_search_results'));
+  $form['general']['sr_date_format_search_results'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Date format in search results calendars'),
+    '#description' => $d,
+    '#size' => 12,
+    '#default_value' => variable_get('sr_date_format_search_results') ,
+  );
+
+  // Date - reservation summary.
+  $d = '<br>' . t('Any format accepted by php function date.');
+  $d .= ' ' . t('Current format sample: ');
+  $d .= date(variable_get('sr_date_format_reservation'));
   $d .= '<br><br>' . t('Format examples:');
   $d .= '<br><br>' . sr_date_format_samples();
   $d .= t('See more options at !link',
@@ -104,12 +117,12 @@ function smart_reservations_configuration_form($form, &$form_state) {
         '!link' => '<a href="http://php.net/manual/en/function.date.php"
          target = "_blank">http://php.net/manual/en/function.date.php</a>'
         ));
-  $form['general']['sr_date_format_search_results'] = array(
+  $form['general']['sr_date_format_reservation'] = array(
     '#type' => 'textfield',
-    '#title' => t('Date format in search results calendars'),
+    '#title' => t('Date format in reservation summary'),
     '#description' => $d,
     '#size' => 12,
-    '#default_value' => variable_get('sr_date_format_search_results') ,
+    '#default_value' => variable_get('sr_date_format_reservation') ,
   );
 
   // Currency format.
@@ -372,6 +385,7 @@ function sr_date_format_samples() {
     'm-d-Y',
     'd-m-Y',
     'Y-m-d',
+    'F Y, l, d'
   );
 
   $o = '<table><th>Format</th><th>Value</th>';

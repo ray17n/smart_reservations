@@ -1091,9 +1091,9 @@ function markup_search_results_summary($summary) {
     $sum .= '<div class="sr-summary-info-body-row">';
 
     $sum .= '<div class="col-text">';
-    $sum .= "<b>{$a['title']}.</b>  {$a['headline']}</div>";
+    $sum .= "<b>{$a['title']}</b><br>{$a['headline']}</div>";
 
-    $sum .= '<div class="col-total">';
+    $sum .= '<div class="col-total"><br>';
     $sum .= sr_curr($a['total_amount']) . '</div>';
 
     $sum .= '</div>';
@@ -1409,7 +1409,11 @@ function get_rates_per_date_range($acc_id, $p) {
     }
 
     // Accommodation headline.
-    $sum_headline = "From {$p['checkin']} to {$p['checkout']}";
+    $date_checkin = date(variable_get('sr_date_format_reservation'),
+      strtotime($p['checkin']));
+    $date_checkout = date(variable_get('sr_date_format_reservation'),
+      strtotime($p['checkout']));
+    $sum_headline = "From {$date_checkin} to {$date_checkout}";
     $sum_headline .= ". {$total_nights} nights";
     $sum_headline .= ($adults > 0) ? ", {$adults} adults" : '';
     $sum_headline .= ($children > 0) ? ", {$children} children" : '';
