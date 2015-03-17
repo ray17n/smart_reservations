@@ -163,9 +163,39 @@
   margin: 0;
 }
 
+.sr-summary-info {
+  float: left;
+  width: 100%;
+  margin-bottom: 1em;
+}
+.sr-summary-info-body {
+}
+.sr-summary-info-footer {
+  clear: both;
+}
+
+.sr-summary-info-body-row {
+  float: left;
+  clear: both;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+}
+.sr-summary-info-body-row .col-text {
+  float: left;
+}
+.sr-summary-info-body-row .col-total {
+  float: right;
+}
+
+.sr-summary-info-footer {
+  float: right;
+  margin-top: 1em;
+}
+
 .sr-summary-make-reservation {
   margin-bottom: 2em;
 }
+
 
 .sr-summary-buttons {
   clear:both;
@@ -174,7 +204,6 @@
   clear: both;
   float: right;
 }
-
 /* Form Search results - messages */
 .sr-results-warning {
   background-color: #f6f6f6;

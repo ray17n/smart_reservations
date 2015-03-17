@@ -383,21 +383,22 @@ function generate_form_elements_search_results(&$form_state, $params) {
         ),
       );
       if ($selected) {
-        // $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-        //   '#name' => 'make-reservation',
-        //   '#type' => 'submit',
-        //   '#value' => t('Make reservation'),
-        //   '#ajax' => array(
-        //     'wrapper' => 'reservations-multiform-wrapper',
-        //     'callback' => 'smart_reservations_multiform_callback',
-        //     'effect' => 'fade',
-        //   ),
-        //   '#attributes' => array(
-        //     'class' => array('sr-button-green'),
-        //   ),
+        $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
+          '#name' => 'make-reservation',
+          '#type' => 'submit',
+          '#value' => t('Make reservation'),
+          '#ajax' => array(
+            'wrapper' => 'reservations-multiform-wrapper',
+            'callback' => 'smart_reservations_multiform_callback',
+            'effect' => 'fade',
+          ),
+          '#attributes' => array(
+            'class' => array('sr-button-green'),
+          ),
 
-        // );
-        // Update summary
+        );
+        // Update summary,
+        $summary['acc_units_sum'][$id] = $a['summary'];
         $summary['total_amount'] += $a['summary']['total_amount'];
         // Update the array that contains the reservation info.
         $form_state['storage']['reservation']['reservation_status'] = 'Created';
@@ -412,7 +413,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
   $sum_class = 'sr-summary';
   $sum_title = '';
 
-  if (!empty($form_state['storage']['selected_accommodations'])) { 
+  if (!empty($form_state['storage']['selected_accommodations'])) {
     $make_reservation = TRUE;
     $sum_class .= ' sr-summary-make-reservation';
     $sum_title = t('Reservation');
@@ -496,8 +497,6 @@ function generate_form_elements_search_results(&$form_state, $params) {
   }
   return $build_form;
 }
-
-
 
 /**
  * Form generation for Search results - Step 2.
@@ -1084,13 +1083,29 @@ function markup_accommodation_summary($a, $p) {
 function markup_search_results_summary($summary) {
 
   // Start footer.
-  $o = '<div class="row cal-sr-results-row-footer">';
+  $pre1 = '<div class="row sr-summary-info">';
+  $suf1 = '</div>';
 
-  $div_t = '<div class="col-sr-results-summary col-sr-results-summary-total cal-sr-results-cell cal-sr-results-cell-footer text-center">';
-  $o .= $div_t . '<b>' . t('Total amount') . '<br>';
-  $o .= sr_curr($summary['total_amount']) . '</b></div>';
+  $sum = '<div class="sr-summary-info-body">';
+  foreach ($summary['acc_units_sum'] as $a) {
+    $sum .= '<div class="sr-summary-info-body-row">';
 
-  return $o;
+    $sum .= '<div class="col-text">';
+    $sum .= "<b>{$a['title']}.</b>  {$a['headline']}</div>";
+
+    $sum .= '<div class="col-total">';
+    $sum .= sr_curr($a['total_amount']) . '</div>';
+
+    $sum .= '</div>';
+  }
+  $sum .= '</div>';
+
+  // $totals = '<div class="sr-summary-info-footer col-sr-results-summary col-sr-results-summary-total cal-sr-results-cell cal-sr-results-cell-footer text-center">';
+  $totals = '<div class="sr-summary-info-footer">';
+  $totals .= '<b>' . t('Total') . ' ';
+  $totals .= sr_curr($summary['total_amount']) . '</b></div>';
+
+  return $pre1 . $sum . $totals . $suf1;
 }
 
 
@@ -1311,7 +1326,8 @@ function get_numeric($val) {
 /**
  * Get availability.
  *
- * Returns an array of available accommodation_units and rates for each day.
+ * Returns an array of rates for each night for an accommodation unit.
+ * int @param $acc_id (accommodation unit)
  * array @param $params
  */
 function get_rates_per_date_range($acc_id, $p) {
@@ -1391,11 +1407,23 @@ function get_rates_per_date_range($acc_id, $p) {
       $total_amount += $r['amount_per_night'];
       $rates_calc[$r['date']] = $r;
     }
+
+    // Accommodation headline.
+    $sum_headline = "From {$p['checkin']} to {$p['checkout']}";
+    $sum_headline .= ". {$total_nights} nights";
+    $sum_headline .= ($adults > 0) ? ", {$adults} adults" : '';
+    $sum_headline .= ($children > 0) ? ", {$children} children" : '';
+    $sum_headline .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
+    $sum_headline .= ($dogs > 0) ? ", {$dogs} dogs" : '';
+    $sum_headline .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
+
     $accommodation_rates = array(
       'id' => $a->nid,
       'accommodation_unit' => $a ,
       'rates_per_night' => $rates_calc ,
       'summary' => array(
+        'title' => $a->title,
+        'headline' => $sum_headline,
         'total_nights' => $total_nights,
         'total_amount' => $total_amount,
         'total_amount_adults' => $total_amount_adults,
