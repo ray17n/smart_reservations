@@ -26,7 +26,6 @@ More info at www.ramon.click/smart-reservations.
 - **Low occupancy threshold**. Number of guests below which (<=) the system applies the low ocuppancy fee. For example, if we have a threshold of 2 guests, and a low occcupancy fee of 10, the system will apply a low occupancy fee of 20, but if we have 3 guests there will be no low occupancy fee.
 
 
-
 ## Data model
 
 ### Entities
