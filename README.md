@@ -80,12 +80,12 @@ More info at www.ramon.click/smart-reservations.
 
 ### Currently working
   - Reservations:
-    - After submitting, add more info to the message to the administrator.
-    - After submitting, add more info to the message to the client.
-    - Improve internal storage data when submitting a new reservation.
+    - After submitting, add more info into the message to the administrator.
+    - After submitting, add more info into the message to the client.
     - Improve workflow when creating a new reservation with an admin account.
+    - Improve editing functionality.
+    - Improve status workflow.
   - Accommodation units:
-    - Not available when unpublished.
     - Show a calculated rate sample applying the multiplier rate.
   - Rates per night. Improve entry data workflow.
   - When making a reservation, control if user goes back with the back button of the web browser.
@@ -146,13 +146,13 @@ Date: 2012-06-14
 -------------------
 
 #### Search availability results
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-availability-results-0.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-availability-results-b3.png "smart reservations screenshot")
 
 #### Search availability block
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-search-block.png "smart reservations screenshot")
 
 #### Submit a reservation
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation-b.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation-b1.png "smart reservations screenshot")
 
 
 #### Default rates
