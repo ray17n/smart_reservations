@@ -143,6 +143,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
     '#markup' => t('Availability'),
     '#prefix' => '<div><h2>',
     '#suffix' => '</h2></div>',
+    '#weight' => -10,
   );
 
   // 2) Build form: search options and submit button.
@@ -150,6 +151,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
     '#type' => 'fieldset',
     '#prefix' => '<div class="sr-results-header-options">',
     '#suffix' => '</div>',
+    '#weight' => -5,
   );
 
   $build_form['header_options']['checkin_date'] = array(
@@ -226,7 +228,8 @@ function generate_form_elements_search_results(&$form_state, $params) {
   };
 
   // 3.2) Accomodation calendars and info.
-  $total_amount = 0;
+  $summary = array();
+  $summary['total_amount'] = 0;
   foreach ($acc_units['data'] as $acc_unit) {
     // Recover options if we are recalculating the form, for instance.
     $id = $acc_unit['id'];
@@ -380,57 +383,76 @@ function generate_form_elements_search_results(&$form_state, $params) {
         ),
       );
       if ($selected) {
-        $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-          '#name' => 'make-reservation',
-          '#type' => 'submit',
-          '#value' => t('Make reservation'),
-          '#ajax' => array(
-            'wrapper' => 'reservations-multiform-wrapper',
-            'callback' => 'smart_reservations_multiform_callback',
-            'effect' => 'fade',
-          ),
-          '#attributes' => array(
-            'class' => array('sr-button-green'),
-          ),
+        // $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
+        //   '#name' => 'make-reservation',
+        //   '#type' => 'submit',
+        //   '#value' => t('Make reservation'),
+        //   '#ajax' => array(
+        //     'wrapper' => 'reservations-multiform-wrapper',
+        //     'callback' => 'smart_reservations_multiform_callback',
+        //     'effect' => 'fade',
+        //   ),
+        //   '#attributes' => array(
+        //     'class' => array('sr-button-green'),
+        //   ),
 
-        );
-        // Update total_amount
-        $total_amount += $a['summary']['total_amount'];
-
+        // );
+        // Update summary
+        $summary['total_amount'] += $a['summary']['total_amount'];
         // Update the array that contains the reservation info.
         $form_state['storage']['reservation']['reservation_status'] = 'Created';
-        $form_state['storage']['reservation']['total_amount'] = $total_amount;
+        $form_state['storage']['reservation']['total_amount']
+          = $summary['total_amount'];
       }
     }
   }
 
   // Summary.
+  $make_reservation = FALSE;
+  $sum_class = 'sr-summary';
+  $sum_title = '';
+
+  if (!empty($form_state['storage']['selected_accommodations'])) { 
+    $make_reservation = TRUE;
+    $sum_class .= ' sr-summary-make-reservation';
+    $sum_title = t('Reservation');
+  }
+
+  $prefix = '<div class="' . $sum_class . '" id="sr-summary">';
+  $prefix .= '<h2 class="sr-summary-title">' . $sum_title . '</h2>';
   $build_form['summary'] = array(
     '#type' => 'fieldset',
-    '#prefix' => '<div class="sr-summary" id="sr-summary">',
+    '#prefix' => $prefix,
     '#suffix' => '</div>',
+    '#weight' => -1,
   );
 
   // If there is more than one accommodation unit selected, print totals.
   if (!empty($form_state['storage']['selected_accommodations'])) {
-    if (count($form_state['storage']['selected_accommodations']) > 1) {
-      $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
 
-      $m = $div . '<b>' . t('Total') . '<br>';
-      $m .= sr_curr($total_amount) . '</b></div>';
-      $build_form['totals'] = array(
-        '#type' => 'markup',
-        '#markup' => $m,
-      );
-    }
+    // dpm($build_form);
+    $m = markup_search_results_summary($summary);
+    $build_form['summary']['data']['totals'] = array(
+      '#type' => 'markup',
+      '#markup' => $m,
+    );
+    $build_form['summary']['data']['buttons'] = array(
+      '#name' => 'make-reservation',
+      '#type' => 'submit',
+      '#value' => t('Make reservation'),
+      '#ajax' => array(
+        'wrapper' => 'reservations-multiform-wrapper',
+        'callback' => 'smart_reservations_multiform_callback',
+        'effect' => 'fade',
+      ),
+      '#attributes' => array(
+        'class' => array('sr-button-green'),
+      ),
+      '#prefix' => '<div class="sr-summary-buttons">',
+      '#suffix' => '</div>',
+
+    );
   }
-  else {
-    $m = t('Empty selection');
-  }
-  $build_form['summary']['data']['totals'] = array(
-    '#type' => 'markup',
-    '#markup' => $m,
-  );
 
   switch ($num_acc_units_available) {
     case 0:
@@ -473,23 +495,6 @@ function generate_form_elements_search_results(&$form_state, $params) {
       );
   }
   return $build_form;
-}
-
-
-
-function ajax_buttons2_buttons_callback($form, $form_state) {
-
-  $id = $form_state['triggering_element']['#parents'][2];
-  $wrapper_buttons = '#sr-accommodation-buttons-' . $id;
-  $text = "yo";
-
-  dpm($wrapper_buttons, 'wr');
-  $commands = array();
-  $commands[] = ajax_command_replace($wrapper_buttons, "<div>hey</div>");
-
-  // $commands[] = ajax_command_html("#buttons_div_{$id}", $text);
-  // $commands[] = ajax_command_replace("#buttons_status_{$id}", "<div id='html_status'>Updated html_command_example with text=$text;  " . date('r') . "</div>");
-  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 
@@ -867,7 +872,6 @@ function smart_reservations_add_remove_reservation($form, &$form_state) {
  */
 function smart_reservations_add_remove_reservation_ajax_callback($form, $form_state) {
 
-  dpm($form);
   // Initialize variables.
   $id = $form_state['triggering_element']['#parents'][2];
   $commands = array();
@@ -882,7 +886,6 @@ function smart_reservations_add_remove_reservation_ajax_callback($form, $form_st
   $wrapper = '#sr-summary';
   $f = $form['search-results']['summary'];
   $html = drupal_render($f);
-  dpm($html, 'html');
   $commands[] = ajax_command_replace($wrapper, $html);
 
   return array('#type' => 'ajax', '#commands' => $commands);
@@ -1073,6 +1076,23 @@ function markup_accommodation_summary($a, $p) {
 
   return $o;
 }
+
+
+/**
+ *
+ */
+function markup_search_results_summary($summary) {
+
+  // Start footer.
+  $o = '<div class="row cal-sr-results-row-footer">';
+
+  $div_t = '<div class="col-sr-results-summary col-sr-results-summary-total cal-sr-results-cell cal-sr-results-cell-footer text-center">';
+  $o .= $div_t . '<b>' . t('Total amount') . '<br>';
+  $o .= sr_curr($summary['total_amount']) . '</b></div>';
+
+  return $o;
+}
+
 
 /**
  * Implements submission logic from the Form API.
