@@ -224,9 +224,21 @@
   padding-bottom: 1.2em;
 }
 
+/* Form make reservation */
+.reservation-submit-contact {
+  padding-bottom: 2em;
+  /*width: 100%;*/
+  /*float: left;*/
+  /*border: 1px solid red;*/
+}
+.reservation-submit-summary {
+  padding-bottom: 2em;
+  width: 100%;
+  float: left;
+  /*border: 1px solid blue;*/
+}
+
 /* Color buttons */
-
-
 input[type="submit"].sr-button-green {
   background: #3d9b2d;
   color: #fff;

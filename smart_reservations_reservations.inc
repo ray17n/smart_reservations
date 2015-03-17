@@ -41,7 +41,6 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
         = generate_form_elements_submitted($form_state);
       break;
   }
-
   // dpm($form, 'form');
   // dpm($form_state, 'form_state');
   // dpm($form_state['storage'], 'storage');
@@ -103,6 +102,7 @@ function smart_reservations_multiform_submit($form, &$form_state) {
     $form_state['storage']['step'] = 3;
     $code = smart_reservations_save_and_email_reservation($form_state);
     $form_state['storage']['reservation']['reservation_code'] = $code;
+    $form_state['storage']['reservation']['reservation_status'] = 'Submitted';
 
     $value_message = t('Your reservation has been submitted.') . ' ';
     $value_message .= t('We will verify that everything is correct and we will
@@ -120,6 +120,7 @@ function smart_reservations_multiform_submit($form, &$form_state) {
 
   // Otherwise, we still have work to do.
   $form_state['rebuild'] = TRUE;
+
 }
 
 /**
@@ -257,15 +258,16 @@ function generate_form_elements_search_results(&$form_state, $params) {
       );
 
       // Description.
-      $o = $a['accommodation_unit']->body['und'][0]['value'];
-      $build_form['accommodation_units'][$id]['data']['description'] = array(
-        '#type' => 'markup',
-        '#markup' => $o,
-        '#weight' => 10,
-        '#prefix' => '<div class="row sr-accommodation-description">',
-        '#suffix' => '</div>',
-      );
-
+      if (!empty($a['accommodation_unit']->body['und'][0]['value'])) {
+        $o = $a['accommodation_unit']->body['und'][0]['value'];
+        $build_form['accommodation_units'][$id]['data']['description'] = array(
+          '#type' => 'markup',
+          '#markup' => $o,
+          '#weight' => 10,
+          '#prefix' => '<div class="row sr-accommodation-description">',
+          '#suffix' => '</div>',
+        );
+      }
       // Options.
       $build_form['accommodation_units'][$id]['data']['options'] = array(
         '#type' => 'fieldset',
@@ -285,7 +287,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
           '#default_value' => $a['summary']['number_of_adults'],
           '#ajax' => array(
             'callback' => 'smart_reservations_search_recalc_ajax',
-            'wrapper' => 'sr-search-results-accommodation-' . $id,
+            // 'wrapper' => 'sr-search-results-accommodation-' . $id,
           ),
         );
       $build_form['accommodation_units'][$id]['data']['options']['number_of_children']
@@ -298,7 +300,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
           '#default_value' => $a['summary']['number_of_children'],
           '#ajax' => array(
             'callback' => 'smart_reservations_search_recalc_ajax',
-            'wrapper' => 'sr-search-results-accommodation-' . $id,
+            // 'wrapper' => 'sr-search-results-accommodation-' . $id,
           ),
         );
       $build_form['accommodation_units'][$id]['data']['options']['number_of_babies']
@@ -311,7 +313,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
           '#default_value' => $a['summary']['number_of_babies'],
           '#ajax' => array(
             'callback' => 'smart_reservations_search_recalc_ajax',
-            'wrapper' => 'sr-search-results-accommodation-' . $id,
+            // 'wrapper' => 'sr-search-results-accommodation-' . $id,
           ),
         );
       $build_form['accommodation_units'][$id]['data']['options']['number_of_dogs']
@@ -324,7 +326,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
           '#default_value' => $a['summary']['number_of_dogs'],
           '#ajax' => array(
             'callback' => 'smart_reservations_search_recalc_ajax',
-            'wrapper' => 'sr-search-results-accommodation-' . $id,
+            // 'wrapper' => 'sr-search-results-accommodation-' . $id,
           ),
         );
 
@@ -430,7 +432,6 @@ function generate_form_elements_search_results(&$form_state, $params) {
   // If there is more than one accommodation unit selected, print totals.
   if (!empty($form_state['storage']['selected_accommodations'])) {
 
-    // dpm($build_form);
     $m = markup_search_results_summary($summary);
     $build_form['summary']['data']['totals'] = array(
       '#type' => 'markup',
@@ -440,11 +441,11 @@ function generate_form_elements_search_results(&$form_state, $params) {
       '#name' => 'make-reservation',
       '#type' => 'submit',
       '#value' => t('Make reservation'),
-      '#ajax' => array(
-        'wrapper' => 'reservations-multiform-wrapper',
-        'callback' => 'smart_reservations_multiform_callback',
-        'effect' => 'fade',
-      ),
+      // '#ajax' => array(
+      //   'wrapper' => 'reservations-multiform-wrapper',
+      //   'callback' => 'smart_reservations_multiform_callback',
+      //   'effect' => 'fade',
+      // ),
       '#attributes' => array(
         'class' => array('sr-button-green'),
       ),
@@ -474,25 +475,25 @@ function generate_form_elements_search_results(&$form_state, $params) {
     // There is only one accommodation unit available.
     // We replace the button 'Add to the reservation' for 'Make reservation'.
     case 1:
-      $id = key($build_form['accommodation_units']);
-      $form_state['storage']['selected_accommodations'][$id] = $id;
-      unset($build_form['accommodation_units'][$id]['data']['buttons']['add_remove']);
-      $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-        '#name' => 'make-reservation',
-        '#type' => 'submit',
-        '#value' => t('Make reservation'),
-        '#prefix' => '<div class="sr-accommodation-parameters-form sr-accommodation-parameters-form-button">',
-        '#suffix' => '</div>',
-        // '#ajax' => array(
-        //   'wrapper' => 'reservations-multiform-wrapper',
-        //   'callback' => 'smart_reservations_multiform_callback',
-        //   'effect' => 'fade',
-        // ),
-        '#attributes' => array(
-          'class' => array('sr-button-green'),
-        ),
-        '#weight' => -100,
-      );
+      // $id = key($build_form['accommodation_units']);
+      // $form_state['storage']['selected_accommodations'][$id] = $id;
+      // unset($build_form['accommodation_units'][$id]['data']['buttons']['add_remove']);
+      // $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
+      //   '#name' => 'make-reservation',
+      //   '#type' => 'submit',
+      //   '#value' => t('Make reservation'),
+      //   '#prefix' => '<div class="sr-accommodation-parameters-form sr-accommodation-parameters-form-button">',
+      //   '#suffix' => '</div>',
+      //   // '#ajax' => array(
+      //   //   'wrapper' => 'reservations-multiform-wrapper',
+      //   //   'callback' => 'smart_reservations_multiform_callback',
+      //   //   'effect' => 'fade',
+      //   // ),
+      //   '#attributes' => array(
+      //     'class' => array('sr-button-green'),
+      //   ),
+      //   '#weight' => -100,
+      // );
   }
   return $build_form;
 }
@@ -504,12 +505,16 @@ function generate_form_elements_customer(&$form_state) {
   $form['title'] = array(
     '#type' => 'markup',
     '#markup' => t('Reservation'),
-    '#prefix' => '<div class="reservation-submit-title"><h2>',
-    '#suffix' => '</h2></div>',
+    '#prefix' => '<div class="reservation-submit-title"><h1>',
+    '#suffix' => '</h1></div>',
+    '#weight' => -10,
   );
   $form['contact'] = array(
     '#type' => 'fieldset',
+    '#prefix' => '<div class="reservation-submit-contact">',
+    '#suffix' => '</div>',
     '#title' => t('Contact information'),
+    '#weight' => -5,
   );
   $form['contact']['name'] = array(
     '#type' => 'textfield',
@@ -581,6 +586,18 @@ function generate_form_elements_customer(&$form_state) {
     }
   }
 
+  // Reservation summary.
+  $form['reservation-summary'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Reservation summary'),
+    '#prefix' => '<div class="reservation-submit-summary">',
+    '#suffix' => '</div>',
+  );
+  $form['reservation-summary']['summary'] 
+  = $form_state['complete form']['search-results']['summary']['data']['totals'];
+  // unset($form['reservation-summary']['data']['buttons']);
+
+  // Reservation details.
   $form['reservation'] = array(
     '#type' => 'fieldset',
     '#title' => t('Reservation details'),
@@ -588,24 +605,11 @@ function generate_form_elements_customer(&$form_state) {
     '#suffix' => '</div>',
   );
 
-  $total_amount = 0;
   foreach ($form_state['storage']['selected_accommodations'] as $id) {
     $a = &$form_state['complete form']['search-results']['accommodation_units'][$id];
     unset($a['data']['options']);
     unset($a['data']['buttons']);
     $form['reservation']['form'][$id] = $a;
-    $total_amount += $form_state['storage']['accommodation_units'][$id]['summary']['total_amount'];
-  }
-
-  if (count($form_state['storage']['selected_accommodations']) > 1) {
-    $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
-
-    $o = $div . '<b>' . t('Total') . '<br>';
-    $o .= sr_curr($total_amount) . '</b></div>';
-    $form['reservation']['total'] = array(
-      '#type' => 'markup',
-      '#markup' => $o,
-    );
   }
 
   $form['actions'] = array(
@@ -644,7 +648,9 @@ function generate_form_elements_customer(&$form_state) {
 
   // Save reservation details (fieldset) info into the storage array.
   $form_state['storage']['reservation-fieldset'] = $form['reservation'];
-  $form_details = $form['reservation'];
+  $form_detail = array();
+  $form_details[] = $form['reservation-summary'];
+  $form_details[] = $form['reservation'];
   $form_state['storage']['reservation-fieldset']['reservation_rendered']
     = drupal_render($form_details);
 
@@ -656,9 +662,9 @@ function generate_form_elements_customer(&$form_state) {
  */
 function generate_form_elements_submitted(&$form_state) {
 
-  $m = '<h2>' . t('Reservation details') . '</h2>';
+  $m = '<h2>' . t('Reservation submitted') . '</h2>';
   $contact = &$form_state['storage']['values']['customer']['contact'];
-  $m .= '<div><b>' . t('Reservation code') . '</b>: ' . $form_state['storage']['reservation-fieldset']['reservation_code'] . '</div>';
+  $m .= '<div><b>' . t('Reservation code') . '</b>: ' . $form_state['storage']['reservation']['reservation_code'] . '</div>';
   $m .= '<div><b>' . t('Name') . '</b>: ' . $contact['name'] . '</div>';
   $m .= '<div><b>' . t('Phone') . '</b>: ' . $contact['phone'] . '</div>';
   $m .= '<div><b>' . t('email') . '</b>: ' . $contact['email'] . '</div>';
@@ -894,14 +900,32 @@ function smart_reservations_add_remove_reservation_ajax_callback($form, $form_st
  * Implements submission logic of the Recalculate button.(AJAX call)
  */
 function smart_reservations_search_recalc_ajax($form, $form_state) {
+
+  // Initialize variables.
+  $id = $form_state['triggering_element']['#parents'][2];
   $acc_id = $form_state['triggering_element']['#parents'][2];
+  $commands = array();
 
-  // Change value of children if the form changed the input value.
+  // 1) Change value of children if the form changed the input value.
   // This happens when there is no capacity.
-  $form['search-results']['accommodation_units'][$acc_id]['data']['options']['number_of_children']['#value']
-    = $form_state['storage']['accommodation_units'][$acc_id]['summary']['number_of_children'];
+  $form['search-results']['accommodation_units'][$id]['data']['options']['number_of_children']['#value']
+    = $form_state['storage']['accommodation_units'][$id]['summary']['number_of_children'];
 
-  return $form['search-results']['accommodation_units'][$acc_id];;
+  // 2) Prepare ajax_command_replace for accommodation unit fieldset.
+  $wrapper = '#sr-search-results-accommodation-' . $id;
+  $f = $form['search-results']['accommodation_units'][$id];
+  $html = drupal_render($f);
+  $commands[] = ajax_command_replace($wrapper, $html);
+
+  // 3) Prepare ajax_command_replace for totals / summary.
+  $wrapper = '#sr-summary';
+  $f = $form['search-results']['summary'];
+  $html = drupal_render($f);
+  $commands[] = ajax_command_replace($wrapper, $html);
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+
+  // return $form['search-results']['accommodation_units'][$acc_id];
 }
 
 /**
@@ -1075,7 +1099,6 @@ function markup_accommodation_summary($a, $p) {
   return $o;
 }
 
-
 /**
  *
  */
@@ -1090,9 +1113,10 @@ function markup_search_results_summary($summary) {
     $sum .= '<div class="sr-summary-info-body-row">';
 
     $sum .= '<div class="col-text">';
-    $sum .= "<b>{$a['title']}</b><br>{$a['headline']}</div>";
+    $sum .= "<b>{$a['title']}</b> <br> {$a['headline_date']}";
+    $sum .= "<br>{$a['headline_desc']}</div>";
 
-    $sum .= '<div class="col-total"><br>';
+    $sum .= '<div class="col-total"><br><br>';
     $sum .= sr_curr($a['total_amount']) . '</div>';
 
     $sum .= '</div>';
@@ -1412,13 +1436,13 @@ function get_rates_per_date_range($acc_id, $p) {
       strtotime($p['checkin']));
     $date_checkout = date(variable_get('sr_date_format_reservation'),
       strtotime($p['checkout']));
-    $sum_headline = "From {$date_checkin} to {$date_checkout}";
-    $sum_headline .= " - {$total_nights} nights";
-    $sum_headline .= ($adults > 0) ? ", {$adults} adults" : '';
-    $sum_headline .= ($children > 0) ? ", {$children} children" : '';
-    $sum_headline .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
-    $sum_headline .= ($dogs > 0) ? ", {$dogs} dogs" : '';
-    $sum_headline .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
+    $sum_headline_date = "From {$date_checkin} to {$date_checkout}";
+    $sum_headline_desc = "{$total_nights} nights";
+    $sum_headline_desc .= ($adults > 0) ? ", {$adults} adults" : '';
+    $sum_headline_desc .= ($children > 0) ? ", {$children} children" : '';
+    $sum_headline_desc .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
+    $sum_headline_desc .= ($dogs > 0) ? ", {$dogs} dogs" : '';
+    $sum_headline_desc .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
 
     $accommodation_rates = array(
       'id' => $a->nid,
@@ -1426,7 +1450,8 @@ function get_rates_per_date_range($acc_id, $p) {
       'rates_per_night' => $rates_calc ,
       'summary' => array(
         'title' => $a->title,
-        'headline' => $sum_headline,
+        'headline_date' => $sum_headline_date,
+        'headline_desc' => $sum_headline_desc,
         'total_nights' => $total_nights,
         'total_amount' => $total_amount,
         'total_amount_adults' => $total_amount_adults,
@@ -1467,9 +1492,13 @@ function get_accommodation_units_info($p) {
   WHERE n.type = 'sr_accommodation_unit' AND n.status = 1";
   $results = db_query($sql);
 
+  // if ($results->rowCount() == 0) {
+  //   return NULL;
+  // }
   $guests = $p['adults'] + $p['children'];
   $max_guests = 0;
   $total_capacity = 0;
+  $rows = array();
   foreach ($results as $r) {
     $n = node_load($r->nid);
     $id = 'acc-' . $r->nid;
@@ -1487,7 +1516,8 @@ function get_accommodation_units_info($p) {
     $max_guests = max( $max_guests, $rows[$id]['max_guests']);
     $total_capacity += $n->smres_maximum_number_of_people['und'][0]['value'];
   }
-  $more_than_one_needed = ($guests > $max_guests) ? TRUE : FALSE;
+  $more_than_one_needed = (($guests > $max_guests) & ($max_guests != 0)) ?
+    TRUE : FALSE;
 
   // Reorder accommodation
   foreach ($rows as $key => $row) {
@@ -1496,7 +1526,9 @@ function get_accommodation_units_info($p) {
   }
 
   // Sort the data.
-  array_multisort($capacity, SORT_DESC, $name, SORT_ASC, $rows);
+  if(!empty($rows)) {
+    array_multisort($capacity, SORT_DESC, $name, SORT_ASC, $rows);
+  }
 
   $accommodation_data['summary']['max_guests_acc_unit'] = $max_guests;
   $accommodation_data['summary']['total_capacity'] = $total_capacity;
