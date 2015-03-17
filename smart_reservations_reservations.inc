@@ -346,7 +346,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#suffix' => '</div>',
       );
 
-      // Summary.
+      // Accommodation summary.
       $o = markup_accommodation_summary($a, $p);
       $build_form['accommodation_units'][$id]['data']['summary'] = array(
         '#type' => 'markup',
@@ -356,7 +356,7 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#suffix' => '</div>',
       );
 
-      // Buttons.
+      // Accommodation buttons.
       $build_form['accommodation_units'][$id]['data']['buttons'] = array(
         '#type' => 'fieldset',
         '#prefix' => '<div class="sr-accommodation-buttons" id="sr-accommodation-buttons-' . $id . '">',
@@ -365,14 +365,15 @@ function generate_form_elements_search_results(&$form_state, $params) {
       );
       $selected = !empty($form_state['storage']['selected_accommodations'][$id]);
       $build_form['accommodation_units'][$id]['data']['buttons']['add_remove'] = array(
-        // Very important to have a unique name (if we hadn't #tree)
+        // Very important to have a unique name - for ajax calls.
         '#name' => 'add_remove-' . $id,
         '#type' => 'submit',
         '#value' => $selected ? t('Remove') : t('Add to the reservation') ,
         '#submit' => array('smart_reservations_add_remove_reservation'),
         '#ajax' => array(
           'callback' => 'smart_reservations_add_remove_reservation_ajax_callback',
-          'wrapper' => 'sr-accommodation-buttons-' . $id,
+          //  We don't need a wrapper / special ajax callback / multiple divs.
+          // 'wrapper' => 'sr-accommodation-buttons-' . $id,
         ),
         '#attributes' => array(
           'class' => array('sr-button-' . ($selected ? 'red' : 'green')),
@@ -380,15 +381,14 @@ function generate_form_elements_search_results(&$form_state, $params) {
       );
       if ($selected) {
         $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-          // Very important to have a unique name (when not using #tree).
           '#name' => 'make-reservation',
           '#type' => 'submit',
           '#value' => t('Make reservation'),
-          // '#ajax' => array(
-          //   'wrapper' => 'reservations-multiform-wrapper',
-          //   'callback' => 'smart_reservations_multiform_callback',
-          //   'effect' => 'fade',
-          // ),
+          '#ajax' => array(
+            'wrapper' => 'reservations-multiform-wrapper',
+            'callback' => 'smart_reservations_multiform_callback',
+            'effect' => 'fade',
+          ),
           '#attributes' => array(
             'class' => array('sr-button-green'),
           ),
@@ -404,19 +404,33 @@ function generate_form_elements_search_results(&$form_state, $params) {
     }
   }
 
-  // If there is more than one accommodation unit selected, print totals.
-  // if (!empty($form_state['storage']['selected_accommodations'])) {
-  //   if (count($form_state['storage']['selected_accommodations']) > 1) {
-  //     $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
+  // Summary.
+  $build_form['summary'] = array(
+    '#type' => 'fieldset',
+    '#prefix' => '<div class="sr-summary" id="sr-summary">',
+    '#suffix' => '</div>',
+  );
 
-  //     $o = $div . '<b>' . t('Total') . '<br>';
-  //     $o .= sr_curr($total_amount) . '</b></div>';
-  //     $build_form['totals'] = array(
-  //       '#type' => 'markup',
-  //       '#markup' => $o,
-  //     );
-  //   }
-  // }
+  // If there is more than one accommodation unit selected, print totals.
+  if (!empty($form_state['storage']['selected_accommodations'])) {
+    if (count($form_state['storage']['selected_accommodations']) > 1) {
+      $div = '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-footer cal-sr-results-cell-footer-total text-center">';
+
+      $m = $div . '<b>' . t('Total') . '<br>';
+      $m .= sr_curr($total_amount) . '</b></div>';
+      $build_form['totals'] = array(
+        '#type' => 'markup',
+        '#markup' => $m,
+      );
+    }
+  }
+  else {
+    $m = t('Empty selection');
+  }
+  $build_form['summary']['data']['totals'] = array(
+    '#type' => 'markup',
+    '#markup' => $m,
+  );
 
   switch ($num_acc_units_available) {
     case 0:
@@ -458,9 +472,27 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#weight' => -100,
       );
   }
-
   return $build_form;
 }
+
+
+
+function ajax_buttons2_buttons_callback($form, $form_state) {
+
+  $id = $form_state['triggering_element']['#parents'][2];
+  $wrapper_buttons = '#sr-accommodation-buttons-' . $id;
+  $text = "yo";
+
+  dpm($wrapper_buttons, 'wr');
+  $commands = array();
+  $commands[] = ajax_command_replace($wrapper_buttons, "<div>hey</div>");
+
+  // $commands[] = ajax_command_html("#buttons_div_{$id}", $text);
+  // $commands[] = ajax_command_replace("#buttons_status_{$id}", "<div id='html_status'>Updated html_command_example with text=$text;  " . date('r') . "</div>");
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+
 
 /**
  * Form generation for Search results - Step 2.
@@ -834,8 +866,27 @@ function smart_reservations_add_remove_reservation($form, &$form_state) {
  * Callback for add/remove ajax-enabled button.
  */
 function smart_reservations_add_remove_reservation_ajax_callback($form, $form_state) {
+
+  dpm($form);
+  // Initialize variables.
   $id = $form_state['triggering_element']['#parents'][2];
-  return $form['search-results']['accommodation_units'][$id]['data']['buttons'];
+  $commands = array();
+
+  // 1) Prepare ajax_command_replace for accommodation buttons.
+  $wrapper = '#sr-accommodation-buttons-' . $id;
+  $f = $form['search-results']['accommodation_units'][$id]['data']['buttons'];
+  $html = drupal_render($f);
+  $commands[] = ajax_command_replace($wrapper, $html);
+
+  // 2) Prepare ajax_command_replace for totals / summary.
+  $wrapper = '#sr-summary';
+  $f = $form['search-results']['summary'];
+  $html = drupal_render($f);
+  dpm($html, 'html');
+  $commands[] = ajax_command_replace($wrapper, $html);
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+  // old method: return $form['search-results']['accommodation_units'][$id]['data']['buttons'];
 }
 
 /**
