@@ -383,20 +383,19 @@ function generate_form_elements_search_results(&$form_state, $params) {
         ),
       );
       if ($selected) {
-        $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-          '#name' => 'make-reservation',
-          '#type' => 'submit',
-          '#value' => t('Make reservation'),
-          '#ajax' => array(
-            'wrapper' => 'reservations-multiform-wrapper',
-            'callback' => 'smart_reservations_multiform_callback',
-            'effect' => 'fade',
-          ),
-          '#attributes' => array(
-            'class' => array('sr-button-green'),
-          ),
-
-        );
+        // $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
+        //   '#name' => 'make-reservation',
+        //   '#type' => 'submit',
+        //   '#value' => t('Make reservation'),
+        //   '#ajax' => array(
+        //     'wrapper' => 'reservations-multiform-wrapper',
+        //     'callback' => 'smart_reservations_multiform_callback',
+        //     'effect' => 'fade',
+        //   ),
+        //   '#attributes' => array(
+        //     'class' => array('sr-button-green'),
+        //   ),
+        // );
         // Update summary,
         $summary['acc_units_sum'][$id] = $a['summary'];
         $summary['total_amount'] += $a['summary']['total_amount'];
@@ -1027,7 +1026,7 @@ function markup_accommodation_summary($a, $p) {
   $div = '<div class="col-sr-results-summary cal-sr-results-cell cal-sr-results-cell-footer text-center">';
   $cell_empty = '<div class="col-sr-results-summary cal-sr-results-cell cal-sr-results-cell-empty"></div>';
   // $o .= $cell_empty;
-  $o .= $div_t . '<b>' . t('Total amount') . '<br>';
+  $o .= $div_t . '<b>' . t('Total') . '<br>';
   $o .= sr_curr($a['summary']['total_amount']) . '</b></div>';
 
   $o .= $div . t('Nights') . ': ' . $a['summary']['total_nights'];
@@ -1102,7 +1101,7 @@ function markup_search_results_summary($summary) {
 
   // $totals = '<div class="sr-summary-info-footer col-sr-results-summary col-sr-results-summary-total cal-sr-results-cell cal-sr-results-cell-footer text-center">';
   $totals = '<div class="sr-summary-info-footer">';
-  $totals .= '<b>' . t('Total') . ' ';
+  $totals .= '<b>' . t('Total amount') . ' ';
   $totals .= sr_curr($summary['total_amount']) . '</b></div>';
 
   return $pre1 . $sum . $totals . $suf1;
@@ -1414,7 +1413,7 @@ function get_rates_per_date_range($acc_id, $p) {
     $date_checkout = date(variable_get('sr_date_format_reservation'),
       strtotime($p['checkout']));
     $sum_headline = "From {$date_checkin} to {$date_checkout}";
-    $sum_headline .= ". {$total_nights} nights";
+    $sum_headline .= " - {$total_nights} nights";
     $sum_headline .= ($adults > 0) ? ", {$adults} adults" : '';
     $sum_headline .= ($children > 0) ? ", {$children} children" : '';
     $sum_headline .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';

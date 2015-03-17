@@ -295,6 +295,7 @@ input[type="submit"].sr-button-red:hover {
   padding: 10px 0px;
   min-height: 200px;
   height: auto;
+  text-align: center;
 
 }
 
