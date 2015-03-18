@@ -388,6 +388,29 @@ function smart_reservations_form_sr_accommodation_unit_node_form_alter (&$form,
   $form['smres_rate_multiplier']['und'][0]['value']['#description'] = $desc;
 }
 
+/**
+ * Implements hook_theme_registry_alter().
+ *
+ * Add the custom templates of Smart Reservations.
+ */
+function smart_reservations_theme_registry_alter(&$theme_registry) {
+  // Defined path to current module.
+  $module_path = drupal_get_path('smart_reservations', 'siteuser');
+
+  // Find all .tpl.php files in this module's folder recursively.
+  $template_file_objects = drupal_find_theme_templates($theme_registry, '.tpl.php', $module_path);
+
+  // Itterate through all found template file objects.
+  foreach ($template_file_objects as $key => $template_file_object) {
+    // If the template has not already been overridden by a theme.
+    if (!isset($theme_registry[$key]['theme path']) || !preg_match('#/themes/#', $theme_registry[$key]['theme path'])) {
+      // Alter the theme path and template elements.
+      $theme_registry[$key]['theme path'] = $module_path;
+      $theme_registry[$key] = array_merge($theme_registry[$key], $template_file_object);
+      $theme_registry[$key]['type'] = 'module';
+    }
+  }
+}
 
 /**
  * Auxiliary functions.
@@ -409,6 +432,7 @@ function sr_curr($value) {
 }
 
 
+
 /* FROM HERE - commented code - ideas pending to develop */
 
 /**
@@ -416,7 +440,7 @@ function sr_curr($value) {
  * nodetype_
  *  */
 // function sr_reservation_form($node, $form_state) {
-//   // dpm($node);
+//   dpm($node);
 //     return node_content_form($node, $form_state);
 // }
 
