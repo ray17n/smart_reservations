@@ -84,15 +84,15 @@ More info at www.ramon.click/smart-reservations.
     - Improve editing functionality.
     - Improve status workflow.
   - Accommodation units:
-    - Show a calculated rate sample applying the multiplier rate.
+    - Show a calculated rate sample applying the multiplier rate in the accomodation unit page.
   - Rates per night. Improve entry data workflow.
   - When making a reservation, control if user goes back with the back button of the web browser.
 
 ### Ideas / new features to add
+  - Limit submission searches per hour. Analyze if honeypot module can be useful.
   - Accomodation units. Show an image in search results form.
   - Ubercart support.
   - Support for other pets and options.
-  - Limit submission searches per hour.
   - Calendar in search results: change range with a click.
   - Add Discounts per date.
   - Reports of searched reservations per day.
@@ -113,6 +113,9 @@ More info at www.ramon.click/smart-reservations.
     - Red: Remove
   - Schema. Revision of primary keys and indexes.
   - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
+  - Misc.
+    - sr_curr is now located in smart_reservations.module file.
+
 
 ### v7.x-1.0
 Date: 2015-03-02

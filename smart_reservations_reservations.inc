@@ -1710,21 +1710,6 @@ function smart_reservations_mail_send($params) {
 }
 
 /**
- * Auxiliary function that implements the currency format.
- */
-function sr_curr($value) {
-  $sign = variable_get('sr_currency_sign');
-  $after = variable_get('sr_currency_sign_after_amount');
-  $ths_sep = variable_get('sr_currency_thousands_separator');
-  $dec_point = variable_get('sr_currency_decimal_point');
-  $dec_places = variable_get('sr_currency_decimal_places');
-
-  $v = number_format($value , $dec_places, $dec_point, $ths_sep);
-  $v = $after ? $v . ' ' . $sign : $sign . ' ' . $v;
-  return $v;
-}
-
-/**
  * Log logic.
  */
 function sr_log_add($type, $p) {

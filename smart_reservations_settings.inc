@@ -132,10 +132,6 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#collapsible' => TRUE,
     '#group' => 'settings',
   );
-  // To use the func sr_currency_sign, we need to include
-  // smart_reservation_reservations.inc.
-  module_load_include('inc', 'smart_reservations',
-    'smart_reservations_reservations');
   $form['currency']['example'] = array(
     '#type' => 'textfield',
     '#title' => t('Current format'),
