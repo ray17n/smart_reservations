@@ -127,6 +127,13 @@ function smart_reservations_schema() {
         'length' => '255',
         'not null' => FALSE,
       ),
+      'total_amount' => array(
+        'description' => 'Total amount',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
       'base_rate' => array(
         'description' => 'Base rate.',
         'type' => 'numeric',

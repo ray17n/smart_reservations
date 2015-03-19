@@ -593,7 +593,7 @@ function generate_form_elements_customer(&$form_state) {
     '#prefix' => '<div class="reservation-submit-summary">',
     '#suffix' => '</div>',
   );
-  $form['reservation-summary']['summary'] 
+  $form['reservation-summary']['summary']
   = $form_state['complete form']['search-results']['summary']['data']['totals'];
   // unset($form['reservation-summary']['data']['buttons']);
 
@@ -795,7 +795,7 @@ function smart_reservations_save_and_email_reservation($form_state) {
             'date' => $d['date'],
             'reservation_id' => $node_id,
             'accommodation_unit_id' => $acc_id,
-            // Pending add total_amount.
+            'total_amount' => $a['summary']['total_amount'],
             'number_of_adults' => $a['summary']['number_of_adults'],
             'number_of_children' => $a['summary']['number_of_children'],
             'number_of_babies' => $a['summary']['number_of_babies'],
@@ -815,7 +815,7 @@ function smart_reservations_save_and_email_reservation($form_state) {
     }
   }
 
-  // 3) Send email to the customer
+  // 3) Send email to the customer.
   if (variable_get('sr_email_customer_submitted')) {
     $mail['to'] = $node->smres_contact_email['und'][0]['value'] = $contact['email'];
     $mail['subject'] = variable_get('site_name');
@@ -1141,65 +1141,67 @@ function markup_search_results_summary($summary) {
  */
 function smart_reservations_acc_unit_reservations($form, &$form_state, $node = NULL) {
 
-  // 1) Data of the form. A table with the log entries.
+  // Create a table with the reservations per day.
+
+  // 1) Build the header of the table.
   $rows_header = array(
     // The header gives the table the information it needs in order to make
     // the query calls for ordering. TableSort uses the field information
     // to know what database column to sort by.
-    array('data' => t('Date'), 'field' => 'r.date'),
+    array('data' => t('Date'), 
+      'field' => 'r.date',
+      'sort' => 'desc', // sort by this column by default 
+      ),
     array('data' => t('Reservation'), 'field' => 'r.reservation_id'),
+    array('data' => t('Amount'), 'field' => 'r.total_amount'),
     array('data' => t('Adults'), 'field' => 'r.number_of_adults'),
     array('data' => t('Children'), 'field' => 'r.number_of_children'),
     array('data' => t('Babies'), 'field' => 'r.number_of_babies'),
     array('data' => t('Dogs'), 'field' => 'r.number_of_dogs'),
-    // array('data' => t('Base rate'), 'field' => 'r.base_rate'),
-    // array('data' => t('Children discount'), 'field' => 'r.children_discount'),
-    // array('data' => t('Dogs fee'), 'field' => 'r.dogs_fee'),
-    // array('data' => t('Low occupancy fee'), 'field' => 'r.low_occupancy_fee'),
-    // array('data' => t('Low occupancy threshold'), 'field' => 'r.low_occupancy_threshold'),
-    // array('data' => t('Single night fee'), 'field' => 'r.single_night_fee'),
   );
 
+  // 2.1) Get the data of the table.
   // Using the TableSort Extender is what tells the the query object that we
   // are sorting.
   $query = db_select('smart_reservations_reservation_items', 'r')
+    ->condition('accommodation_unit_id', $node->nid, '=')
     ->extend('TableSort')
     ->extend('PagerDefault')
     ->limit(30);
+  $query->join('node', 'n', 'r.reservation_id = n.nid');
+  $query->fields('r', array('date'));
+  $query->fields('n', array('title', 'nid'));
   $query->fields('r', array(
-    'date',
-    'reservation_id',
+    'total_amount',
     'number_of_adults',
     'number_of_children',
     'number_of_babies',
     'number_of_dogs',
-    // 'base_rate',
-    // 'children_discount',
-    // 'dogs_fee',
-    // 'low_occupancy_fee',
-    // 'low_occupancy_threshold',
-    // 'single_night_fee',
     )
   );
 
-  // An AJAX request calls the form builder function for every change.
-  if (!empty($form_state['values']['number_of_adults'])) {
-    $query->condition('num_of_adults', $form_state['values']['number_of_adults'], '>=');
-  }
   $result = $query
     ->orderByHeader($rows_header)
     ->execute();
 
+  // 2.2) Build the array of the rows for the table.
   $rows = array();
   foreach ($result as $row) {
+    $url = l(
+      $row->title, drupal_get_path_alias('node/' . $row->nid),
+      array('absolute' => TRUE));
+    $row->title = $url;
+    unset($row->nid);
+
     $rows[] = array('data' => (array) $row);
   }
 
+  // 3) Build the form.
   $form_table['smart_reservations_search_log_table'] = array(
     '#theme' => 'table',
     '#header' => $rows_header,
     '#rows' => $rows,
-    '#prefix' => '<div id="log-table">',
+    '#prefix' => '<div id="acc_id-reservations-table">',
     '#suffix' => '</div>',
   );
 
