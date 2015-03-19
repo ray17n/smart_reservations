@@ -120,27 +120,32 @@ function smart_reservations_menu() {
     'access callback' => TRUE,
     'file' => 'smart_reservations_reservations.inc',
     'access arguments' => array('access content'),
-    // 'page callback' => '_smart_reservations_search_results',
-    // 'page arguments' => array(1),
-    // 'access arguments' => array('access smart_reservations content'),
-    // 'type' => MENU_NORMAL_ITEM,
-    // 'page arguments' => array(),
-    // 'access arguments'  => array('access smart_reservations'),
-    // 'type' => MENU_LOCAL_TASK,
-    // 'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-    // 'file' => 'menu.admin.inc',
   );
 
-  // Alternative tests.
-  // $items['make-reservation'] = array(
-  //   'title' => 'Make reservation',
-  //   'page callback' => 'drupal_get_form',
-  //   'page arguments' => array('smart_reservations_make_reservation_form'),
-  //   'file' => 'smart_reservations_reservations.inc',
-  //   'access callback' => TRUE,
-  //   // 'type' => MENU_CALLBACK,
-  // );
+  // Reservations tab for Accommodation Units.
+  $items['node/%node/reservations'] = array(
+    'title' => t('Reservations'),
+
+    // 'page callback' => '_smart_reservations_acc_unit_reservations',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_acc_unit_reservations',1),
+    'file' => 'smart_reservations_reservations.inc',
+
+    'access callback' => 'tab_acc_unit_access_callback',
+    'access arguments' => array(1),
+
+    'type' => MENU_LOCAL_TASK,
+  );
+
   return $items;
+}
+
+
+/**
+ * Implements an access callback function for node type Accommodation Unit.
+ */
+function tab_acc_unit_access_callback($node) {
+  return ($node->type == 'sr_accommodation_unit') ? TRUE : FALSE;
 }
 
 /**
@@ -149,7 +154,10 @@ function smart_reservations_menu() {
 function smart_reservations_permission() {
   return array(
     'access smart_reservations content' => array(
-      'title' => t('Access content for the Smart Reservations module'),
+      'title' => t('Access content of Smart Reservations.'),
+    ),
+    'admin smart_reservations' => array(
+      'title' => t('Administer Smart Reservations.'),
     ),
   );
 }

@@ -142,7 +142,7 @@ function smart_reservations_schema() {
         'not null' => FALSE,
       ),
       'dogs_fee' => array(
-        'description' => 'Child discount',
+        'description' => 'Dogs fee',
         'type' => 'numeric',
         'precision' => '6',
         'scale' => '2',

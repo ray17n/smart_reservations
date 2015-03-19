@@ -108,7 +108,7 @@ More info at www.ramon.click/smart-reservations.
     - Total amount aligned to the right.
     - New status field: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
   - Accommodation units:
-    - There's now a sample of the calculated multiplier rate in the description of the multiplier rate field in the accomodation unit edit page.
+    - There's now a sample of the calculated multiplier rate in the description of the multiplier rate field in the accomodation unit page and edit page.
   - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
   - Buttons are now color coded:
     - Green: Make reservation, Add to the reservation, Submit
@@ -116,6 +116,7 @@ More info at www.ramon.click/smart-reservations.
   - Schema. Revision of primary keys and indexes.
   - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
   - Misc.
+    - Added smart_reservations_preprocess_node(&$variable)
     - Auxiliary function sr_curr($value) is now located in smart_reservations.module file.
     - Custom templates functionality added (smart_reservations_theme_registry_alter method).
     - Added custom template for accommodation units (node--sr_accommodation_unit.tpl.php). 

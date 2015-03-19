@@ -785,7 +785,7 @@ function smart_reservations_save_and_email_reservation($form_state) {
   // To check if the saving was successful, we check the nid.
   $node_id = $node->nid;
 
-  // 2) Add reservation itemes to the database.
+  // 2) Add reservation items to the database.
   if (isset($node_id)) {
     foreach ($form_state['storage']['selected_accommodations'] as $acc_id) {
       $a = &$form_state['storage']['accommodation_units'][$acc_id];
@@ -795,6 +795,7 @@ function smart_reservations_save_and_email_reservation($form_state) {
             'date' => $d['date'],
             'reservation_id' => $node_id,
             'accommodation_unit_id' => $acc_id,
+            // Pending add total_amount.
             'number_of_adults' => $a['summary']['number_of_adults'],
             'number_of_children' => $a['summary']['number_of_children'],
             'number_of_babies' => $a['summary']['number_of_babies'],
@@ -1131,6 +1132,81 @@ function markup_search_results_summary($summary) {
   return $pre1 . $sum . $totals . $suf1;
 }
 
+
+/**
+ * Reservations of an accommodation unit form.
+ *
+ * @return array
+ *   A render array set for theming by theme_table().
+ */
+function smart_reservations_acc_unit_reservations($form, &$form_state, $node = NULL) {
+
+  // 1) Data of the form. A table with the log entries.
+  $rows_header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array('data' => t('Date'), 'field' => 'r.date'),
+    array('data' => t('Reservation'), 'field' => 'r.reservation_id'),
+    array('data' => t('Adults'), 'field' => 'r.number_of_adults'),
+    array('data' => t('Children'), 'field' => 'r.number_of_children'),
+    array('data' => t('Babies'), 'field' => 'r.number_of_babies'),
+    array('data' => t('Dogs'), 'field' => 'r.number_of_dogs'),
+    // array('data' => t('Base rate'), 'field' => 'r.base_rate'),
+    // array('data' => t('Children discount'), 'field' => 'r.children_discount'),
+    // array('data' => t('Dogs fee'), 'field' => 'r.dogs_fee'),
+    // array('data' => t('Low occupancy fee'), 'field' => 'r.low_occupancy_fee'),
+    // array('data' => t('Low occupancy threshold'), 'field' => 'r.low_occupancy_threshold'),
+    // array('data' => t('Single night fee'), 'field' => 'r.single_night_fee'),
+  );
+
+  // Using the TableSort Extender is what tells the the query object that we
+  // are sorting.
+  $query = db_select('smart_reservations_reservation_items', 'r')
+    ->extend('TableSort')
+    ->extend('PagerDefault')
+    ->limit(30);
+  $query->fields('r', array(
+    'date',
+    'reservation_id',
+    'number_of_adults',
+    'number_of_children',
+    'number_of_babies',
+    'number_of_dogs',
+    // 'base_rate',
+    // 'children_discount',
+    // 'dogs_fee',
+    // 'low_occupancy_fee',
+    // 'low_occupancy_threshold',
+    // 'single_night_fee',
+    )
+  );
+
+  // An AJAX request calls the form builder function for every change.
+  if (!empty($form_state['values']['number_of_adults'])) {
+    $query->condition('num_of_adults', $form_state['values']['number_of_adults'], '>=');
+  }
+  $result = $query
+    ->orderByHeader($rows_header)
+    ->execute();
+
+  $rows = array();
+  foreach ($result as $row) {
+    $rows[] = array('data' => (array) $row);
+  }
+
+  $form_table['smart_reservations_search_log_table'] = array(
+    '#theme' => 'table',
+    '#header' => $rows_header,
+    '#rows' => $rows,
+    '#prefix' => '<div id="log-table">',
+    '#suffix' => '</div>',
+  );
+
+  $build_form['body'] = $form_table;
+
+  return $build_form;
+}
 
 /**
  * Implements submission logic from the Form API.
@@ -1546,6 +1622,7 @@ function get_active_accommodation_units() {
   $sql = "SELECT n.nid FROM {node} n WHERE n.type = 'accommodation_unit'";
   $results = db_query($sql);
 
+  // Pending to improve... use $result->fetchObject()
   foreach ($results as $result) {
     $node = node_load($result->nid);
     $rows[] = $node;
