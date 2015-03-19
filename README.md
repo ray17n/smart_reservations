@@ -117,7 +117,7 @@ More info at www.ramon.click/smart-reservations.
   - The URL of the Search available results page is now a parameter. Default value is 'search-available'.
   - Misc.
     - Auxiliary function sr_curr($value) is now located in smart_reservations.module file.
-    - There's now custom templates functionality (smart_reservations_theme_registry_alter method).
+    - Custom templates functionality added (smart_reservations_theme_registry_alter method).
     - Added custom template for accommodation units (node--sr_accommodation_unit.tpl.php). 
 
 
