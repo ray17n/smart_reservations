@@ -1,11 +1,13 @@
 <?php
 /**
  * @file
- * Rates functionality.
+ * smart_reservations_rates.inc
+ * Rates - main functionality.
  */
 
 /**
- * Default rates form.
+ * Default rates form. Show the default rates variables.
+ * smart_reservations/default-rates
  */
 function smart_reservations_default_rates_form($form, &$form_state) {
 
@@ -592,7 +594,7 @@ function smart_reservations_default_rates_form($form, &$form_state) {
  * smart_reservations_default_rates_form.
  */
 function smart_reservations_default_rates_form_validate($form, &$form_state) {
- 
+
   sr_check_var($form_state, 'Base rate', 'sr_default_base_rate');
   sr_check_var($form_state, 'Children discount', 'sr_default_children_discount');
   sr_check_var($form_state, 'Dogs fee', 'sr_default_dogs_fee');
@@ -601,6 +603,8 @@ function smart_reservations_default_rates_form_validate($form, &$form_state) {
   sr_check_var($form_state, 'Low occupancy threshold', 'sr_default_low_occupancy_threshold');
 
 }
+
+
 
 /**
  * Build the rates per date form.
@@ -872,10 +876,6 @@ function theme_smart_reservations_rates_form($variables) {
         drupal_render($form['rate_items'][$id]['single_night_fee']),
         drupal_render($form['rate_items'][$id]['low_occupancy_fee']),
         drupal_render($form['rate_items'][$id]['low_occupancy_threshold']),
-        // drupal_render($form['rate_items'][$id]['comments']),
-        // drupal_render($form['rate_items'][$id]['weight']),
-        // drupal_render($form['rate_items'][$id]['date_creation']),
-        // drupal_render($form['rate_items'][$id]['date_modification']),
       ),
     );
   }

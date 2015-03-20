@@ -3,6 +3,7 @@
 /**
  * @file
  * Smart Reservations. Settings functionality.
+ * smart_reservations_settings.inc
  */
 
 /**
@@ -284,7 +285,7 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#description' => t('The text that appears in the availability results, when more than one accommodation unit is needed. Here you can specify what type of accommodation you offer (rooms, villas, bungalows, holiday apartments, etc.).'),
     '#required' => TRUE,
   );
-  // // new params to add. Pending to analyze internationalization impact.
+  // New params ready to add. Pending to analyze localiztion impact.
   // $form['texts']['smart_reservations_txt_reservation_submitted_screen'] = array(
   //   '#type' => 'textarea',
   //   '#title' => t('Reservation submitted. Screen message.'),
@@ -310,13 +311,8 @@ function smart_reservations_configuration_form($form, &$form_state) {
 }
 
 /**
- * Implements validation from the Form API.
+ * Implements validation of the form settings.
  *
- * @param form $form
- *   A structured array containing the elements and properties of the form.
- * @param state $form_state
- *   An array that stores information about the form's current state
- *   during processing.
  */
 function smart_reservations_configuration_form_validate($form, &$form_state) {
 
@@ -364,8 +360,10 @@ function smart_reservations_configuration_form_validate($form, &$form_state) {
 }
 
 /**
- * Retrieve some samples using php date function 
- **/
+ * Auxiliary function.
+ *
+ * Retrieve some samples using php date function.
+ */
 function sr_date_format_samples() {
   $date = 'Y-m-d';
   $samples = array(
@@ -392,19 +390,14 @@ function sr_date_format_samples() {
     $o .= '</tr>';
   }
   $o .= '</table>';
-
-//       // Assuming today is March 10th, 2001, 5:16:18 pm, and that we are in the
-// // Mountain Standard Time (MST) Time Zone
-// F j, Y                 // March 10, 2001
-// m.d.y          03.10.01
-// j, n, Y 10, 3, 2001
-// Ymd        20010310
-// D M j     Sat Mar 10
-// Y-m-d 2001-03-01
   return $o;
 }
 
-
+/**
+ * Auxiliary function.
+ *
+ * Retrieve at date using an specific format.
+ */
 function sr_date_format($value, $format) {
   $v = date($format, strtotime($value));
   return $v;

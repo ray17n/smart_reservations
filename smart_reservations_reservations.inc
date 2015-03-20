@@ -2,6 +2,7 @@
 /**
  * @file
  * Reservations functionality.
+ * smart_reservations_reservations.inc
  */
 
 /**
@@ -380,19 +381,6 @@ function generate_form_elements_search_results(&$form_state, $params) {
         ),
       );
       if ($selected) {
-        // $build_form['accommodation_units'][$id]['data']['buttons']['make'] = array(
-        //   '#name' => 'make-reservation',
-        //   '#type' => 'submit',
-        //   '#value' => t('Make reservation'),
-        //   '#ajax' => array(
-        //     'wrapper' => 'reservations-multiform-wrapper',
-        //     'callback' => 'smart_reservations_multiform_callback',
-        //     'effect' => 'fade',
-        //   ),
-        //   '#attributes' => array(
-        //     'class' => array('sr-button-green'),
-        //   ),
-        // );
         // Update summary,
         $summary['acc_units_sum'][$id] = $a['summary'];
         $summary['total_amount'] += $a['summary']['total_amount'];
@@ -467,6 +455,8 @@ function generate_form_elements_search_results(&$form_state, $params) {
         '#suffix' => '</div>',
       );
       break;
+
+    // Pending to remove. Old funcionality.
     // There is only one accommodation unit available.
     // We replace the button 'Add to the reservation' for 'Make reservation'.
     case 1:
@@ -1146,7 +1136,7 @@ function smart_reservations_acc_unit_reservations($form, &$form_state, $node = N
       'data' => t('Date'),
       'field' => 'r.date',
       // Sort by this column by default.
-      'sort' => 'desc', 
+      'sort' => 'desc',
     ),
     array('data' => t('Reservation'), 'field' => 'r.reservation_id'),
     array('data' => t('Amount'), 'field' => 'r.total_amount'),
@@ -1402,6 +1392,7 @@ function validate_date($date, $format = 'Y-m-d H:i:s')
 }
 
 /**
+ * Auxiliary function.
  * Get numeric value.
 */
 function get_numeric($val) {
@@ -1410,13 +1401,6 @@ function get_numeric($val) {
   }
   return 0;
 }
-
-/**
- * Get availability.
- *
- * Returns an array of available accommodation_units and rates for each day.
- * array @param $params
- */
 
 /**
  * Get availability.
@@ -1649,36 +1633,6 @@ function has_reservations($acc_id, $checkin, $checkout) {
 }
 
 /**
- * Get rates for a specific day and accommodation_unit.
- *
- * Returns true or false
- */
-function get_rates($day, $accommodation_unit) {
-
-  // Get
-
-  // $range_long = '+1 day');
-  // $nights_to_show = variable_get('smart_reservations_rates_form_time_nights_to_show', 0);
-  // $months_to_show = variable_get('smart_reservations_rates_form_months_to_show', 0);
-  // $params = array(
-  //   'start_date' => date('Y-m-d', strtotime("now")),
-  //   'end_date' => date('Y-m-d', strtotime("now" . $range_long)),
-  //   'nights_to_show' => $nights_to_show,
-  //   'months_to_show' => $months_to_show,
-  //   'get_default_rates' => in_array(
-  //     variable_get('smart_reservations_form_values_type', 'All'),
-  //     array('All', 'Default')) ? TRUE : FALSE,
-  //   'get_custom_rates' => in_array(
-  //     variable_get('smart_reservations_form_values_type', 'All'),
-  //     array('All', 'Custom')) ? TRUE : FALSE,
-  // );
-
-  // $result = smart_reservations_rates_get_data($params);
-
-  return array('base_rate' => 25, 'single_night_fee' => 15);
-}
-
-/**
  * Get array of days.
  *
  * Returns an array filled with the days between $start_date and $end_date.
@@ -1707,7 +1661,6 @@ function get_array_of_days($start, $end) {
 
   return $days;
 }
-
 
 
 /**
