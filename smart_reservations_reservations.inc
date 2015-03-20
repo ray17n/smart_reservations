@@ -41,11 +41,6 @@ function smart_reservations_multiform($form, &$form_state, $params = NULL, $no_j
         = generate_form_elements_submitted($form_state);
       break;
   }
-  // dpm($form, 'form');
-  // dpm($form_state, 'form_state');
-  // dpm($form_state['storage'], 'storage');
-  // dpm($form_state['storage']['reservation'], 'reservation');
-
   return $form;
 }
 
@@ -1132,9 +1127,8 @@ function markup_search_results_summary($summary) {
   return $pre1 . $sum . $totals . $suf1;
 }
 
-
 /**
- * Reservations of an accommodation unit form.
+ * Accommodation Unit: tab Reservations.
  *
  * @return array
  *   A render array set for theming by theme_table().
@@ -1148,10 +1142,12 @@ function smart_reservations_acc_unit_reservations($form, &$form_state, $node = N
     // The header gives the table the information it needs in order to make
     // the query calls for ordering. TableSort uses the field information
     // to know what database column to sort by.
-    array('data' => t('Date'), 
+    array(
+      'data' => t('Date'),
       'field' => 'r.date',
-      'sort' => 'desc', // sort by this column by default 
-      ),
+      // Sort by this column by default.
+      'sort' => 'desc', 
+    ),
     array('data' => t('Reservation'), 'field' => 'r.reservation_id'),
     array('data' => t('Amount'), 'field' => 'r.total_amount'),
     array('data' => t('Adults'), 'field' => 'r.number_of_adults'),
@@ -1179,7 +1175,6 @@ function smart_reservations_acc_unit_reservations($form, &$form_state, $node = N
     'number_of_dogs',
     )
   );
-
   $result = $query
     ->orderByHeader($rows_header)
     ->execute();
@@ -1206,7 +1201,6 @@ function smart_reservations_acc_unit_reservations($form, &$form_state, $node = N
   );
 
   $build_form['body'] = $form_table;
-
   return $build_form;
 }
 

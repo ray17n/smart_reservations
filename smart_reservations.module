@@ -3,8 +3,10 @@
  * @file
  * Smart Reservations module.
  *
- * This module implements a reservation sytem.
- * @author Ramon Pujol Cots (ray17n) <ramonpujolcots at gmail dot com>
+ * Smart Reservations is a Drupal module consisting of a
+ * reservation system of holiday apartments, hotel rooms, villas
+ * or any type of accommodation.
+ * @author ray17n <ramonpujolcots at gmail dot com>
  */
 
 
@@ -122,24 +124,20 @@ function smart_reservations_menu() {
     'access arguments' => array('access content'),
   );
 
-  // Reservations tab for Accommodation Units.
+  // Accommodation Unit: tab Reservations.
   $items['node/%node/reservations'] = array(
-    'title' => t('Reservations'),
-
+    'title' => 'Reservations',
     // 'page callback' => '_smart_reservations_acc_unit_reservations',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_acc_unit_reservations',1),
     'file' => 'smart_reservations_reservations.inc',
-
     'access callback' => 'tab_acc_unit_access_callback',
     'access arguments' => array(1),
-
     'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
   );
-
   return $items;
 }
-
 
 /**
  * Implements an access callback function for node type Accommodation Unit.
@@ -171,9 +169,6 @@ function smart_reservations_search_form($form, &$form_state) {
 
   $format = 'd/m/Y';
 
-  // $form['checkin_date_title'] = array(
-  //   '#type' => 'markup',
-  //   '#markup' => "<strong>" . t('Check-In Date') . " *</strong>",);
   $form['checkin_date'] = array(
     '#type' => 'date_popup',
     '#date_format' => $format,
@@ -184,9 +179,6 @@ function smart_reservations_search_form($form, &$form_state) {
     '#title' => t('Check-In'),
   );
 
-  // $form['checkout_date_title'] = array(
-  //   '#type' => 'markup',
-  //   '#markup' => "<strong>" . t('Check-Out Date') . "*</strong>",);
   $form['checkout_date'] = array(
     '#title' => t('Check-Out'),
     '#type' => 'date_popup',
@@ -223,7 +215,7 @@ function smart_reservations_search_form($form, &$form_state) {
 }
 
 /**
- * Implements validation from the Form API.
+ * Implements validation logic of the block Search available.
  *
  * @param form $form
  *   A structured array containing the elements and properties of the form.
@@ -232,7 +224,7 @@ function smart_reservations_search_form($form, &$form_state) {
  *   during processing.
  */
 function smart_reservations_search_form_validate($form, &$form_state) {
-  // internal date format is Y-m-d.
+  // Internal date format is Y-m-d.
   $checkin_date = str_replace('-', '', $form_state['values']['checkin_date']);
   $checkout_date = str_replace('-', '', $form_state['values']['checkout_date']);
   $today = format_date(REQUEST_TIME, 'custom', 'Ymd');
@@ -243,7 +235,7 @@ function smart_reservations_search_form_validate($form, &$form_state) {
 }
 
 /**
- * Implements submission logic from the Form API.
+ * Implements submission logic of the block Search available.
  *
  * @param form $form
  *   A structured array containing the elements and properties of the form.
@@ -271,14 +263,6 @@ function smart_reservations_search_form_submit($form, &$form_state) {
 /**
  * Implements hook_theme().
  *
- * We need run our forms through custom theme functions in order to build the
- * table structure which is required by tabledrag.js.  Before we can use our
- * custom theme functions, we need to implement hook_theme in order to register
- * them with Drupal.
- *
- * We are defining our theme hooks with the same name as the form generation
- * function so that Drupal automatically calls our theming function when the
- * form is displayed.
  */
 function smart_reservations_theme() {
   return array(
@@ -292,17 +276,8 @@ function smart_reservations_theme() {
       'render element' => 'form',
       'file' => 'smart_reservations_logs.inc',
     ),
-    // Theme function for the search_reservations form.
-    // 'smart_reservations_search_results_form' => array(
-    //   'render element' => 'form',
-    //   'file' => 'smart_reservations_reservations.inc',
-    // ),
-    'example_node_color' => array(
-      'variables' => array('color' => NULL),
-    ),
   );
 }
-
 
 /**
  * Custom page callback function, declared in smart_reservations_menu().
@@ -368,9 +343,9 @@ function smart_reservations_node_delete($node) {
 }
 
 /**
- * Implement hook_form
- * nodetype_
- *  */
+ * Implements nodetype_ hook_form.
+ *
+ */
 function sr_accommodation_unit_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }
@@ -396,7 +371,7 @@ function smart_reservations_form_sr_accommodation_unit_node_form_alter (&$form,
 /**
  * Implements hook_theme_registry_alter().
  *
- * Add the custom templates of Smart Reservations.
+ * Add the custom templates of the Smart Reservations module.
  * We'll use a custom template for Accommodation Units and Reservations.
  */
 function smart_reservations_theme_registry_alter(&$theme_registry) {
@@ -422,6 +397,7 @@ function smart_reservations_theme_registry_alter(&$theme_registry) {
  * Preprocesses nodes.
  *
  * @see node--sr_accommodation_unit.tpl.php
+ * We modify the content to show for each accommodation unit.
  */
 function smart_reservations_preprocess_node(&$variables) {
 
@@ -443,6 +419,7 @@ function smart_reservations_preprocess_node(&$variables) {
     );
   }
 }
+
 
 /**
  * Auxiliary functions.

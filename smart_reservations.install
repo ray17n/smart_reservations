@@ -2,6 +2,8 @@
 
 /**
  * @file
+ * smart_reservations.install
+ *
  * Install, update and uninstall functions.
  */
 
@@ -405,7 +407,7 @@ function sr_set_node_type_options($content_type) {
 }
 
 /**
- * Delete note type options variables for a custom content types.
+ * Delete note type options variables for custom content types.
  */
 function sr_del_node_type_options($content_type) {
   variable_del("node_submitted_{$content_type}");
@@ -426,7 +428,7 @@ function sr_create_sample_accommodation_units($num) {
     $node->uid = 1;
     $node->language = LANGUAGE_NONE;
     $node->title = 'Holiday apartment sample ' . $i;
-    $node->body['und'][0]['value'] = 'Sample description - Holiday apartment with 3 bedrooms, 2 bathrooms and a dining/living room and kitchen. Equipped with heaters, a fireplace, a lcd tv, a fridge, a dishwasher, a microwave, an oven, a coffee maker, a washing machine, one hairdryer in each bathroom, kitchen utensilsand linen.';
+    $node->body['und'][0]['value'] = 'Sample description - Holiday apartment with 3 bedrooms, 2 bathrooms and a dining/living room and kitchen. Equipped with heaters, a fireplace, a lcd tv, a fridge, a dishwasher, a microwave, an oven, a coffee maker, a washing machine, one hairdryer in each bathroom, kitchen utensils and linen.';
     $node = node_submit($node);
     node_save($node);
     $i++;
@@ -434,7 +436,7 @@ function sr_create_sample_accommodation_units($num) {
 }
 
 /**
- * Delete content types.
+ * Delete custom content types.
  */
 function smart_reservations_delete_content_type($type) {
   $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
@@ -1418,13 +1420,4 @@ function _sr_installed_instances($content_type) {
   $t('Reservation status');
 
   return $field_instances[$content_type];
-
 }
-
-// function smart_reservations_update_7011() {
-//   // db_drop_table('smart_reservations_custom_rates_per_night');
-//   // $schema['smart_reservations_custom_rates_per_night'] = array(
-//   //   'description' => 'Table that stores rates per date for a specifi accommodation unit. When there is no entry for a date, we use default rates.',
-//   // );
-//   // db_create_table('smart_reservations_custom_rates_per_night', $schema['smart_reservations_custom_rates_per_night']);
-// }
