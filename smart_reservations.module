@@ -129,13 +129,26 @@ function smart_reservations_menu() {
     'title' => 'Reservations',
     // 'page callback' => '_smart_reservations_acc_unit_reservations',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('smart_reservations_acc_unit_reservations',1),
+    'page arguments' => array('smart_reservations_acc_unit_tab_reservations',1),
     'file' => 'smart_reservations_reservations.inc',
     'access callback' => 'tab_acc_unit_access_callback',
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
     'weight' => 10,
   );
+
+  // Accommodation Unit: tab Rates.
+  $items['node/%node/rates'] = array(
+    'title' => 'Rates',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_acc_unit_tab_rates',1),
+    'file' => 'smart_reservations_rates.inc',
+    'access callback' => 'tab_acc_unit_access_callback',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 20,
+  );
+
   return $items;
 }
 

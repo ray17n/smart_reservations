@@ -1123,7 +1123,7 @@ function markup_search_results_summary($summary) {
  * @return array
  *   A render array set for theming by theme_table().
  */
-function smart_reservations_acc_unit_reservations($form, &$form_state, $node = NULL) {
+function smart_reservations_acc_unit_tab_reservations($form, &$form_state, $node = NULL) {
 
   // Create a table with the reservations per day.
 

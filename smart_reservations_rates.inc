@@ -984,6 +984,138 @@ function smart_reservations_reset_filters_action_form_submit($form, &$form_state
   // variable_set('smart_reservations_rates_form_show_custom_rates', TRUE);
 }
 
+
+/**
+ * Accommodation Unit: tab Rates.
+ *
+ * @return array
+ *   A render array set for theming by theme_table().
+ */
+function smart_reservations_acc_unit_tab_rates($form, &$form_state, $node = NULL) {
+
+  // We save the node id.
+  $form_state['storage']['nid'] = $node->nid;
+
+  // 1) Header. Description and rate multiplier.
+  // Initialize values.
+  $m = t('Default rates (already multiplied by the Rate multiplier) used to calculate the rates per night for this accommodation unit. These are the rates applied when there is no custom rate for a specific night.');
+
+  $build_form = array();
+  $build_form['header']['description'] = array(
+    '#type' => 'markup',
+    '#markup' => $m,
+    '#prefix' => '<div class="default_rates_description">',
+    '#suffix' => '</div>',
+  );
+  $build_form['header']['multiplier'] = array(
+    '#title' => 'Rate multiplier',
+    '#type' => 'textfield',
+    '#default_value' => $node->smres_rate_multiplier['und'][0]['value'],
+    '#size' => 7,
+    '#maxlength' => 7,
+  );
+  $build_form['header']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#submit' => array('smart_reservations_acc_unittab_rates_submit'),
+  );
+
+
+  // 2) Rates
+  // Create a table with the reservations per day.
+
+  // 2.1) Build the header of the table.
+  $rows_header = array(
+    // The header gives the table the information it needs in order to make
+    // the query calls for ordering. TableSort uses the field information
+    // to know what database column to sort by.
+    array(
+      'data' => t('Date'),
+      // 'field' => 'r.date',
+      // Sort by this column by default.
+      'sort' => 'desc',
+    ),
+    array(
+      'data' => t('Month'),
+      // 'field' => 'r.reservation_id',
+    ),
+  );
+
+  $rows[] = array(
+    'data' => array(
+      'date' => '2015-03-19',
+      'Month' => 'March',
+    ),
+  );
+  $rows[] = array(
+    'data' => array(
+      'date' => '2015-03-20',
+      'Month' => 'March',
+    ),
+  );
+  $rows[] = array(
+    'data' => array(
+      'date' => '2015-04-03',
+      'Month' => 'April',
+    ),
+  );
+  $rows[] = array(
+    'data' => array(
+      'date' => '2015-10-21',
+      'Month' => 'October',
+    ),
+  );
+
+  $form_table['smart_reservations_search_log_table'] = array(
+    '#theme' => 'table',
+    '#header' => $rows_header,
+    '#rows' => $rows,
+    '#prefix' => '<div id="acc_id-reservations-table">',
+    '#suffix' => '</div>',
+  );
+
+  // 3) Build the form.
+  $build_form['body'] = $form_table;
+  return $build_form;
+
+}
+
+
+/**
+ * Accommodation Unit - Tab rates form. Validation logic.
+ */
+function smart_reservations_acc_unit_tab_rates_validate($form, &$form_state) {
+  if (empty($form_state['values']['multiplier'])) {
+    form_set_error('multiplier',
+      t('You must enter a value for the @caption.',
+        array('@caption' => t('Rate multiplier'))));
+  }
+  if (!is_numeric($form_state['values']['multiplier'])) {
+    form_set_error('multiplier',
+      t('You must enter a number for the @caption.',
+        array('@caption' => t('Rate multiplier'))));
+  }
+}
+
+/**
+* Submit callback for Accommodation Unit: tab rates.
+ */
+function smart_reservations_acc_unittab_rates_submit($form, &$form_state) {
+  // dpm($form);
+  dpm($form_state);
+
+  // Load the node to update.
+  $node = node_load($form_state['storage']['nid']);
+
+  // Set the field value.
+  $node->smres_rate_multiplier[$node->language][0]['value'] 
+  = $form_state['values']['multiplier'];
+
+  // Save the updated node.
+  node_save($node);
+
+}
+
 /**
  * Retrieves rates.
  */
@@ -1104,17 +1236,17 @@ function smart_reservations_rates_get_data($params) {
 
 
 /**
- * Checks variables for each day of the week. 
+ * Checks variables for each day of the week.
  */
 function sr_check_var(&$form_state, $var_caption, $var_base_name) {
 
   if (empty($form_state['values'][$var_base_name])) {
-    form_set_error($var_base_name, 
+    form_set_error($var_base_name,
       t('You must enter a value for the default @caption.',
         array('@caption' => $var_caption)));
   }
   if (!is_numeric($form_state['values'][$var_base_name])) {
-    form_set_error($var_base_name, 
+    form_set_error($var_base_name,
       t('You must enter a number for the default @caption.',
         array('@caption' => $var_caption)));
   }
@@ -1122,9 +1254,9 @@ function sr_check_var(&$form_state, $var_caption, $var_base_name) {
   $week_suffixes_vars = sr_get_week_suffixes();
   foreach ($week_suffixes_vars as $suf => $day_name) {
     $var = $var_base_name . '_' . $suf;
-    if ( !empty($form_state['values'][$var]) & 
+    if ( !empty($form_state['values'][$var]) &
       !is_numeric($form_state['values'][$var]) ) {
-        form_set_error($var, 
+        form_set_error($var,
           t('You must enter a number for the @caption.',
             array('@caption' => $var_caption . ' - ' . $day_name)));
     }
@@ -1133,18 +1265,18 @@ function sr_check_var(&$form_state, $var_caption, $var_base_name) {
 
 
 /**
- * Get an array of week suffixes. 
+ * Get an array of week suffixes.
  */
 function sr_get_week_suffixes() {
   $val = array (
-    'sun' => 'Sunday', 
+    'sun' => 'Sunday',
     'mon' => 'Monday',
     'tue' => 'Tuesday',
     'wed' => 'Wednesday',
     'thu' => 'Thursday',
     'fri' => 'Friday',
     'sat' => 'Saturday',
-  ); 
+  );
   return $val;
 }
 
