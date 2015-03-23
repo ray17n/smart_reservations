@@ -879,6 +879,7 @@ function theme_smart_reservations_rates_form($variables) {
       ),
     );
   }
+  // Pending. Change name.
   $table_id = 'example-items-table';
 
   $per_page = 25;
@@ -977,7 +978,7 @@ function smart_reservations_apply_filters_action_form_submit($form, &$form_state
 function smart_reservations_reset_filters_action_form_submit($form, &$form_state) {
   variable_set('sr_form_time_nights_to_show', 0);
   variable_set('sr_form_months_to_show', 0);
-  variable_set('sr_rates_form_period', '+1 year');
+  variable_set('sr_rates_form_period', '+6 months');
   variable_set('sr_form_values_type', 'All');
 
   // variable_set('smart_reservations_rates_form_show_default_rates', TRUE);
@@ -993,84 +994,209 @@ function smart_reservations_reset_filters_action_form_submit($form, &$form_state
  */
 function smart_reservations_acc_unit_tab_rates($form, &$form_state, $node = NULL) {
 
-  // We save the node id.
+  // Initialize values.
+  // We save the node id. We'll use it when submitting.
   $form_state['storage']['nid'] = $node->nid;
-
+  $mult = $node->smres_rate_multiplier['und'][0]['value'];
   // 1) Header. Description and rate multiplier.
   // Initialize values.
-  $m = t('Default rates (already multiplied by the Rate multiplier) used to calculate the rates per night for this accommodation unit. These are the rates applied when there is no custom rate for a specific night.');
-
   $build_form = array();
-  $build_form['header']['description'] = array(
-    '#type' => 'markup',
-    '#markup' => $m,
-    '#prefix' => '<div class="default_rates_description">',
+
+  $build_form['header'] = array(
+    // '#type' => 'form',
+    '#prefix' => '<div class="smart-reservations-acc-unit-rates-header">',
     '#suffix' => '</div>',
   );
   $build_form['header']['multiplier'] = array(
     '#title' => 'Rate multiplier',
     '#type' => 'textfield',
-    '#default_value' => $node->smres_rate_multiplier['und'][0]['value'],
+    '#default_value' => $mult,
     '#size' => 7,
     '#maxlength' => 7,
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
   );
   $build_form['header']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
-    '#submit' => array('smart_reservations_acc_unittab_rates_submit'),
+    '#submit' => array('smart_reservations_acc_tab_rates_submit'),
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
   );
 
+  $build_form['filters'] = array(
+    '#prefix' => '<div class="smart-reservations-acc-unit-rates-filters">',
+    '#suffix' => '</div>',
+  );
+  $build_form['filters']['period'] = array(
+    '#type' => 'select',
+    '#title' => t('Period'),
+    '#options' => array(
+      '+1 week' => t('One week'),
+      '+2 weeks' => t('Two weeks'),
+      '+3 weeks' => t('Three weeks'),
+      '+1 month' => t('One month'),
+      '+2 months' => t('Two months'),
+      '+3 months' => t('Three months'),
+      '+6 months' => t('Six months'),
+      '+1 year' => t('One year'),
+      '+2 years' => t('Two years'),
+      '+3 years' => t('Three years'),
+    ),
+    '#default_value' => variable_get('sr_acc_rates_form_period', '+3 months'),
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+  $build_form['filters']['months_to_show'] = array(
+    '#type' => 'select',
+    '#title' => t('Months'),
+    '#options' => array(
+      0 => t('All'),
+      1 => t('January'),
+      2 => t('February'),
+      3 => t('March'),
+      4 => t('April'),
+      5 => t('May'),
+      6 => t('June'),
+      7 => t('July'),
+      8 => t('August'),
+      9 => t('September'),
+      10 => t('October'),
+      11 => t('November'),
+      12 => t('December'),
+    ),
+    '#default_value' => variable_get('sr_acc_rates_months_to_show', 0) ,
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+
+  $build_form['filters']['nights_to_show'] = array(
+    '#type' => 'select',
+    '#title' => t('Nights'),
+    '#options' => array(
+      0 => t('All'),
+      1 => t('Monday'),
+      2 => t('Tuesday'),
+      3 => t('Wednesday'),
+      4 => t('Thursday'),
+      5 => t('Friday'),
+      6 => t('Saturday'),
+      7 => t('Sunday'),
+      8 => t('Weekend nights'),
+      9 => t('Weeknights'),
+    ),
+    '#default_value' => variable_get('sr_acc_rates_time_nights_to_show', 0) ,
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+  $build_form['filters']['values_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Values'),
+    '#options' => array(
+      'All' => t('All'),
+      'Default' => t('Default'),
+      'Custom' => t('Custom'),
+    ),
+    '#default_value' => variable_get('sr_acc_rates_values_type', 'All') ,
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+  $build_form['filters']['apply_filters'] = array(
+    '#type' => 'submit',
+    '#value' => t('Apply'),
+    '#submit' => array('smart_reservations_acc_tab_rates_apply_filters'),
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+  $build_form['filters']['reset_filters'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset'),
+    '#submit' => array('smart_reservations_acc_tab_rates_reset_filters'),
+    '#prefix' => '<div class="smart-reservations-form">',
+    '#suffix' => '</div>',
+  );
+
+  // Description.
+  global $base_url;
+  $url = '/admin/config/content/smart-reservations/default-rates';
+  $url2 = '/admin/config/content/smart-reservations/rates';
+  $m = t('Calculated rates (multiplied by the Rate multiplier) per night for this accommodation unit. You can check the default rates at
+    !default_rates_url and the rates per night at !rates_per_night.',
+    array(
+      '!default_rates_url' => l($url, $base_url . $url),
+      '!rates_per_night' => l($url2, $base_url . $url2),
+    )
+  );
+
+  $build_form['description'] = array(
+    '#type' => 'markup',
+    '#markup' => $m,
+    '#prefix' => '<div class="smart-reservations-acc-unit-mult-description">',
+    '#suffix' => '</div>',
+  );
 
   // 2) Rates
   // Create a table with the reservations per day.
 
-  // 2.1) Build the header of the table.
+  // 2.1) Get the data of the table.
+  $range_long = variable_get('sr_acc_rates_form_period', '+3 months');
+  $nights_to_show = variable_get('sr_acc_rates_time_nights_to_show', 0);
+  $months_to_show = variable_get('sr_acc_rates_months_to_show', 0);
+  $params = array(
+    'start_date' => date('Y-m-d', strtotime("now")),
+    'end_date' => date('Y-m-d', strtotime("now" . $range_long)),
+    'nights_to_show' => $nights_to_show,
+    'months_to_show' => $months_to_show,
+    'get_default_rates' => in_array(
+      variable_get('sr_acc_rates_values_type', 'All'),
+      array('All', 'Default')) ? TRUE : FALSE,
+    'get_custom_rates' => in_array(
+      variable_get('sr_acc_rates_values_type', 'All'),
+      array('All', 'Custom')) ? TRUE : FALSE,
+  );
+  $result = smart_reservations_rates_get_data($params);
+
+  // 2.2) Build the header of the table.
   $rows_header = array(
     // The header gives the table the information it needs in order to make
     // the query calls for ordering. TableSort uses the field information
     // to know what database column to sort by.
-    array(
-      'data' => t('Date'),
+    array('data' => t('Date'),
       // 'field' => 'r.date',
       // Sort by this column by default.
       'sort' => 'desc',
     ),
-    array(
-      'data' => t('Month'),
-      // 'field' => 'r.reservation_id',
+    array('data' => t('Base rate'),
+      // 'field' => 'r.base_rate',
     ),
+    array('data' => t('Children discount')),
+    array('data' => t('Dogs fee')),
+    array('data' => t('Single night fee')),
+    array('data' => t('Low occupancy fee')),
+    array('data' => t('Low occupancy threshold')),
   );
 
-  $rows[] = array(
-    'data' => array(
-      'date' => '2015-03-19',
-      'Month' => 'March',
-    ),
-  );
-  $rows[] = array(
-    'data' => array(
-      'date' => '2015-03-20',
-      'Month' => 'March',
-    ),
-  );
-  $rows[] = array(
-    'data' => array(
-      'date' => '2015-04-03',
-      'Month' => 'April',
-    ),
-  );
-  $rows[] = array(
-    'data' => array(
-      'date' => '2015-10-21',
-      'Month' => 'October',
-    ),
-  );
+  // 2.3) Build the array of the rows for the table.
+  $rows = array();
+  foreach ($result as $row) {
+    $rows[] = array(
+      'data' => array(
+        'date' => $row['date'],
+        'base_rate' => sr_curr($row['base_rate'] * $mult),
+        'children_discount' => sr_curr($row['children_discount'] * $mult),
+        'dogs_fee' => sr_curr($row['dogs_fee'] * $mult),
+        'single_night_fee' => sr_curr($row['single_night_fee'] * $mult),
+        'low_occupancy_fee' => sr_curr($row['low_occupancy_fee'] * $mult),
+        'low_occupancy_threshold' => $row['low_occupancy_threshold'],
+      ),
+    );
+  }
 
-  $form_table['smart_reservations_search_log_table'] = array(
+  $form_table['table'] = array(
     '#theme' => 'table',
     '#header' => $rows_header,
     '#rows' => $rows,
-    '#prefix' => '<div id="acc_id-reservations-table">',
+    '#prefix' => '<div id="acc_id-rates-table">',
     '#suffix' => '</div>',
   );
 
@@ -1100,21 +1226,40 @@ function smart_reservations_acc_unit_tab_rates_validate($form, &$form_state) {
 /**
 * Submit callback for Accommodation Unit: tab rates.
  */
-function smart_reservations_acc_unittab_rates_submit($form, &$form_state) {
-  // dpm($form);
-  dpm($form_state);
-
+function smart_reservations_acc_tab_rates_submit($form, &$form_state) {
   // Load the node to update.
   $node = node_load($form_state['storage']['nid']);
 
   // Set the field value.
-  $node->smres_rate_multiplier[$node->language][0]['value'] 
+  $node->smres_rate_multiplier[$node->language][0]['value']
   = $form_state['values']['multiplier'];
 
   // Save the updated node.
   node_save($node);
 
 }
+
+/**
+ * Callback for Apply filters for Accommodation Unit: tab rates.
+ */
+function smart_reservations_acc_tab_rates_apply_filters($form, &$form_state) {
+  variable_set('sr_acc_rates_time_nights_to_show',
+    $form_state['values']['nights_to_show']);
+  variable_set('sr_acc_rates_months_to_show', $form_state['values']['months_to_show']);
+  variable_set('sr_acc_rates_form_period', $form_state['values']['period']);
+  variable_set('sr_acc_rates_values_type', $form_state['values']['values_type']);
+}
+
+/**
+ * Callback for Reset filters of Accommodation Unit: tab rates.
+ */
+function smart_reservations_acc_tab_rates_reset_filters($form, &$form_state) {
+   variable_set('sr_acc_rates_time_nights_to_show', 0);
+  variable_set('sr_acc_rates_months_to_show', 0);
+  variable_set('sr_acc_rates_form_period', '+3 months');
+  variable_set('sr_acc_rates_values_type', 'All');
+}
+
 
 /**
  * Retrieves rates.
@@ -1210,8 +1355,6 @@ function smart_reservations_rates_get_data($params) {
   if (!empty($custom_rates)) {
     if (!empty($default_rates)) {
       if (!$params['get_custom_rates']) {
-        // dpm($default_rates, 'd');
-        // dpm($custom_rates, 'c');
         // We need to return the default rates without the custom rates.
         // $rates = array_diff_assoc($default_rates, $custom_rates);
         $rates = sr_default_diff_cust($default_rates, $custom_rates);
@@ -1227,13 +1370,12 @@ function smart_reservations_rates_get_data($params) {
     }
   }
   else {
-    $rates = $default_rates;
+    $rates = !empty($default_rates) ? $default_rates : array();
   }
 
   asort($rates);
   return $rates;
 }
-
 
 /**
  * Checks variables for each day of the week.

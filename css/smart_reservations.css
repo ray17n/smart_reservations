@@ -20,7 +20,6 @@
 }
 
 .smart-reservations-form-filters {
-  /*border: 1px solid blue;*/
   margin-bottom: 2em;
   border-bottom: 1px solid #eee;
 }
@@ -38,6 +37,34 @@
   clear: both;
 }
 
+/* Accommodation Unit: tab Rates per night */
+
+.smart-reservations-acc-unit-rates-header {
+  float: left;
+  width: 100%;
+  margin-bottom: 1em;
+}
+.smart-reservations-acc-unit-rates-header .form-submit {
+  margin-top: 24px;
+}
+
+.smart-reservations-acc-unit-rates-filters {
+  float: left;
+  width: 100%;
+  clear: both;
+  margin-bottom: 1em;
+}
+
+.smart-reservations-acc-unit-rates-filters .form-submit {
+  float: left;
+  margin-top: 20px;
+  border: 0px;
+}
+
+.smart-reservations-acc-unit-mult-description {
+  clear: both;
+  margin-bottom: 1em;
+}
 
 /* ******* Form Search results ****** */
 
