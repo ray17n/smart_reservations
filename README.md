@@ -83,8 +83,6 @@ More info at www.ramon.click/smart-reservations.
     - Improve workflow when creating a new reservation with an admin account.
     - Improve editing functionality.
     - Improve status workflow.
-  - Accommodation units:
-    - Show a calculated rate sample applying the multiplier rate in the accomodation unit page.
   - Rates per night. Improve entry data workflow.
   - When making a reservation, control if user goes back with the back button of the web browser.
 
@@ -108,6 +106,7 @@ More info at www.ramon.click/smart-reservations.
     - Total amount aligned to the right.
     - New status field: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
   - Accommodation units:
+    - Show a calculated rate sample applying the multiplier rate in the accommodation unit page.
     - Added a new tab with information of the reservations.
     - There's now a sample of the calculated multiplier rate in the description of the multipglier rate field in the accomodation unit page and edit page.
   - Initial options of Accommodation Unit and Reservation content types  are now controlled programatically.
