@@ -543,7 +543,7 @@ function generate_form_elements_customer(&$form_state) {
   // Comment. Checkbox.
   $form['contact']['add_a_comment'] = array(
     '#type' => 'checkboxes',
-    '#options' => array(1 => 'Add a comment'),
+    '#options' => array(1 => t('Add a comment')),
     '#prefix' => '<div class="sr-accommodation-submit-add-comment">',
     '#suffix' => '</div>',
     '#default_value' => $default_value,
