@@ -101,9 +101,8 @@ function smart_reservations_multiform_submit($form, &$form_state) {
     $form_state['storage']['reservation']['reservation_status'] = 'Submitted';
 
     $value_message = t('Your reservation has been submitted.') . ' ';
-    $value_message .= t('We will verify that everything is correct and we will
-      contact you to confirm it as soon as we have verified that everything is
-      correct.');
+
+    $value_message .= t('We will contact you to confirm it as soon as we have verified that everything is correct.');
     if (variable_get('sr_email_customer_submitted')) {
       $value_message .= '<br><br>' . t('We also have sent an email to your inbox.') . ' ';
       $value_message .= t("If you don't receive it, check your spam folder.");
@@ -653,7 +652,7 @@ function generate_form_elements_submitted(&$form_state) {
   $m .= '<div><b>' . t('Name') . '</b>: ' . $contact['name'] . '</div>';
   $m .= '<div><b>' . t('Phone') . '</b>: ' . $contact['phone'] . '</div>';
   $m .= '<div><b>' . t('email') . '</b>: ' . $contact['email'] . '</div>';
-  $m .= '<div><b>' . t('ID') . '</b>: ' . $contact['tax_identifier'] . '</div>';
+  $m .= '<div><b>' . t('Identifier ID') . '</b>: ' . $contact['tax_identifier'] . '</div>';
   // $m .= '<div><b>' . t('Comments') . '</b>: ' ;
   // $m .= $contact['textfields']['comments'] . '</div>';
   $form['submitted']['customer'] = array(
