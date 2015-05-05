@@ -389,7 +389,7 @@ function smart_reservations_form_sr_accommodation_unit_node_form_alter (&$form,
  */
 function smart_reservations_theme_registry_alter(&$theme_registry) {
   // Defined path to current module.
-  $module_path = drupal_get_path('smart_reservations', 'siteuser');
+  $module_path = drupal_get_path('module', 'smart_reservations');
 
   // Find all .tpl.php files in this module's folder recursively.
   $template_file_objects = drupal_find_theme_templates($theme_registry, '.tpl.php', $module_path);

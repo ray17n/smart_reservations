@@ -74,10 +74,18 @@ More info at www.ramon.click/smart-reservations.
 - If an Accommodation unit is unpublished will not appear at the search availability results.
 
 
-##To dos
+##Todo
+
+### Issues 
+  - Reservations:
+    - When creating a new reservation, in the last screen, when there is a comment in a Reservation, the summary does not show the information. 
+
 
 ### Currently working
   - Reservations:
+    - Improve editing workflow.
+    - Add discounts functionality. 
+    - Calendar. Localize the name of the month. 
     - After submitting, add more info into the message to the administrator.
     - After submitting, add more info into the message to the client.
     - Improve workflow when creating a new reservation with an admin account.
