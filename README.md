@@ -36,13 +36,11 @@ More info at www.ramon.click/smart-reservations.
 - **Search log**. Reservation search queries submitted. The instances of this entity are stored in a database table.
 
 ### Schema
-
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-entity-relationship.png "smart reservations model")
 
 
 ### Reservation status
 *(currently in development)*
-
 ![smart reservations model](http://www.ramon.click/sites/default/files/smart_reservations/smart-reservations-reservation-states-0.png "smart reservations states")
 
 
