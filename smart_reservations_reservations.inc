@@ -925,11 +925,11 @@ function markup_accommodation_details($a, $p) {
   if (!$a['summary']['enough_capacity']) {
     $o = '<div class="sr-results-warning">' . $o;
     $o .= t("There is not enough capacity for %a / %c.", array(
-        '%a' => format_plural($p['adults'], '1 adult', '@count adults'),
-        '%c' => format_plural($p['children'], '1 child', '@count children')));
+        '%a' => format_plural($p['adults'], t('1 adult'), '@count ' . t('adults')),
+        '%c' => format_plural($p['children'], t('1 child'), '@count ' . t('children'))));
     $o .= ' ' . t("Showing results for %a / %c.", array(
-        '%a' => format_plural($a['summary']['number_of_adults'], '1 adult', '@count adults'),
-        '%c' => format_plural($a['summary']['number_of_children'], '1 child', '@count children')));
+        '%a' => format_plural($a['summary']['number_of_adults'], t('1 adult'), '@count ' . t('adults')),
+        '%c' => format_plural($a['summary']['number_of_children'], t('1 child'), '@count ' . t('children'))));
     $o .= '</div>';
   }
   if (!$a['summary']['exceeds_minimum_guests']) {
