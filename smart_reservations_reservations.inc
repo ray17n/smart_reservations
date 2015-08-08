@@ -1492,7 +1492,7 @@ function get_rates_per_date_range($acc_id, $p) {
     $date_checkout = date(variable_get('sr_date_format_reservation'),
       strtotime($p['checkout']));
     $sum_headline_date = "From {$date_checkin} to {$date_checkout}";
-    $sum_headline_desc = "{$total_nights} nights";
+    $sum_headline_desc = "{$total_nights} " . t('nights') . '"';
     $sum_headline_desc .= ($adults > 0) ? ", {$adults} adults" : '';
     $sum_headline_desc .= ($children > 0) ? ", {$children} children" : '';
     $sum_headline_desc .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
