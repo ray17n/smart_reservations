@@ -292,8 +292,8 @@ function smart_reservations_install() {
   variable_set('sr_email_customer_submitted', FALSE);
   variable_set('sr_email_admin_submitted', FALSE);
   variable_set('sr_log_reservations_searched', FALSE);
-  variable_set('sr_date_format_search_results', 'M, d');
-  variable_set('sr_date_format_reservation', 'l, m/d/Y');
+  variable_set('sr_date_format_search_results', '%b, %e');
+  variable_set('sr_date_format_reservation', '%A, %d/%m/%Y');
 
   // Default rates.
   variable_set('sr_default_base_rate', 35);

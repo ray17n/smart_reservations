@@ -96,9 +96,9 @@ function smart_reservations_configuration_form($form, &$form_state) {
   );
 
   // Date - search results.
-  $d = '<br>' . t('Any format accepted by php function date.');
+  $d = '<br>' . t('Any format accepted by php function strftime.');
   $d .= ' ' . t('Current format sample: ');
-  $d .= date(variable_get('sr_date_format_search_results'));
+  $d .= strftime(variable_get('sr_date_format_search_results'));
   $form['general']['sr_date_format_search_results'] = array(
     '#type' => 'textfield',
     '#title' => t('Date format in search results calendars'),
@@ -108,15 +108,15 @@ function smart_reservations_configuration_form($form, &$form_state) {
   );
 
   // Date - reservation summary.
-  $d = '<br>' . t('Any format accepted by php function date.');
+  $d = '<br>' . t('Any format accepted by php function strftime.');
   $d .= ' ' . t('Current format sample: ');
-  $d .= date(variable_get('sr_date_format_reservation'));
+  $d .= strftime(variable_get('sr_date_format_reservation'));
   $d .= '<br><br>' . t('Format examples:');
   $d .= '<br><br>' . sr_date_format_samples();
   $d .= t('See more options at !link',
       array(
-        '!link' => '<a href="http://php.net/manual/en/function.date.php"
-         target = "_blank">http://php.net/manual/en/function.date.php</a>'
+        '!link' => '<a href="http://php.net/manual/en/function.strftime.php"
+         target = "_blank">http://php.net/manual/en/function.strftime.php</a>'
         ));
   $form['general']['sr_date_format_reservation'] = array(
     '#type' => 'textfield',
@@ -367,26 +367,26 @@ function smart_reservations_configuration_form_validate($form, &$form_state) {
 function sr_date_format_samples() {
   $date = 'Y-m-d';
   $samples = array(
-    'j',
-    'd',
-    'M, d',
-    'm/d',
-    'm-d',
-    'd-m',
-    'd/m',
-    'D, j',
-    'm/d/Y',
-    'm-d-Y',
-    'd-m-Y',
-    'Y-m-d',
-    'F Y, l, d'
+    '%e',
+    '%d',
+    '%b, %d',
+    '%m/%d',
+    '%m-%d',
+    '%d-%m',
+    '%d/%m',
+    '%a, %e',
+    '%m/%d/%Y',
+    '%m-%d-%Y',
+    '%d-%m-%Y',
+    '%Y-%m-%d',
+    '%B %Y, %A, %d'
   );
 
   $o = '<table><th>Format</th><th>Value</th>';
   foreach ($samples as $format) {
     $o .= '<tr>';
     $o .= '<td>' . $format . '</td>';
-    $o .= '<td>' . date($format) . '</td>';
+    $o .= '<td>' . strftime($format) . '</td>';
     $o .= '</tr>';
   }
   $o .= '</table>';

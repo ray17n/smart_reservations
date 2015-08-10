@@ -946,6 +946,10 @@ function markup_accommodation_details($a, $p) {
  */
 function markup_accommodation_calendar($a, $p) {
 
+  // @todo use drupal local settings
+  setlocale(LC_TIME, 'ca_ES.UTF-8', 'Catalan_Spain', 'Catalan');
+  $df = variable_get('sr_date_format_search_results');
+
   $nights = array(
     0 => t('Sun'),
     1 => t('Mon'),
@@ -975,14 +979,14 @@ function markup_accommodation_calendar($a, $p) {
     strtotime($checkin . '-' . $checkin_weekday_num . ' day'));
 
   // Fill previous dates to the check-in date.
-  $df = variable_get('sr_date_format_search_results');
+
   $i = $week_starts;
   while ($i < ($checkin_weekday_num)) {
     $o .= (($i % 7) == $week_starts) ?
     '<div class="row cal-sr-results-row">' : '';
     $o .= '<div class="col-sm-17 cal-sr-results-cell ';
     $o .= 'cal-sr-results-cell-info text-center">';
-    $o .= '' . date($df,
+    $o .= '' . strftime($df,
       strtotime($first_date_of_the_week . '+' . $i . ' day')) . '<br> -';
     $o .= '</div>';
     $i++;
@@ -992,7 +996,7 @@ function markup_accommodation_calendar($a, $p) {
   foreach ($a['rates_per_night'] as $r) {
     $o .= (($i % 7) == $week_starts) ? '<div class="row cal-sr-results-row">' : '';
     $o .= '<div class="col-sm-17 cal-sr-results-cell text-center">';
-    $o .= '' . date($df, strtotime($r['date'])) . '<br>';
+    $o .= '' . strftime($df, strtotime($r['date'])) . '<br>';
     $o .= sr_curr($r['amount_per_night']) . '</div>';
     $i++;
     // Close row if needed.
@@ -1003,7 +1007,7 @@ function markup_accommodation_calendar($a, $p) {
   $o .= (($i % 7) == $week_starts) ? '<div class="row cal-sr-results-row">' : '';
   // Add check-out date.
   $o .= '<div class="col-sm-17 cal-sr-results-cell text-center">';
-  $o .= '' . date($df, strtotime($r['date'] . '+1 day')) . '<br>';
+  $o .= '' . strftime($df, strtotime($r['date'] . '+1 day')) . '<br>';
   $o .= t('Check-Out') . '</div>';
 
   // Fill the dates from the check-out to the last day of the week.
@@ -1011,7 +1015,7 @@ function markup_accommodation_calendar($a, $p) {
   $i = 2;
   while ($checkout_weekday_number < $week_starts + 6) {
     $o .= '<div class="col-sm-17 cal-sr-results-cell cal-sr-results-cell-info text-center">';
-    $o .= date($df, strtotime($r['date'] . ' +' . $i . ' day')) . '<br>';
+    $o .= strftime($df, strtotime( $r['date'] . ' +' . $i . ' day')) . '<br>';
     $o .= '-</div>';
     $i++;
     $checkout_weekday_number++;
@@ -1487,12 +1491,15 @@ function get_rates_per_date_range($acc_id, $p) {
     }
 
     // Accommodation headline.
-    $date_checkin = date(variable_get('sr_date_format_reservation'),
+    // @todo use drupal local settings
+    setlocale(LC_TIME, 'ca_ES.UTF-8', 'Catalan_Spain', 'Catalan');
+
+    $date_checkin = strftime(variable_get('sr_date_format_reservation'),
       strtotime($p['checkin']));
-    $date_checkout = date(variable_get('sr_date_format_reservation'),
+    $date_checkout = strftime(variable_get('sr_date_format_reservation'),
       strtotime($p['checkout']));
-    $sum_headline_date = "From {$date_checkin} to {$date_checkout}";
-    $sum_headline_desc = "{$total_nights} " . t('nights') . '"';
+    $sum_headline_date = t('From') . " {$date_checkin} " . t('to') . " {$date_checkout}";
+    $sum_headline_desc = "{$total_nights} " . t('nights') ;
     $sum_headline_desc .= ($adults > 0) ? ", {$adults} adults" : '';
     $sum_headline_desc .= ($children > 0) ? ", {$children} children" : '';
     $sum_headline_desc .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
