@@ -363,6 +363,25 @@ function sr_accommodation_unit_form($node, $form_state) {
   return node_content_form($node, $form_state);
 }
 
+
+/**
+ * Implements hook_form_FORM_ID_alter() for sr_reservation_node_form
+ */
+function smart_reservations_form_sr_reservation_node_form_alter (&$form, &$form_state, $form_id) {
+
+
+//  $base_rate = variable_get('sr_default_base_rate');
+//  $mult = $form['smres_rate_multiplier']['und'][0]['value']['#default_value'];
+//
+//  $desc = t('Each rate per night for this accommodation unit will be multiplied for this value. For instance, with the current default base rate of @cur, the default base rate for this specific accommodation unit will be @cur_mult .',
+//    array(
+//      '@cur' => sr_curr($base_rate),
+//      '@cur_mult' => sr_curr($base_rate * $mult),
+//    )
+//  );
+//  $form['smres_rate_multiplier']['und'][0]['value']['#description'] = $desc;
+}
+
 /**
  * Implements hook_form_FORM_ID_alter() for sr_accommodation_unit_node_form
  */
