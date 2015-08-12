@@ -129,6 +129,13 @@ function smart_reservations_schema() {
         'length' => '255',
         'not null' => FALSE,
       ),
+      'amount' => array(
+        'description' => 'Item amount',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
       'total_amount' => array(
         'description' => 'Total amount',
         'type' => 'numeric',

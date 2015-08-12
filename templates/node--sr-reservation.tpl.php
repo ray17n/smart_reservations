@@ -79,8 +79,8 @@
  * @ingroup themeable
  */
 ?>
-module template
-<article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+
+<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
   <?php if ((!$page && !empty($title)) || !empty($title_prefix) || !empty($title_suffix) || $display_submitted): ?>
     <header>
       <?php print render($title_prefix); ?>
@@ -90,24 +90,28 @@ module template
       <?php print render($title_suffix); ?>
       <?php if ($display_submitted): ?>
         <span class="submitted">
-      <?php print $user_picture; ?>
-      <?php print $submitted; ?>
     </span>
       <?php endif; ?>
     </header>
   <?php endif; ?>
-  <?php
-  // Hide comments, tags, and links now so that we can render them later.
-  hide($content['comments']);
-  hide($content['links']);
-  hide($content['field_tags']);
-  print render($content);
-  ?>
-  <?php if (!empty($content['field_tags']) || !empty($content['links'])): ?>
-    <footer>
-      <?php print render($content['field_tags']); ?>
-      <?php print render($content['links']); ?>
-    </footer>
-  <?php endif; ?>
-  <?php print render($content['comments']); ?>
-</article>
+
+  <?php print render($content['smres_contact_name']); ?>
+  <?php print render($content['smres_contact_email']); ?>
+  <?php print render($content['smres_contact_phone']); ?>
+  <?php print render($content['smres_contact_tax_identifier']); ?>
+  <?php print render($content['smres_comments']); ?>
+  <?php print render($content['smres_total_amount']); ?>
+
+
+  <div class="field field-name-smres-reservation-status field-type-list-text field-label-inline clearfix">
+    <div class="field-label"><?php print t('Reservation status'); ?>:&nbsp;</div>
+    <div class="field-items">
+      <div class="field-item even"><?php print t($node->smres_reservation_status['und'][0]['value']); ?></div>
+    </div>
+  </div>
+  <?php print render($content['smres_total_amount']); ?>
+  <?php print $reservation_detail; ?>
+
+
+<!--  --><?php //print render($content); ?>
+</div>

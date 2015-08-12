@@ -1263,9 +1263,6 @@ function smart_reservations_acc_tab_rates_reset_filters($form, &$form_state) {
 
 /**
  * Retrieves rates.
- */
-/**
- * Retrieves rates.
  * $params['start_date']: Start date of rates to retrieve.
  * $params['end_date']: End date of rates to retrieve.
  * $params['nights_to_show']:

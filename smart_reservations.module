@@ -10,6 +10,8 @@
  */
 
 
+require_once("smart_reservations_reservations.inc");
+
 /**
  * Implements hook_help().
  *
@@ -426,10 +428,8 @@ function smart_reservations_theme_registry_alter(&$theme_registry) {
 }
 
 /**
- * Preprocesses nodes.
+ * Preprocessing nodes.
  *
- * @see node--sr_accommodation_unit.tpl.php
- * We modify the content to show for each accommodation unit.
  */
 function smart_reservations_preprocess_node(&$variables) {
 
@@ -449,6 +449,46 @@ function smart_reservations_preprocess_node(&$variables) {
       '#markup' => $desc,
       '#weight' => 10,
     );
+  }
+
+  if ($variables['type'] == 'sr_reservation') {
+
+    $o = smres_get_reservation_info($variables['nid']);
+
+    // Accommodation - details (additional info).
+
+  //  $o = markup_accommodation_details($a, $p);
+/*    $build_form['accommodation_units'][$id]['data']['details'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 30,
+      '#prefix' => '<div class="sr-accommodation-details">',
+      '#suffix' => '</div>',
+    );
+*/
+    // Calendar.
+    /* $o = markup_accommodation_calendar($a, $p);
+    $build_form['accommodation_units'][$id]['data']['calendar'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 40,
+      '#prefix' => '<div id="sr-search-results-accommodation-calendar-' .
+        $id . '" class="sr-accommodation-calendar">',
+      '#suffix' => '</div>',
+    );
+
+    // Accommodation summary.
+    $o = markup_accommodation_summary($a, $p);
+    $build_form['accommodation_units'][$id]['data']['summary'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 50,
+      '#prefix' => '<div class="sr-accommodation-summary">',
+      '#suffix' => '</div>',
+    ); */
+
+    $variables['reservation_detail'] = $o;
+
   }
 }
 

@@ -336,6 +336,8 @@ function generate_form_elements_search_results(&$form_state, $params) {
       );
 
       // Calendar.
+//      dpm($a, '$a');
+//      dpm($p, '$p');
       $o = markup_accommodation_calendar($a, $p);
       $build_form['accommodation_units'][$id]['data']['calendar'] = array(
         '#type' => 'markup',
@@ -632,7 +634,7 @@ function generate_form_elements_customer(&$form_state) {
 
   // Save reservation details (fieldset) info into the storage array.
   $form_state['storage']['reservation-fieldset'] = $form['reservation'];
-  $form_detail = array();
+  $form_details = array();
   $form_details[] = $form['reservation-summary'];
   $form_details[] = $form['reservation'];
   $form_state['storage']['reservation-fieldset']['reservation_rendered']
@@ -779,6 +781,7 @@ function smart_reservations_save_and_email_reservation($form_state) {
             'date' => $d['date'],
             'reservation_id' => $node_id,
             'accommodation_unit_id' => $acc_id,
+            'amount' => $d['amount_per_night'],
             'total_amount' => $a['summary']['total_amount'],
             'number_of_adults' => $a['summary']['number_of_adults'],
             'number_of_children' => $a['summary']['number_of_children'],
@@ -917,6 +920,10 @@ function smart_reservations_search_recalc_ajax($form, $form_state) {
  *
  */
 function markup_accommodation_details($a, $p) {
+
+//  dpm($a, 'markup_accommodation_details a');
+//  dpm($p, 'markup_accommodation_details p');
+
   $o = t('Capacity') . ': ';
   $o .= $a['accommodation_unit']->smres_minimum_number_of_people['und'][0]['value'];
   $o .= ' - ';
@@ -1092,6 +1099,8 @@ function markup_accommodation_summary($a, $p) {
  *
  */
 function markup_search_results_summary($summary) {
+
+  dpm($summary);
 
   // Start footer.
   $pre1 = '<div class="row sr-summary-info">';
@@ -1642,6 +1651,298 @@ function has_reservations($acc_id, $checkin, $checkout) {
   $num_nights = $result->rowCount();
   return ($num_nights > 0);
 }
+
+/**
+ * Get info of an existing reservation .
+ *
+ * Returns an array of available accommodation_units for a specific day.
+ */
+function smres_get_reservation_info($res_id) {
+
+  $a = array();
+  $p = array();
+
+  $sql = "SELECT r.*
+  FROM {smart_reservations_reservation_items} r
+  WHERE reservation_id = :res_id";
+  $results = db_query($sql, array(
+    ':res_id' => $res_id,));
+
+  foreach ($results as $res) {
+
+    $a['id'] = $res->accommodation_unit_id;
+    $a['accommodation_unit'] = node_load($res->accommodation_unit_id);
+
+    $a['rates_per_night'][$res->date]['date'] = $res->date;
+    $a['rates_per_night'][$res->date]['base_rate'] = $res->base_rate;
+    $a['rates_per_night'][$res->date]['children_discount'] = $res->children_discount;
+    $a['rates_per_night'][$res->date]['dogs_fee'] = $res->dogs_fee;
+    $a['rates_per_night'][$res->date]['low_occupancy_fee'] = $res->low_occupancy_fee;
+    $a['rates_per_night'][$res->date]['low_occupancy_threshold'] = $res->low_occupancy_threshold;
+    $a['rates_per_night'][$res->date]['single_night_fee'] = $res->single_night_fee;
+    $a['rates_per_night'][$res->date]['amount_per_night_adults'] = $res->amount_per_night_adults;
+    $a['rates_per_night'][$res->date]['amount_per_night_children'] = $res->amount_per_night_children;
+    $a['rates_per_night'][$res->date]['amount_per_night_dogs'] = $res->amount_per_night_dogs;
+    $a['rates_per_night'][$res->date]['amount_per_night'] = $res->amount;
+
+    $a['summary']['title'] = 'Casafont II';
+    $a['summary']['headline_date'] = 'date ... ';
+    $a['summary']['headline_desc'] = 'Del ... ';
+    $a['summary']['total_amount'] = $res->total_amount ;
+    $a['summary']['enough_capacity'] = TRUE;
+    $a['summary']['exceeds_minimum_guests'] = TRUE;
+
+  }
+
+  $p['checkin'] = '2015-08-31';
+  $p['checkout'] = '2015-09-02';
+  $p['adults'] = 4;
+  $p['children'] = 0;
+  $p['babies'] = 0;
+  $p['dogs'] = 0;
+  $p['cats'] = 0;
+
+  $summary['acc_units_sum'] = array();
+  $summary['acc_units_sum'][] = $a['summary'];
+
+  $o .=
+  '<div class="field field-name-smres-reservation-details field-type-text-long field-label-hidden">
+    <div class="field-items">
+      <div class="field-item even">
+        <div class="reservation-submit-summary">
+          <fieldset class="panel panel-default form-wrapper">
+            <legend class="panel-heading">
+            <span class="panel-title fieldset-legend">' . t('Reservation summary') . '</span>
+            </legend>
+
+            <div class="panel-body">' .
+              markup_search_results_summary($summary) . '
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>';
+
+
+
+  // Description.
+//  dpm($a);
+//  global $language;
+//  if (!empty($a['accommodation_unit']->body[$language->language][0]['value'])) {
+//    $o = $a['accommodation_unit']->body[$language->language][0]['value'];
+//
+//    $o .= '<div class="row sr-accommodation-description">' . $o . '</div>';
+//  }
+
+
+  // Acommodation details
+  $o .= '<div class="sr-accommodation-details">';
+  $o .= markup_accommodation_details($a, $p) . '</div>';
+
+  // Calendar
+  $o .= '<div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">';
+  $o .= markup_accommodation_calendar($a, $p) . '</div>';
+
+  // Accommodation summary.
+  $o .= '<div class="sr-accommodation-summary">' . markup_accommodation_summary($a, $p) . '</div>';
+
+
+
+  return $o;
+
+
+  /*
+ // 3) Build form: accommodation units info.
+// Get accommodation units.
+$acc_units = get_accommodation_units_info($p);
+$num_acc_units_available = 0;
+
+// 3.1) Header message.
+if ($acc_units['summary']['more_than_one_needed']) {
+  $build_form['header_message'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div class="sr-results-warning sr-results-warning-header">',
+    '#suffix' => '</div>',
+    '#markup' => t(variable_get('sr_txt_capacity_exceeded')),
+  );
+};
+
+// 3.2) Accomodation calendars and info.
+$summary = array();
+$summary['total_amount'] = 0;
+foreach ($acc_units['data'] as $acc_unit) {
+  // Recover options if we are recalculating the form, for instance.
+  $id = $acc_unit['id'];
+  if (!empty($form_state['values']['search-results']['accommodation_units'][$id])) {
+    $o = &$form_state['values']['search-results']['accommodation_units'][$id]['data']['options'];
+    $p['adults'] = $o['number_of_adults'];
+    $p['children'] = $o['number_of_children'];
+    $p['babies'] = $o['number_of_babies'];
+    $p['dogs'] = $o['number_of_dogs'];
+  }
+  $a = get_rates_per_date_range($id, $p);
+  if (!empty($a)) {
+    $num_acc_units_available++;
+    $form_state['storage']['accommodation_units'][$id] = $a;
+    $build_form['accommodation_units'][$id] = array(
+      '#type' => 'fieldset',
+      '#title' => $a['accommodation_unit']->title,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#prefix' => '<div id="sr-search-results-accommodation-' . $id . '" class="sr-search-results-accommodation">',
+      '#suffix' => '</div>',
+      '#attributes' => array(
+        'class' => array('sr-accommodation-unit'),
+      ),
+    );
+
+    // Description.
+    if (!empty($a['accommodation_unit']->body['und'][0]['value'])) {
+      $o = $a['accommodation_unit']->body['und'][0]['value'];
+      $build_form['accommodation_units'][$id]['data']['description'] = array(
+        '#type' => 'markup',
+        '#markup' => $o,
+        '#weight' => 10,
+        '#prefix' => '<div class="row sr-accommodation-description">',
+        '#suffix' => '</div>',
+      );
+    }
+    // Options.
+    $build_form['accommodation_units'][$id]['data']['options'] = array(
+      '#type' => 'fieldset',
+      '#weight' => 20,
+      '#attributes' => array(
+        'class' => array('sr-accommodation-options'),
+        'id' => array('sr-accommodation-options-' . $id),
+      ),
+    );
+    $build_form['accommodation_units'][$id]['data']['options']['number_of_adults']
+      = array(
+        '#type' => 'select',
+        '#title' => t('Adults'),
+        '#options' => array_combine(
+            range($acc_unit['min_guests'], $acc_unit['max_guests']),
+            range($acc_unit['min_guests'], $acc_unit['max_guests'])),
+        '#default_value' => $a['summary']['number_of_adults'],
+        '#ajax' => array(
+          'callback' => 'smart_reservations_search_recalc_ajax',
+          // 'wrapper' => 'sr-search-results-accommodation-' . $id,
+        ),
+      );
+    $build_form['accommodation_units'][$id]['data']['options']['number_of_children']
+      = array(
+        '#type' => 'select',
+        '#title' => t('Children'),
+        '#options' => array_combine(
+            range(0, $acc_unit['max_guests']),
+            range(0, $acc_unit['max_guests'])),
+        '#default_value' => $a['summary']['number_of_children'],
+        '#ajax' => array(
+          'callback' => 'smart_reservations_search_recalc_ajax',
+          // 'wrapper' => 'sr-search-results-accommodation-' . $id,
+        ),
+      );
+    $build_form['accommodation_units'][$id]['data']['options']['number_of_babies']
+      = array(
+        '#type' => 'select',
+        '#title' => t('Babies'),
+        '#options' => array_combine(
+            range(0, $acc_unit['max_guests']),
+            range(0, $acc_unit['max_guests'])),
+        '#default_value' => $a['summary']['number_of_babies'],
+        '#ajax' => array(
+          'callback' => 'smart_reservations_search_recalc_ajax',
+          // 'wrapper' => 'sr-search-results-accommodation-' . $id,
+        ),
+      );
+    $build_form['accommodation_units'][$id]['data']['options']['number_of_dogs']
+      = array(
+        '#type' => 'select',
+        '#title' => t('Dogs'),
+        '#options' => array_combine(
+            range(0, $acc_unit['max_dogs']),
+            range(0, $acc_unit['max_dogs'])),
+        '#default_value' => $a['summary']['number_of_dogs'],
+        '#ajax' => array(
+          'callback' => 'smart_reservations_search_recalc_ajax',
+          // 'wrapper' => 'sr-search-results-accommodation-' . $id,
+        ),
+      );
+
+    // Accommodation - details (additional info).
+    $o = markup_accommodation_details($a, $p);
+    $build_form['accommodation_units'][$id]['data']['details'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 30,
+      '#prefix' => '<div class="sr-accommodation-details">',
+      '#suffix' => '</div>',
+    );
+
+    // Calendar.
+    dpm($a, '$a');
+    dpm($p, '$p');
+    $o = markup_accommodation_calendar($a, $p);
+    $build_form['accommodation_units'][$id]['data']['calendar'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 40,
+      '#prefix' => '<div id="sr-search-results-accommodation-calendar-' .
+      $id . '" class="sr-accommodation-calendar">',
+      '#suffix' => '</div>',
+    );
+
+    // Accommodation summary.
+    $o = markup_accommodation_summary($a, $p);
+    $build_form['accommodation_units'][$id]['data']['summary'] = array(
+      '#type' => 'markup',
+      '#markup' => $o,
+      '#weight' => 50,
+      '#prefix' => '<div class="sr-accommodation-summary">',
+      '#suffix' => '</div>',
+    );
+
+    // Accommodation buttons.
+    $build_form['accommodation_units'][$id]['data']['buttons'] = array(
+      '#type' => 'fieldset',
+      '#prefix' => '<div class="sr-accommodation-buttons" id="sr-accommodation-buttons-' . $id . '">',
+      '#suffix' => '<br></div>',
+      '#weight' => 60,
+    );
+    $selected = !empty($form_state['storage']['selected_accommodations'][$id]);
+    $build_form['accommodation_units'][$id]['data']['buttons']['add_remove'] = array(
+      // Very important to have a unique name - for ajax calls.
+      '#name' => 'add_remove-' . $id,
+      '#type' => 'submit',
+      '#value' => $selected ? t('Remove') : t('Add to the reservation') ,
+      '#submit' => array('smart_reservations_add_remove_reservation'),
+      '#ajax' => array(
+        'callback' => 'smart_reservations_add_remove_reservation_ajax_callback',
+        //  We don't need a wrapper / special ajax callback / multiple divs.
+        // 'wrapper' => 'sr-accommodation-buttons-' . $id,
+      ),
+      '#attributes' => array(
+        'class' => array('sr-button-' . ($selected ? 'red' : 'green')),
+      ),
+    );
+    if ($selected) {
+      // Update summary,
+      $summary['acc_units_sum'][$id] = $a['summary'];
+      $summary['total_amount'] += $a['summary']['total_amount'];
+      // Update the array that contains the reservation info.
+      $form_state['storage']['reservation']['reservation_status'] = 'Created';
+      $form_state['storage']['reservation']['total_amount']
+        = $summary['total_amount'];
+    }
+  }
+}
+
+
+*/
+
+}
+
 
 /**
  * Get array of days.
