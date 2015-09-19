@@ -1108,6 +1108,8 @@ function markup_search_results_summary($summary) {
 
   $sum = '<div class="sr-summary-info-body">';
   foreach ($summary['acc_units_sum'] as $a) {
+
+    dpm($a, 'a');
     $sum .= '<div class="sr-summary-info-body-row">';
 
     $sum .= '<div class="col-text">';
@@ -1661,6 +1663,8 @@ function smres_get_reservation_info($res_id) {
 
   $a = array();
   $p = array();
+  // @todo use drupal local settings
+  setlocale(LC_TIME, 'ca_ES.UTF-8', 'Catalan_Spain', 'Catalan');
 
   $sql = "SELECT r.*
   FROM {smart_reservations_reservation_items} r
@@ -1668,10 +1672,8 @@ function smres_get_reservation_info($res_id) {
   $results = db_query($sql, array(
     ':res_id' => $res_id,));
 
+  $i = 0;
   foreach ($results as $res) {
-
-    $a['id'] = $res->accommodation_unit_id;
-    $a['accommodation_unit'] = node_load($res->accommodation_unit_id);
 
     $a['rates_per_night'][$res->date]['date'] = $res->date;
     $a['rates_per_night'][$res->date]['base_rate'] = $res->base_rate;
@@ -1685,25 +1687,56 @@ function smres_get_reservation_info($res_id) {
     $a['rates_per_night'][$res->date]['amount_per_night_dogs'] = $res->amount_per_night_dogs;
     $a['rates_per_night'][$res->date]['amount_per_night'] = $res->amount;
 
-    $a['summary']['title'] = 'Casafont II';
-    $a['summary']['headline_date'] = 'date ... ';
-    $a['summary']['headline_desc'] = 'Del ... ';
-    $a['summary']['total_amount'] = $res->total_amount ;
-    $a['summary']['enough_capacity'] = TRUE;
-    $a['summary']['exceeds_minimum_guests'] = TRUE;
+    if($i == 0) {
+      $p['checkin'] = $res->date;
+      $p['checkout'] = date('Y-m-d', strtotime($res->date . '+1 day'));
+      $a['id'] = $res->accommodation_unit_id;
+      $a['accommodation_unit'] = node_load($res->accommodation_unit_id);
+      $a['summary']['title'] = $a['accommodation_unit']->title;
+      $a['summary']['total_amount'] = $res->total_amount ;
+      $a['summary']['enough_capacity'] = TRUE;
+      $a['summary']['exceeds_minimum_guests'] = TRUE;
+      $adults = $res->number_of_adults;
+      $children = $res->number_of_children;
+      $p['babies'] = $res->number_of_babies;
+      $p['cats'] = $res->number_of_cats;
+      $dogs = $res->number_of_dogs;
+
+    }
+    else {
+      $p['checkout'] = date('Y-m-d', strtotime($res->date . '+1 day'));
+    }
+    $i++;
 
   }
 
-  $p['checkin'] = '2015-08-31';
-  $p['checkout'] = '2015-09-02';
-  $p['adults'] = 4;
-  $p['children'] = 0;
-  $p['babies'] = 0;
-  $p['dogs'] = 0;
-  $p['cats'] = 0;
+  $total_nights = $i;
+  $date_checkin = strftime(variable_get('sr_date_format_reservation'),
+      strtotime($p['checkin']));
+  $date_checkout = strftime(variable_get('sr_date_format_reservation'),
+      strtotime($p['checkout']));
+  $a['summary']['headline_date'] = t('From @checkin to @checkout', array(
+          '@checkin' => $date_checkin,
+          '@checkout' => $date_checkout,
+      )
+  );
+
+  $a['summary']['headline_desc'] = "{$total_nights} " . t('nights') ;
+  $a['summary']['headline_desc'] .= ($adults > 0) ? ", {$adults} adults" : '';
+  $a['summary']['headline_desc'] .= ($children > 0) ? ", {$children} children" : '';
+  $a['summary']['headline_desc'] .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
+  $a['summary']['headline_desc'] .= ($dogs > 0) ? ", {$dogs} dogs" : '';
+  $a['summary']['headline_desc'] .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
+
+  $p['adults'] = $adults;
+  $p['children'] = $children;
+  $p['dogs'] = $dogs;
+  $p['cats'] = $cats;
 
   $summary['acc_units_sum'] = array();
   $summary['acc_units_sum'][] = $a['summary'];
+  $summary['total_amount'] = $res->total_amount;
+  dpm($summary, 'summary');
 
   $o .=
   '<div class="field field-name-smres-reservation-details field-type-text-long field-label-hidden">
@@ -1720,10 +1753,41 @@ function smres_get_reservation_info($res_id) {
             </div>
           </fieldset>
         </div>
+
+        <div class="sr-accommodation-submit-reservationetails">
+          <fieldset class="panel panel-default form-wrapper">
+            <legend class="panel-heading"><span class="panel-title fieldset-legend">' . t('Reservation details') . '</span></legend>
+            <div class="panel-body">
+              <div id="sr-search-results-accommodation-498" class="sr-search-results-accommodation">
+                <fieldset class="sr-accommodation-unit collapsible panel panel-default form-wrapper" id="edit-search-results-accommodation-units-498">
+                  <legend class="panel-heading">
+                    <a href="#" class="panel-title fieldset-legend" data-toggle="collapse" data-target="#edit-search-results-accommodation-units-498 &gt; .collapse" aria-expanded="true">Casafont I</a>
+                  </legend>
+                  <div class="panel-collapse fade collapse in" aria-expanded="true" style="">
+                    <div class="panel-body">
+
+                        <div class="sr-accommodation-details">' .
+                      markup_accommodation_details($a, $p) .
+                        '</div>
+
+                      <div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">' .
+                          markup_accommodation_calendar($a, $p) .
+                      '</div>
+
+                      <div class="sr-accommodation-summary">' . markup_accommodation_summary($a, $p) . '</div>
+
+
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
       </div>
     </div>
   </div>';
-
 
 
   // Description.
@@ -1735,17 +1799,16 @@ function smres_get_reservation_info($res_id) {
 //    $o .= '<div class="row sr-accommodation-description">' . $o . '</div>';
 //  }
 
-
-  // Acommodation details
-  $o .= '<div class="sr-accommodation-details">';
-  $o .= markup_accommodation_details($a, $p) . '</div>';
-
-  // Calendar
-  $o .= '<div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">';
-  $o .= markup_accommodation_calendar($a, $p) . '</div>';
-
-  // Accommodation summary.
-  $o .= '<div class="sr-accommodation-summary">' . markup_accommodation_summary($a, $p) . '</div>';
+//  // Acommodation details
+//  $o .= '<div class="sr-accommodation-details">';
+//  $o .= markup_accommodation_details($a, $p) . '</div>';
+//
+//  // Calendar
+//  $o .= '<div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">';
+//  $o .= markup_accommodation_calendar($a, $p) . '</div>';
+//
+//  // Accommodation summary.
+//  $o .= '<div class="sr-accommodation-summary">' . markup_accommodation_summary($a, $p) . '</div>';
 
 
 
