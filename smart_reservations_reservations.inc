@@ -923,7 +923,6 @@ function markup_accommodation_details($a, $p) {
 
 //  dpm($a, 'markup_accommodation_details a');
 //  dpm($p, 'markup_accommodation_details p');
-
   $o = t('Capacity') . ': ';
   $o .= $a['accommodation_unit']->smres_minimum_number_of_people['und'][0]['value'];
   $o .= ' - ';
@@ -945,6 +944,7 @@ function markup_accommodation_details($a, $p) {
         '%g' => $a['accommodation_unit']->smres_minimum_number_of_people['und'][0]['value']));
     $o .= '</div>';
   }
+
   return $o;
 }
 
@@ -952,6 +952,10 @@ function markup_accommodation_details($a, $p) {
  *
  */
 function markup_accommodation_calendar($a, $p) {
+
+//  dpm($a, 'markup_accommodation_calendar a');
+//  dpm($p, 'markup_accommodation_details p');
+
 
   // @todo use drupal local settings
   setlocale(LC_TIME, 'ca_ES.UTF-8', 'Catalan_Spain', 'Catalan');
@@ -1100,7 +1104,7 @@ function markup_accommodation_summary($a, $p) {
  */
 function markup_search_results_summary($summary) {
 
-  dpm($summary);
+//  dpm($summary);
 
   // Start footer.
   $pre1 = '<div class="row sr-summary-info">';
@@ -1109,7 +1113,7 @@ function markup_search_results_summary($summary) {
   $sum = '<div class="sr-summary-info-body">';
   foreach ($summary['acc_units_sum'] as $a) {
 
-    dpm($a, 'a');
+//    dpm($a, 'a');
     $sum .= '<div class="sr-summary-info-body-row">';
 
     $sum .= '<div class="col-text">';
@@ -1672,71 +1676,99 @@ function smres_get_reservation_info($res_id) {
   $results = db_query($sql, array(
     ':res_id' => $res_id,));
 
+  /* todo add order by date */
+
   $i = 0;
+  $total_amount = 0;
   foreach ($results as $res) {
 
-    $a['rates_per_night'][$res->date]['date'] = $res->date;
-    $a['rates_per_night'][$res->date]['base_rate'] = $res->base_rate;
-    $a['rates_per_night'][$res->date]['children_discount'] = $res->children_discount;
-    $a['rates_per_night'][$res->date]['dogs_fee'] = $res->dogs_fee;
-    $a['rates_per_night'][$res->date]['low_occupancy_fee'] = $res->low_occupancy_fee;
-    $a['rates_per_night'][$res->date]['low_occupancy_threshold'] = $res->low_occupancy_threshold;
-    $a['rates_per_night'][$res->date]['single_night_fee'] = $res->single_night_fee;
-    $a['rates_per_night'][$res->date]['amount_per_night_adults'] = $res->amount_per_night_adults;
-    $a['rates_per_night'][$res->date]['amount_per_night_children'] = $res->amount_per_night_children;
-    $a['rates_per_night'][$res->date]['amount_per_night_dogs'] = $res->amount_per_night_dogs;
-    $a['rates_per_night'][$res->date]['amount_per_night'] = $res->amount;
+    $ac_id = $res->accommodation_unit_id;
 
-    if($i == 0) {
-      $p['checkin'] = $res->date;
-      $p['checkout'] = date('Y-m-d', strtotime($res->date . '+1 day'));
-      $a['id'] = $res->accommodation_unit_id;
-      $a['accommodation_unit'] = node_load($res->accommodation_unit_id);
-      $a['summary']['title'] = $a['accommodation_unit']->title;
-      $a['summary']['total_amount'] = $res->total_amount ;
-      $a['summary']['enough_capacity'] = TRUE;
-      $a['summary']['exceeds_minimum_guests'] = TRUE;
-      $adults = $res->number_of_adults;
-      $children = $res->number_of_children;
-      $p['babies'] = $res->number_of_babies;
-      $p['cats'] = $res->number_of_cats;
-      $dogs = $res->number_of_dogs;
+    // 1) per night info
+    $a[$ac_id]['rates_per_night'][$res->date]['date'] = $res->date;
+    $a[$ac_id]['rates_per_night'][$res->date]['base_rate'] = $res->base_rate;
+    $a[$ac_id]['rates_per_night'][$res->date]['children_discount'] = $res->children_discount;
+    $a[$ac_id]['rates_per_night'][$res->date]['dogs_fee'] = $res->dogs_fee;
+    $a[$ac_id]['rates_per_night'][$res->date]['low_occupancy_fee'] = $res->low_occupancy_fee;
+    $a[$ac_id]['rates_per_night'][$res->date]['low_occupancy_threshold'] = $res->low_occupancy_threshold;
+    $a[$ac_id]['rates_per_night'][$res->date]['single_night_fee'] = $res->single_night_fee;
+
+
+    $a[$ac_id]['rates_per_night'][$res->date]['amount_per_night_adults'] = $res->amount_per_night_adults;
+    $a[$ac_id]['rates_per_night'][$res->date]['amount_per_night_children'] = $res->amount_per_night_children;
+    $a[$ac_id]['rates_per_night'][$res->date]['amount_per_night_dogs'] = $res->amount_per_night_dogs;
+    $a[$ac_id]['rates_per_night'][$res->date]['amount_per_night'] = $res->amount;
+
+
+    // 2) summary info per accommodation_unit
+    if ( !isset($a[$ac_id]['id']) ) {
+
+      // 2.1 ) first time during the loop we get data for the accomodation unit
+      $a[$ac_id]['accommodation_unit'] = node_load($ac_id);
+      $a[$ac_id]['id'] = $ac_id;
+      $a[$ac_id]['summary']['title'] = $a[$ac_id]['accommodation_unit']->title;
+
+      // checkin - checkout
+      $a[$ac_id]['summary']['date_checkin'] = strftime(variable_get('sr_date_format_reservation'),
+        strtotime($res->date));
+      $a[$ac_id]['summary']['date_checkout'] = strftime(variable_get('sr_date_format_reservation'),
+        strtotime(date('Y-m-d', strtotime($res->date . '+1 day'))));
+      $a[$ac_id]['summary']['headline_date'] = t('From @checkin to @checkout', array(
+          '@checkin' => $a[$ac_id]['summary']['date_checkin'],
+          '@checkout' => $a[$ac_id]['summary']['date_checkout'],
+        )
+      );
+
+      $a[$ac_id]['summary']['total_nights'] = 1;
+      $a[$ac_id]['summary']['total_amount'] = $res->total_amount ;
+      // res->total_amount is total amount for accommodation unit
+      $total_amount += $res->total_amount;
+
+      $a[$ac_id]['summary']['adults'] = $res->number_of_adults;
+      $a[$ac_id]['summary']['children'] = $res->number_of_children;
+      $a[$ac_id]['summary']['babies'] = $res->number_of_babies;
+      $a[$ac_id]['summary']['dogs'] = $res->number_of_dogs;
+      $a[$ac_id]['summary']['cats'] = $res->number_of_cats;
+      $a[$ac_id]['summary']['headline_desc'] = "{$a[$ac_id]['summary']['total_nights']} " . t('nights') ;
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_adults > 0) ? ", {$res->number_of_adults} adults" : '';
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_children > 0) ? ", {$res->number_of_children} children" : '';
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_babies > 0) ? ", {$res->number_of_babies} babies" : '';
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_dogs  > 0) ? ", {$res->number_of_dogs } dogs" : '';
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_cats > 0) ? ", {$res->number_of_cats} cats" : '';
+      $a[$ac_id]['summary']['enough_capacity'] = TRUE;
+      $a[$ac_id]['summary']['exceeds_minimum_guests'] = TRUE;
+
+      $a[$ac_id]['params']['adults'] = $res->number_of_adults;
+      $a[$ac_id]['params']['children'] = $res->number_of_children;
+      $a[$ac_id]['params']['babies'] = $res->number_of_babies;
+      $a[$ac_id]['params']['dogs'] = $res->number_of_dogs;
+      $a[$ac_id]['params']['cats'] = $res->number_of_cats;
 
     }
     else {
-      $p['checkout'] = date('Y-m-d', strtotime($res->date . '+1 day'));
+      // 2.2) next time / times during the loop we get data for the accommodation unit
+      // checkin - checkout
+      $a[$ac_id]['summary']['date_checkout'] = strftime(variable_get('sr_date_format_reservation'),
+        strtotime(date('Y-m-d', strtotime($res->date . '+1 day'))));
+      $a[$ac_id]['summary']['headline_date'] = t('From @checkin to @checkout', array(
+          '@checkin' => $a[$ac_id]['summary']['date_checkin'],
+          '@checkout' => $a[$ac_id]['summary']['date_checkout'],
+        )
+      );
+      $a[$ac_id]['summary']['total_nights']++;
     }
     $i++;
 
   }
 
-  $total_nights = $i;
-  $date_checkin = strftime(variable_get('sr_date_format_reservation'),
-      strtotime($p['checkin']));
-  $date_checkout = strftime(variable_get('sr_date_format_reservation'),
-      strtotime($p['checkout']));
-  $a['summary']['headline_date'] = t('From @checkin to @checkout', array(
-          '@checkin' => $date_checkin,
-          '@checkout' => $date_checkout,
-      )
-  );
+//  dpm($a, '$a - out loop');
 
-  $a['summary']['headline_desc'] = "{$total_nights} " . t('nights') ;
-  $a['summary']['headline_desc'] .= ($adults > 0) ? ", {$adults} adults" : '';
-  $a['summary']['headline_desc'] .= ($children > 0) ? ", {$children} children" : '';
-  $a['summary']['headline_desc'] .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
-  $a['summary']['headline_desc'] .= ($dogs > 0) ? ", {$dogs} dogs" : '';
-  $a['summary']['headline_desc'] .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
-
-  $p['adults'] = $adults;
-  $p['children'] = $children;
-  $p['dogs'] = $dogs;
-  $p['cats'] = $cats;
-
+  // Array of summaries for accommodation unit
   $summary['acc_units_sum'] = array();
-  $summary['acc_units_sum'][] = $a['summary'];
-  $summary['total_amount'] = $res->total_amount;
-  dpm($summary, 'summary');
+  foreach ($a as $ac_item) {
+    $summary['acc_units_sum'][] = $ac_item['summary'];
+  }
+  $summary['total_amount'] = $total_amount;
 
   $o .=
   '<div class="field field-name-smres-reservation-details field-type-text-long field-label-hidden">
@@ -1747,7 +1779,6 @@ function smres_get_reservation_info($res_id) {
             <legend class="panel-heading">
             <span class="panel-title fieldset-legend">' . t('Reservation summary') . '</span>
             </legend>
-
             <div class="panel-body">' .
               markup_search_results_summary($summary) . '
             </div>
@@ -1757,8 +1788,14 @@ function smres_get_reservation_info($res_id) {
         <div class="sr-accommodation-submit-reservationetails">
           <fieldset class="panel panel-default form-wrapper">
             <legend class="panel-heading"><span class="panel-title fieldset-legend">' . t('Reservation details') . '</span></legend>
-            <div class="panel-body">
-              <div id="sr-search-results-accommodation-498" class="sr-search-results-accommodation">
+            <div class="panel-body">';
+
+
+  foreach ($a as $ac_item) {
+
+//    dpm($ac_item['params']);
+
+     $o .=     '<div id="sr-search-results-accommodation-498" class="sr-search-results-accommodation">
                 <fieldset class="sr-accommodation-unit collapsible panel panel-default form-wrapper" id="edit-search-results-accommodation-units-498">
                   <legend class="panel-heading">
                     <a href="#" class="panel-title fieldset-legend" data-toggle="collapse" data-target="#edit-search-results-accommodation-units-498 &gt; .collapse" aria-expanded="true">Casafont I</a>
@@ -1767,21 +1804,24 @@ function smres_get_reservation_info($res_id) {
                     <div class="panel-body">
 
                         <div class="sr-accommodation-details">' .
-                      markup_accommodation_details($a, $p) .
+                      markup_accommodation_details($ac_item, $ac_item['params']) .
                         '</div>
 
                       <div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">' .
-                          markup_accommodation_calendar($a, $p) .
+                          markup_accommodation_calendar($ac_item, $ac_item['params']) .
                       '</div>
 
-                      <div class="sr-accommodation-summary">' . markup_accommodation_summary($a, $p) . '</div>
+                      <div class="sr-accommodation-summary">' . markup_accommodation_summary($ac_item, $ac_item['params']) . '</div>
 
 
                     </div>
                   </div>
                 </fieldset>
-              </div>
-            </div>
+              </div>';
+  }
+
+
+  $o .=    '</div>
           </fieldset>
         </div>
 

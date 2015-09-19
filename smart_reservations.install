@@ -136,6 +136,29 @@ function smart_reservations_schema() {
         'scale' => '2',
         'not null' => FALSE,
       ),
+      // new fields
+      'amount_per_night_adults' => array(
+        'description' => 'Amount adults',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'amount_per_night_children' => array(
+        'description' => 'Amount children',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      'amount_per_night_dogs' => array(
+        'description' => 'Amount dogs',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
+      // end new fields
       'total_amount' => array(
         'description' => 'Total amount',
         'type' => 'numeric',
@@ -183,6 +206,8 @@ function smart_reservations_schema() {
         'scale' => '2',
         'not null' => FALSE,
       ),
+
+
       'date_creation' => array(
         'description' => 'Date/time of the creation (timestamp).',
         'type' => 'int',
