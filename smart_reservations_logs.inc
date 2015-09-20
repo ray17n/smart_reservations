@@ -43,7 +43,7 @@ function smart_reservations_log_form($form, &$form_state) {
   $query = db_select('smart_reservations_search_log', 's')
     ->extend('TableSort')
     ->extend('PagerDefault')
-    ->limit(30);
+    ->limit(500);
   $query->addExpression("FROM_UNIXTIME(s.timestamp, '%Y-%m-%d | %H:%i:%s')", 'timestamp');
   $query->fields('s', array(
     'timestamp',
