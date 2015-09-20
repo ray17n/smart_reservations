@@ -1801,37 +1801,25 @@ function smres_get_reservation_info($res_id) {
         '<div class="reservation-summary">' .
           '<div class="col-md-12">' . markup_search_results_summary($summary) . '</div></div>';
 
-  $o['reservation_details'] =
-        '<div class="reservation-details">
-          <fieldset class="panel panel-default form-wrapper">
-            <legend class="panel-heading"><span class="panel-title fieldset-legend">' . t('Reservation details') . '</span></legend>
-            <div class="panel-body">';
-
+  $o['reservation_details'] = '<div class="row sr-reservation-details">';
   foreach ($a as $ac_item) {
-     $o['reservation_details'] .=     '<div id="sr-search-results-accommodation-' . $ac_item['id'] . ' class="sr-search-results-accommodation">
-                <fieldset class="sr-accommodation-unit collapsible panel panel-default form-wrapper" id="edit-search-results-accommodation-units-' . $ac_item['id'] . '">
-                  <legend class="panel-heading">
-                    <a href="#" class="panel-title fieldset-legend" data-toggle="collapse" data-target="#edit-search-results-accommodation-units-' . $ac_item['id'] . ' &gt; .collapse" aria-expanded="true">' . $ac_item['summary']['title'] . '</a>
-                  </legend>
-                  <div class="panel-collapse fade collapse in" aria-expanded="true" style="">
-                    <div class="panel-body">
-                        <div class="sr-accommodation-details">' .
-                      markup_accommodation_details($ac_item, $ac_item['params']) .
-                        '</div>
-                      <div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">' .
-                          markup_accommodation_calendar($ac_item, array()) .
-                      '</div>
-                      <div class="sr-accommodation-summary">' . markup_accommodation_summary($ac_item) . '</div>
-                    </div>
-                  </div>
-                </fieldset>
-              </div>';
+     $o['reservation_details'] .=
+       '<div class="col-md-6">' .
+         '<div id="sr-search-results-accommodation-' . $ac_item['id'] . ' class="sr-search-results-accommodation_">' .
+            '<div class="sr-accommodation-title">' . $ac_item['summary']['title'] . '</div>
+            <div class="sr-accommodation-details">' .
+              markup_accommodation_details($ac_item, $ac_item['params']) .
+            '</div>
+            <div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">' .
+              markup_accommodation_calendar($ac_item, array()) .
+            '</div>
+            <div class="sr-accommodation-summary">' .
+              markup_accommodation_summary($ac_item) . '
+            </div>
+         </div>
+       </div>';
   }
-
-  $o['reservation_details'] .=    '</div>
-          </fieldset>
-        </div>';
-//  </div>';
+  $o['reservation_details'] .= '</div>';
 
 
   // Description.

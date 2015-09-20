@@ -135,6 +135,7 @@
   </div>
 
 
+
   <?php  print $reservation_details; ?>
 
 <!--  <div class="field field-name-smres-total-amount field-type-list-text field-label-inline clearfix">-->

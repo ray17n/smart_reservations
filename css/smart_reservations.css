@@ -471,7 +471,7 @@ body.node-type-sr-reservation .sr-accommodation-calendar .cal-sr-results-row {
   /*border: 1px solid red;*/
 }
 .reservation-total-and-payments {
-  margin-top: 1.4em;
+  margin-top: 3em;
   margin-bottom: 1em;
 
 }
@@ -481,4 +481,24 @@ body.node-type-sr-reservation .sr-accommodation-calendar .cal-sr-results-row {
 .field-name-amount-after-deposit-payment {
   margin-top: 1em;
   /*color: #999;*/
+}
+.sr-reservation-details {
+  margin-top: 3em;
+  /*border: 1px solid red;*/
+}
+.sr-accommodation-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+body.node-type-sr-reservation .cal-sr-results-header .cal-sr-results-cell,
+body.node-type-sr-reservation .cal-sr-results-row .cal-sr-results-cell {
+  border: 1px solid #bbb;
+  width: 13%;
+}
+body.node-type-sr-reservation .cal-sr-results-row .cal-sr-results-cell {
+  border: 1px solid #bbb;
+  width: 13%;
+  font-size: 0.9em;
+  /*height: 70px;*/
 }
