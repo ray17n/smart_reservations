@@ -466,9 +466,19 @@ body.node-type-sr-reservation .sr-accommodation-calendar .cal-sr-results-row {
   /*width: 100%;*/
   /*float: left;*/
 }
+.field-name-smres-comments {
+  margin-top: 1em;
+  /*border: 1px solid red;*/
+}
+.reservation-total-and-payments {
+  margin-top: 1.4em;
+  margin-bottom: 1em;
+
+}
 .field-name-smres-deposit-amount {
-  margin-top: 0.6em;
+  /*margin-top: 0.6em;*/
 }
 .field-name-amount-after-deposit-payment {
-  margin-top: 0.6em;
+  margin-top: 1em;
+  /*color: #999;*/
 }

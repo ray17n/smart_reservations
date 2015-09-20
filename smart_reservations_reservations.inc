@@ -1797,26 +1797,18 @@ function smres_get_reservation_info($res_id) {
   }
   $summary['total_amount'] = $total_amount;
 
-  $o .=
-  '<div class="field field-name-smres-reservation-details field-type-text-long field-label-hidden">
-        <div class="reservation-summary">
-          <fieldset class="panel panel-default form-wrapper">
-            <legend class="panel-heading">
-            <span class="panel-title fieldset-legend">' . t('Reservation summary') . '</span>
-            </legend>
-            <div class="panel-body">' .
-              markup_search_results_summary($summary) . '
-            </div>
-          </fieldset>
-        </div>
+  $o['reservation_summary'] =
+        '<div class="reservation-summary">' .
+          '<div class="col-md-12">' . markup_search_results_summary($summary) . '</div></div>';
 
-        <div class="reservation-details">
+  $o['reservation_details'] =
+        '<div class="reservation-details">
           <fieldset class="panel panel-default form-wrapper">
             <legend class="panel-heading"><span class="panel-title fieldset-legend">' . t('Reservation details') . '</span></legend>
             <div class="panel-body">';
 
   foreach ($a as $ac_item) {
-     $o .=     '<div id="sr-search-results-accommodation-' . $ac_item['id'] . ' class="sr-search-results-accommodation">
+     $o['reservation_details'] .=     '<div id="sr-search-results-accommodation-' . $ac_item['id'] . ' class="sr-search-results-accommodation">
                 <fieldset class="sr-accommodation-unit collapsible panel panel-default form-wrapper" id="edit-search-results-accommodation-units-' . $ac_item['id'] . '">
                   <legend class="panel-heading">
                     <a href="#" class="panel-title fieldset-legend" data-toggle="collapse" data-target="#edit-search-results-accommodation-units-' . $ac_item['id'] . ' &gt; .collapse" aria-expanded="true">' . $ac_item['summary']['title'] . '</a>
@@ -1836,10 +1828,10 @@ function smres_get_reservation_info($res_id) {
               </div>';
   }
 
-  $o .=    '</div>
+  $o['reservation_details'] .=    '</div>
           </fieldset>
-        </div>
-  </div>';
+        </div>';
+//  </div>';
 
 
   // Description.

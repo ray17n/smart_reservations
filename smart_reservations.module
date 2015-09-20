@@ -487,7 +487,8 @@ function smart_reservations_preprocess_node(&$variables) {
       '#suffix' => '</div>',
     ); */
 
-    $variables['reservation_detail'] = $o;
+    $variables['reservation_summary'] = $o['reservation_summary'];
+    $variables['reservation_details'] = $o['reservation_details'];
 
   }
 }
