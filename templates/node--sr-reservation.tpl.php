@@ -100,18 +100,8 @@
   <?php print render($content['smres_contact_phone']); ?>
   <?php print render($content['smres_contact_tax_identifier']); ?>
   <?php print render($content['smres_comments']); ?>
-  <?php print render($content['smres_total_amount']); ?>
-
-
-  <div class="field field-name-smres-reservation-status field-type-list-text field-label-inline clearfix">
-    <div class="field-label"><?php print t('Reservation status'); ?>:&nbsp;</div>
-    <div class="field-items">
-      <div class="field-item even"><?php print t($node->smres_reservation_status['und'][0]['value']); ?></div>
-    </div>
-  </div>
-  <?php print render($content['smres_total_amount']); ?>
+  <?php // print render($content['smres_reservation_status']); ?>
+  <?php // print render($content['smres_total_amount']); ?>
   <?php print $reservation_detail; ?>
-
-
-<!--  --><?php //print render($content); ?>
+  <?php //print render($content); ?>
 </div>
