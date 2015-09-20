@@ -882,7 +882,7 @@ function theme_smart_reservations_rates_form($variables) {
   // Pending. Change name.
   $table_id = 'example-items-table';
 
-  $per_page = 25;
+  $per_page = 120;
   // Initialize the pager.
   $current_page = pager_default_initialize(count($rows), $per_page);
   // Split your list into page sized chunks.
