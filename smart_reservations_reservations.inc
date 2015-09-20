@@ -758,11 +758,11 @@ function smart_reservations_save_and_email_reservation($form_state) {
   // Amount and deposit
   $node->smres_total_amount['und'][0]['value']
     = $form_state['storage']['reservation']['total_amount'];
-  $node->smres_deposit_amount['und'][0]['value']
+  $node->field_smres_deposit_amount['und'][0]['value']
     = round( $form_state['storage']['reservation']['total_amount']
               * ( variable_get('sr_default_deposit_percentage') / 100)
       , 0, PHP_ROUND_HALF_DOWN);
- $node->smres_deposit_instructions['und'][0]['value']
+ $node->field_smres_deposit_instructions['und'][0]['value']
     = variable_get('sr_default_deposit_instructions');
 
   $node->smres_reservation_status['und'][0]['value'] = 'Submitted';

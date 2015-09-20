@@ -757,12 +757,12 @@ function _sr_installed_fields() {
     'type' => 'number_decimal',
   );
 
-  $field_bases['smres_deposit_amount'] = array(
+  $field_bases['field_smres_deposit_amount'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'smres_deposit_amount',
+    'field_name' => 'field_smres_deposit_amount',
     'indexes' => array(),
     'locked' => 0,
     'module' => 'number',
@@ -775,12 +775,12 @@ function _sr_installed_fields() {
     'type' => 'number_decimal',
   );
 
-  $field_bases['smres_deposit_instructions'] = array(
+  $field_bases['field_smres_deposit_instructions'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'smres_deposit_instructions',
+    'field_name' => 'field_smres_deposit_instructions',
     'indexes' => array(
       'format' => array(
         0 => 'format',
@@ -1384,7 +1384,7 @@ function _sr_installed_instances($content_type) {
   );
 
 
-  $field_instances['sr_reservation']['smres_deposit_amount'] = array(
+  $field_instances['sr_reservation']['field_smres_deposit_amount'] = array(
     'bundle' => 'reservation',
     'default_value' => NULL,
     'deleted' => 0,
@@ -1410,7 +1410,7 @@ function _sr_installed_instances($content_type) {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'smres_deposit_amount',
+    'field_name' => 'field_smres_deposit_amount',
     'label' => 'Deposit amount',
     'required' => 0,
     'settings' => array(
@@ -1429,7 +1429,7 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
-  $field_instances['sr_reservation']['smres_deposit_instructions'] = array(
+  $field_instances['sr_reservation']['field_smres_deposit_instructions'] = array(
     'bundle' => 'reservation',
     'default_value' => NULL,
     'deleted' => 0,
@@ -1450,7 +1450,7 @@ function _sr_installed_instances($content_type) {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'smres_deposit_instructions',
+    'field_name' => 'field_smres_deposit_instructions',
     'label' => 'Deposit instructions',
     'required' => 0,
     'settings' => array(
