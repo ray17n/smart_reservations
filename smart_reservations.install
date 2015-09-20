@@ -360,6 +360,11 @@ function smart_reservations_install() {
   variable_set('sr_default_number_of_cats_to_search', 0);
   variable_set('sr_max_number_of_guests_to_search', 15);
 
+  // Payment options
+  variable_set('sr_default_deposit_percentage', 30);
+//  variable_set('sr_default_deposit_instructions', '');
+  variable_set('sr_default_deposit_add_automatically', FALSE);
+
   // Texts.
   variable_set('sr_txt_capacity_exceeded', 'For capacity reasons, you will need to reserve more than one apartment.');
 

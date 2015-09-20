@@ -271,6 +271,35 @@ function smart_reservations_configuration_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
+
+  // Payment options.
+  $form['payment_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Payment options'),
+    '#collapsible' => TRUE,
+    '#group' => 'settings',
+  );
+  $form['payment_options']['sr_default_deposit_percentage'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Deposit % to formalize the reservation. Default value.'),
+    '#default_value' => variable_get('sr_default_deposit_percentage'),
+    '#size' => 2,
+    '#maxlength' => 2,
+    '#description' => t('The percentage of the total amount required to formalize the reservation.'),
+  );
+  $form['payment_options']['sr_default_deposit_instructions'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Deposit payment instructions. Default value.'),
+    '#default_value' => variable_get('sr_default_deposit_instructions'),
+    '#description' => t('The default payment instructions of the deposit. For instance account number, PayPal account, etc.'),
+  );
+  $form['payment_options']['sr_default_deposit_add_automatically'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Add the default diposit and payment instructions after a reservation is created.'),
+    '#default_value' => variable_get('sr_default_diposit_add_automatically', FALSE),
+  );
+
+
   // Texts.
   $form['texts'] = array(
     '#type' => 'fieldset',
