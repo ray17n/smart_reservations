@@ -106,17 +106,17 @@
   </div>
   <div class="field field-name-smres-deposit-amount field-type-list-text field-label-inline clearfix">
     <div class="field-label"><?php print t('Deposit amount'); ?>:&nbsp;</div>
-    <div class="field-item even">
-      <?php print sr_curr($node->field_smres_deposit_amount['und'][0]['value']); ?>
-      <span class="reservation--amount-after-deposit-label">
-        ( <?php print t('pending amount after the deposit payment: ');?>
-        <span class="reservation--amount-after-deposit-value"><?php print sr_curr($node->smres_total_amount['und'][0]['value'] -
-          $node->field_smres_deposit_amount['und'][0]['value']); ?> )
-        </span>
-      </span>
-    </div>
+    <div class="field-item even"><?php print sr_curr($node->field_smres_deposit_amount['und'][0]['value']); ?></div>
   </div>
   <?php  print render($content['field_smres_deposit_instructions']); ?>
+  <div class="field field-name-amount-after-deposit-payment field-type-list-text field-label-inline clearfix">
+    <div class="field-label"><?php print t('Pending amount after the deposit payment'); ?>:&nbsp;</div>
+    <div class="field-item even">
+      <?php print sr_curr($node->smres_total_amount['und'][0]['value'] -
+        $node->field_smres_deposit_amount['und'][0]['value']); ?>
+    </div>
+  </div>
+
   <?php  print $reservation_detail; ?>
   <?php // print render($content['smres_reservation_status']); ?>
   <?php  //print render($content['smres_total_amount']); ?>
