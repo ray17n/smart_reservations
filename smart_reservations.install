@@ -158,6 +158,13 @@ function smart_reservations_schema() {
         'scale' => '2',
         'not null' => FALSE,
       ),
+      'amount_per_night_cats' => array(
+        'description' => 'Amount cats',
+        'type' => 'numeric',
+        'precision' => '8',
+        'scale' => '2',
+        'not null' => FALSE,
+      ),
       // end new fields
       'total_amount' => array(
         'description' => 'Total amount',
