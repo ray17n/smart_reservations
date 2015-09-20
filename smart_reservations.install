@@ -1436,7 +1436,7 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'inline',
+        'label' => 'above',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
@@ -1563,6 +1563,7 @@ function _sr_installed_instances($content_type) {
   $t('Reservation details');
   $t('Total amount');
   $t('Deposit amount');
+  $t('Deposit instructions');
   $t('Reservation status');
 
   return $field_instances[$content_type];
