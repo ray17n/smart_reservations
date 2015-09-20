@@ -1722,12 +1722,24 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['number_of_babies'] = $res->number_of_babies;
       $a[$ac_id]['summary']['number_of_dogs'] = $res->number_of_dogs;
       $a[$ac_id]['summary']['number_of_cats'] = $res->number_of_cats;
-      $a[$ac_id]['summary']['headline_desc'] = "{$a[$ac_id]['summary']['total_nights']} " . t('nights') ;
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_adults > 0) ? ", {$res->number_of_adults} adults" : '';
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_children > 0) ? ", {$res->number_of_children} children" : '';
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_babies > 0) ? ", {$res->number_of_babies} babies" : '';
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_dogs  > 0) ? ", {$res->number_of_dogs } dogs" : '';
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_cats > 0) ? ", {$res->number_of_cats} cats" : '';
+
+      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
+      $a[$ac_id]['summary']['headline_desc'] = "{$txt}";
+
+      $txt = format_plural($res->number_of_adults, t('1 adult'), '@count ' . t('adults'));
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_adults > 0) ? ", {$txt}" : '';
+
+      $txt = format_plural($res->number_of_children, t('1 child'), '@count ' . t('children'));
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_children > 0) ? ", {$txt}" : '';
+
+      $txt = format_plural($res->number_of_babies, t('1 baby'), '@count ' . t('babies'));
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_babies > 0) ? ", {$txt}" : '';
+
+      $txt = format_plural($res->number_of_dogs, t('1 dog'), '@count ' . t('dogs'));
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_dogs  > 0) ? ", {$txt}" : '';
+
+      $txt = format_plural($res->number_of_cats, t('1 cat'), '@count ' . t('cats'));
+      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_cats > 0) ? ", {$txt}" : '';
 
       $a[$ac_id]['summary']['enough_capacity'] = TRUE;
       $a[$ac_id]['summary']['exceeds_minimum_guests'] = TRUE;
