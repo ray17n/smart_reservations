@@ -755,9 +755,19 @@ function smart_reservations_save_and_email_reservation($form_state) {
     = $form_state['storage']['reservation-fieldset']['reservation_rendered'];
   $node->smres_reservation_details['und'][0]['format'] = 'full_html';
 
+  // Amount and deposit
   $node->smres_total_amount['und'][0]['value']
     = $form_state['storage']['reservation']['total_amount'];
+  $node->smres_deposit_amount['und'][0]['value']
+    = round( $form_state['storage']['reservation']['total_amount']
+              * ( variable_get('sr_default_deposit_percentage') / 100)
+      , 0, PHP_ROUND_HALF_DOWN);
+ $node->smres_deposit_instructions['und'][0]['value']
+    = variable_get('sr_default_deposit_instructions');
+
   $node->smres_reservation_status['und'][0]['value'] = 'Submitted';
+
+
   $node = node_submit($node);
 
   $res_number++;
@@ -780,12 +790,10 @@ function smart_reservations_save_and_email_reservation($form_state) {
             'reservation_id' => $node_id,
             'accommodation_unit_id' => $acc_id,
             'amount' => $d['amount_per_night'],
-            // new fields
             'amount_per_night_adults' => $d['amount_per_night_adults'],
             'amount_per_night_children' => $d['amount_per_night_children'],
             'amount_per_night_dogs' => $d['amount_per_night_dogs'],
             'amount_per_night_cats' => $d['amount_per_night_cats'],
-            // end new fields
             'total_amount' => $a['summary']['total_amount'],
             'number_of_adults' => $a['summary']['number_of_adults'],
             'number_of_children' => $a['summary']['number_of_children'],
@@ -992,14 +1000,18 @@ function markup_accommodation_calendar($a, $p) {
   $i = $week_starts;
   while ($i < ($checkin_weekday_num)) {
     $o .= (($i % 7) == $week_starts) ?
-    '<div class="row cal-sr-results-row">' : '';
+    '<div class="pipon row cal-sr-results-row">' : '';
     $o .= '<div class="col-sm-17 cal-sr-results-cell ';
     $o .= 'cal-sr-results-cell-info text-center">';
     $o .= '' . strftime($df,
       strtotime($first_date_of_the_week . '+' . $i . ' day')) . '<br> -';
     $o .= '</div>';
     $i++;
+
+    $o .= (($i % 7) == $week_starts) ?
+      '</div>' : '';
   }
+
 
   // Fill dates from check-in to check-out.
   foreach ($a['rates_per_night'] as $r) {
@@ -1787,9 +1799,7 @@ function smres_get_reservation_info($res_id) {
 
   $o .=
   '<div class="field field-name-smres-reservation-details field-type-text-long field-label-hidden">
-    <div class="field-items">
-      <div class="field-item even">
-        <div class="reservation-submit-summary">
+        <div class="reservation-summary">
           <fieldset class="panel panel-default form-wrapper">
             <legend class="panel-heading">
             <span class="panel-title fieldset-legend">' . t('Reservation summary') . '</span>
@@ -1800,14 +1810,12 @@ function smres_get_reservation_info($res_id) {
           </fieldset>
         </div>
 
-        <div class="sr-accommodation-submit-reservationetails">
+        <div class="reservation-details">
           <fieldset class="panel panel-default form-wrapper">
             <legend class="panel-heading"><span class="panel-title fieldset-legend">' . t('Reservation details') . '</span></legend>
             <div class="panel-body">';
 
-
   foreach ($a as $ac_item) {
-
      $o .=     '<div id="sr-search-results-accommodation-' . $ac_item['id'] . ' class="sr-search-results-accommodation">
                 <fieldset class="sr-accommodation-unit collapsible panel panel-default form-wrapper" id="edit-search-results-accommodation-units-' . $ac_item['id'] . '">
                   <legend class="panel-heading">
@@ -1815,31 +1823,22 @@ function smres_get_reservation_info($res_id) {
                   </legend>
                   <div class="panel-collapse fade collapse in" aria-expanded="true" style="">
                     <div class="panel-body">
-
                         <div class="sr-accommodation-details">' .
                       markup_accommodation_details($ac_item, $ac_item['params']) .
                         '</div>
-
                       <div id="sr-search-results-accommodation-calendar-' . $res_id . '" class="sr-accommodation-calendar">' .
                           markup_accommodation_calendar($ac_item, array()) .
                       '</div>
-
                       <div class="sr-accommodation-summary">' . markup_accommodation_summary($ac_item) . '</div>
-
-
                     </div>
                   </div>
                 </fieldset>
               </div>';
   }
 
-
   $o .=    '</div>
           </fieldset>
         </div>
-
-      </div>
-    </div>
   </div>';
 
 

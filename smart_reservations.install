@@ -362,8 +362,8 @@ function smart_reservations_install() {
 
   // Payment options
   variable_set('sr_default_deposit_percentage', 30);
-//  variable_set('sr_default_deposit_instructions', '');
-  variable_set('sr_default_deposit_add_automatically', FALSE);
+  variable_set('sr_default_deposit_instructions', 'Instructions to make the deposit. Account information.');
+  variable_set('sr_default_deposit_add_automatically', TRUE);
 
   // Texts.
   variable_set('sr_txt_capacity_exceeded', 'For capacity reasons, you will need to reserve more than one apartment.');
@@ -757,6 +757,43 @@ function _sr_installed_fields() {
     'type' => 'number_decimal',
   );
 
+  $field_bases['smres_deposit_amount'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_deposit_amount',
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(
+      'decimal_separator' => '.',
+      'precision' => 10,
+      'scale' => 2,
+    ),
+    'translatable' => 0,
+    'type' => 'number_decimal',
+  );
+
+  $field_bases['smres_deposit_instructions'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'smres_deposit_instructions',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+
   $field_bases['smres_reservation_status'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -797,6 +834,7 @@ function _sr_installed_instances($content_type) {
   $t = get_t();
   $field_instances = array();
 
+  // Accommodation unit type
   $field_instances['sr_accommodation_unit']['body'] = array(
     'bundle' => 'accommodation_unit',
     'default_value' => NULL,
@@ -1085,96 +1123,7 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
-  $field_instances['sr_reservation']['smres_comments'] = array(
-    'bundle' => 'reservation',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 4,
-      ),
-      'example_node_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'smres_comments',
-    'label' => 'Comments',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'rows' => 3,
-      ),
-      'type' => 'text_textarea',
-      'weight' => 5,
-    ),
-  );
-
-  $field_instances['sr_reservation']['smres_contact_email'] = array(
-    'bundle' => 'reservation',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-      'example_node_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'smres_contact_email',
-    'label' => 'Contact email',
-    'required' => 1,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 2,
-    ),
-  );
-
+  // Reservation type
   $field_instances['sr_reservation']['smres_contact_name'] = array(
     'bundle' => 'reservation',
     'default_value' => NULL,
@@ -1182,11 +1131,11 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 0,
+        'weight' => 1,
       ),
       'example_node_list' => array(
         'label' => 'above',
@@ -1220,6 +1169,51 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
+  $field_instances['sr_reservation']['smres_contact_email'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'example_node_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_contact_email',
+    'label' => 'Contact email',
+    'required' => 1,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 2,
+    ),
+  );
+
   $field_instances['sr_reservation']['smres_contact_phone'] = array(
     'bundle' => 'reservation',
     'default_value' => NULL,
@@ -1227,11 +1221,11 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 2,
+        'weight' => 3,
       ),
       'example_node_list' => array(
         'label' => 'above',
@@ -1272,23 +1266,17 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 3,
-      ),
-      'example_node_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 4,
       ),
     ),
     'entity_type' => 'node',
@@ -1310,48 +1298,43 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
-  $field_instances['sr_reservation']['smres_reservation_details'] = array(
+  $field_instances['sr_reservation']['smres_comments'] = array(
     'bundle' => 'reservation',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
+        'label' => 'inline',
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 6,
+        'weight' => 5,
       ),
-      'example_node_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
+
       'teaser' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 5,
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'smres_reservation_details',
-    'label' => 'Reservation details',
+    'field_name' => 'smres_comments',
+    'label' => 'Comments',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 1,
+      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
       'module' => 'text',
       'settings' => array(
-        'rows' => 5,
+        'rows' => 3,
       ),
       'type' => 'text_textarea',
-      'weight' => 7,
+      'weight' => 5,
     ),
   );
 
@@ -1362,7 +1345,7 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'number',
         'settings' => array(
           'decimal_separator' => '.',
@@ -1371,19 +1354,13 @@ function _sr_installed_instances($content_type) {
           'thousand_separator' => ' ',
         ),
         'type' => 'number_decimal',
-        'weight' => 5,
-      ),
-      'example_node_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 6,
       ),
       'teaser' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 6,
       ),
     ),
     'entity_type' => 'node',
@@ -1406,6 +1383,91 @@ function _sr_installed_instances($content_type) {
     ),
   );
 
+
+  $field_instances['sr_reservation']['smres_deposit_amount'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => 0,
+          'scale' => 2,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_decimal',
+        'weight' => 7,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 7,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_deposit_amount',
+    'label' => 'Deposit amount',
+    'required' => 0,
+    'settings' => array(
+      'max' => '',
+      'min' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 7,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_deposit_instructions'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 8,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 8,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_deposit_instructions',
+    'label' => 'Deposit instructions',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 8,
+    ),
+  );
+
   $field_instances['sr_reservation']['smres_reservation_status'] = array(
     'bundle' => 'sr_reservation',
     'default_value' => array(
@@ -1417,17 +1479,17 @@ function _sr_installed_instances($content_type) {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 7,
+        'weight' => 9,
       ),
       'teaser' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 0,
+        'weight' => 9,
       ),
     ),
     'entity_type' => 'node',
@@ -1442,7 +1504,46 @@ function _sr_installed_instances($content_type) {
       'module' => 'options',
       'settings' => array(),
       'type' => 'options_select',
-      'weight' => 6,
+      'weight' => 9,
+    ),
+  );
+
+  $field_instances['sr_reservation']['smres_reservation_details'] = array(
+    'bundle' => 'reservation',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 10,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 10,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'smres_reservation_details',
+    'label' => 'Reservation details',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 1,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 10,
     ),
   );
 
@@ -1461,6 +1562,7 @@ function _sr_installed_instances($content_type) {
   $t('Rate multiplier');
   $t('Reservation details');
   $t('Total amount');
+  $t('Deposit amount');
   $t('Reservation status');
 
   return $field_instances[$content_type];

@@ -432,3 +432,37 @@ input[type="submit"].sr-button-red:hover {
     display: block;
   }
 }
+
+/* Reservation page */
+body.node-type-sr-reservation .field-name-smres-reservation-details {
+  /*border: 1px solid green;*/
+  margin-top: 1.5em;
+}
+body.node-type-sr-reservation .reservation-summary {
+  /*border: 1px solid red;*/
+  /*float: left;*/
+  /*padding-bottom: 0px;*/
+  /*margin-bottom: 5px;*/
+}
+
+body.node-type-sr-reservation .reservation-details {
+  /*border: 1px solid blue;*/
+  /*width: 100%;*/
+  /*float: left;*/
+}
+body.node-type-sr-reservation .sr-accommodation-calendar {
+  margin-left: 14px;
+  /*border: 1px solid #999;*/
+  /*width: 100%;*/
+  /*float: left !important;*/
+}
+body.node-type-sr-reservation .sr-accommodation-calendar .cal-sr-results-header{
+  /*border: 1px solid #777;*/
+  /*width: 100%;*/
+  /*float: left;*/
+}
+body.node-type-sr-reservation .sr-accommodation-calendar .cal-sr-results-row {
+  /*border: 1px /solid #777;*/
+  /*width: 100%;*/
+  /*float: left;*/
+}

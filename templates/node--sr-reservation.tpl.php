@@ -101,7 +101,9 @@
   <?php print render($content['smres_contact_tax_identifier']); ?>
   <?php print render($content['smres_comments']); ?>
   <?php // print render($content['smres_reservation_status']); ?>
-  <?php // print render($content['smres_total_amount']); ?>
-  <?php print $reservation_detail; ?>
+  <?php  print render($content['smres_total_amount']); ?>
+  <?php  print render($content['smres_deposit_amount']); ?>
+  <?php  print render($content['smres_deposit_instructions']); ?>
+  <?php  print $reservation_detail; ?>
   <?php //print render($content); ?>
 </div>
