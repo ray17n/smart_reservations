@@ -1724,7 +1724,7 @@ function smres_get_reservation_info($res_id) {
         )
       );
 
-      $a[$ac_id]['summary']['total_nights'] = 2;
+      $a[$ac_id]['summary']['total_nights'] = 1;
       $a[$ac_id]['summary']['total_amount'] = $res->total_amount ;
       // res->total_amount is total amount for accommodation unit
       $total_amount += $res->total_amount;
