@@ -1724,7 +1724,7 @@ function smres_get_reservation_info($res_id) {
         )
       );
 
-      $a[$ac_id]['summary']['total_nights'] = 1;
+      $a[$ac_id]['summary']['total_nights'] = 2;
       $a[$ac_id]['summary']['total_amount'] = $res->total_amount ;
       // res->total_amount is total amount for accommodation unit
       $total_amount += $res->total_amount;
@@ -1735,6 +1735,7 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['number_of_dogs'] = $res->number_of_dogs;
       $a[$ac_id]['summary']['number_of_cats'] = $res->number_of_cats;
 
+//      dpm($a[$ac_id]['summary']['total_nights']);
       $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
       $a[$ac_id]['summary']['headline_desc'] = "{$txt}";
 
