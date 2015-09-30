@@ -1778,8 +1778,8 @@ function smres_get_reservation_info($res_id) {
       );
       $a[$ac_id]['summary']['total_nights']++;
 
-      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
-      $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . ', 4 adults';
+//      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
+//      $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . ', 4 adults';
 
 
       $a[$ac_id]['summary']['rate_per_night'] = $a[$ac_id]['summary']['total_amount'] / $a[$ac_id]['summary']['total_nights'];
