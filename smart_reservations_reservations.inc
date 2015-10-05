@@ -1736,8 +1736,8 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['number_of_cats'] = $res->number_of_cats;
 
 //      dpm($a[$ac_id]['summary']['total_nights']);
-      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
-//      $txt = '4 nits';
+//      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
+      $txt = '2 nits';
       $a[$ac_id]['summary']['headline_desc'] = "{$txt}";
 
       $txt = format_plural($res->number_of_adults, t('1 adult'), '@count ' . t('adults'));
