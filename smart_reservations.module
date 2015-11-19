@@ -159,9 +159,9 @@ function smart_reservations_menu() {
     'page arguments' => array('smart_reservations_acc_unit_tab_reservations',1),
     'file' => 'smart_reservations_reservations.inc',
 
-    'access arguments' => array('administer smart reservations'),
-//    'access callback' => 'tab_acc_unit_access_callback',
-//    'access arguments' => array(1),
+//    'access arguments' => array('administer smart reservations'),
+    'access callback' => 'tab_acc_unit_access_callback',
+    'access arguments' => array(1),
 
     'type' => MENU_LOCAL_TASK,
     'weight' => 10,
@@ -174,9 +174,9 @@ function smart_reservations_menu() {
     'page arguments' => array('smart_reservations_acc_unit_tab_rates',1),
     'file' => 'smart_reservations_rates.inc',
 
-    'access arguments' => array('administer smart reservations'),
-//    'access callback' => 'tab_acc_unit_access_callback',
-//    'access arguments' => array(1),
+//    'access arguments' => array('administer smart reservations'),
+    'access callback' => 'tab_acc_unit_access_callback',
+    'access arguments' => array(1),
 
     'type' => MENU_LOCAL_TASK,
     'weight' => 20,
