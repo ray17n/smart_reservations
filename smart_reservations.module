@@ -63,16 +63,17 @@ function smart_reservations_menu() {
   /* Reminder: there's no need to used t() in title and description.  */
   $items = array();
 
-  $items['admin/config/content/smart-reservations'] = array(
+  $items['admin/smart-reservations'] = array(
     'title' => 'Smart Reservations',
     'description' => 'Smart Reservations settings, rates and log.',
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_settings.inc',
     'page arguments' => array('smart_reservations_configuration_form'),
+    'weight' => -13,
   );
 
-  $items['admin/config/content/smart-reservations/settings'] = array(
+  $items['admin/smart-reservations/settings'] = array(
     'title' => 'Settings',
     'description' => 'Settings of Smart Reservations',
     'page callback' => 'drupal_get_form',
@@ -83,7 +84,7 @@ function smart_reservations_menu() {
     'weight' => 1,
   );
 
-  $items['admin/config/content/smart-reservations/default-rates'] = array(
+  $items['admin/smart-reservations/default-rates'] = array(
     'title' => 'Default rates',
     'description' => 'Configure default rates.',
     'page callback' => 'drupal_get_form',
@@ -94,7 +95,7 @@ function smart_reservations_menu() {
     'weight' => 2,
   );
 
-  $items['admin/config/content/smart-reservations/rates'] = array(
+  $items['admin/smart-reservations/rates'] = array(
     'title' => 'Rates per night',
     'description' => 'Configure rates per night.',
     'page callback' => 'drupal_get_form',
@@ -105,7 +106,7 @@ function smart_reservations_menu() {
     'weight' => 3,
   );
 
-  $items['admin/config/content/smart-reservations/search-log'] = array(
+  $items['admin/smart-reservations/search-log'] = array(
     'title' => 'Log',
     // 'page callback' => '_smart_reservations_list_search_log',
     'page callback' => 'drupal_get_form',
