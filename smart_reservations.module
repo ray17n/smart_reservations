@@ -383,7 +383,7 @@ function smart_reservations_form_node_admin_content_alter(&$form, &$form_state, 
   foreach ($form['admin']['nodes']['#options'] as $nid => $row) {
 
     if($nodes[$nid]->type == 'sr_reservation') {
-      // Add reservation data to the title
+      // Add reservation info to the title
       $form['admin']['nodes']['#options'][$nid]['title']['data']['#title']
         .= ' ' . $nodes[$nid]->smres_contact_name['und'][0]['value'];
     }
