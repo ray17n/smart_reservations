@@ -1724,7 +1724,9 @@ function smres_get_reservation_info($res_id) {
         )
       );
 
+      // Initial value
       $a[$ac_id]['summary']['total_nights'] = 1;
+
       $a[$ac_id]['summary']['total_amount'] = $res->total_amount ;
       // res->total_amount is total amount for accommodation unit
       $total_amount += $res->total_amount;
@@ -1734,11 +1736,6 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['number_of_babies'] = $res->number_of_babies;
       $a[$ac_id]['summary']['number_of_dogs'] = $res->number_of_dogs;
       $a[$ac_id]['summary']['number_of_cats'] = $res->number_of_cats;
-
-//      dpm($a[$ac_id]['summary']['total_nights']);
-//      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
-      $txt = '2 noches';
-      $a[$ac_id]['summary']['headline_desc'] = "{$txt}";
 
       $txt = format_plural($res->number_of_adults, t('1 adult'), '@count ' . t('adults'));
       $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_adults > 0) ? ", {$txt}" : '';
@@ -1761,9 +1758,9 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['rate_per_night'] = $res->total_amount;
 
       $a[$ac_id]['summary']['total_amount_adults'] = $res->amount_per_night_adults;
-      $a[$ac_id]['summary']['rate_per_night_adult'] = $res->amount_per_night_adults;
+      $a[$ac_id]['summary']['rate_per_night_adult'] = $res->amount_per_night_adults / $res->number_of_adults;
       $a[$ac_id]['summary']['total_amount_children'] = $res->amount_per_night_children;
-      $a[$ac_id]['summary']['rate_per_night_children'] = $res->amount_per_night_children;
+      $a[$ac_id]['summary']['rate_per_night_children'] = $res->amount_per_night_children / $res->number_of_children ;
 
 
     }
@@ -1778,11 +1775,6 @@ function smres_get_reservation_info($res_id) {
         )
       );
       $a[$ac_id]['summary']['total_nights']++;
-
-//      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
-//      $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . ', 4 adults';
-
-
       $a[$ac_id]['summary']['rate_per_night'] = $a[$ac_id]['summary']['total_amount'] / $a[$ac_id]['summary']['total_nights'];
 
       $a[$ac_id]['summary']['total_amount_adults'] += $res->amount_per_night_adults;
@@ -1795,8 +1787,13 @@ function smres_get_reservation_info($res_id) {
     }
     $i++;
 
+
   }
 
+  // Add the number of nights to the summary txt
+  $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
+  $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . $a[$ac_id]['summary']['headline_desc'];
+  
   // Array of summaries for accommodation unit
   $summary['acc_units_sum'] = array();
   foreach ($a as $ac_item) {
