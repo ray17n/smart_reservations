@@ -366,6 +366,32 @@ function sr_accommodation_unit_form($node, $form_state) {
 }
 
 
+
+/**
+ * Implements hook_form_alter() for node_admin_content form.
+ */
+function smart_reservations_form_node_admin_content_alter(&$form, &$form_state, $form_id) {
+//  dsm($form);
+
+  // Load the nodes. This incurrs very little overhead as
+  // "$nodes = node_load_multiple($nids);" has already been run on these
+  // nids in node_admin_nodes(). The static cache will be used instead of
+  // another db query being invoked
+  $nodes = node_load_multiple(array_keys($form['admin']['nodes']['#options']));
+
+  // Loop through the rows in the table and add the customer to the title if it's a reservation.
+  foreach ($form['admin']['nodes']['#options'] as $nid => $row) {
+
+    if($nodes[$nid]->type == 'sr_reservation') {
+      // Add reservation data to the title
+      $form['admin']['nodes']['#options'][$nid]['title']['data']['#title']
+        .= ' ' . $nodes[$nid]->smres_contact_name['und'][0]['value'];
+    }
+  }
+}
+
+
+
 /**
  * Implements hook_form_FORM_ID_alter() for sr_reservation_node_form
  */
