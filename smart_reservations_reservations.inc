@@ -1525,12 +1525,12 @@ function get_rates_per_date_range($acc_id, $p) {
       )
     );
 
-    $sum_headline_desc = "{$total_nights} " . t('nights') ;
-    $sum_headline_desc .= ($adults > 0) ? ", {$adults} adults" : '';
-    $sum_headline_desc .= ($children > 0) ? ", {$children} children" : '';
-    $sum_headline_desc .= ($p['babies'] > 0) ? ", {$p['babies']} babies" : '';
-    $sum_headline_desc .= ($dogs > 0) ? ", {$dogs} dogs" : '';
-    $sum_headline_desc .= ($p['cats'] > 0) ? ", {$p['cats']} cats" : '';
+    $sum_headline_desc = format_plural($total_nights, t('1 night'), '@count ' . t('nights'));
+    $sum_headline_desc .= ($adults > 0) ? ', ' . format_plural($adults, t('1 adult'), '@count ' . t('adults')) : '';
+    $sum_headline_desc .= ($children > 0) ? ', ' . format_plural($children, t('1 child'), '@count ' . t('children')) : '';
+    $sum_headline_desc .= ($p['babies'] > 0) ? ', ' . format_plural($p['babies'], t('1 baby'), '@count ' . t('babies')) : '';
+    $sum_headline_desc .= ($dogs > 0) ? ', ' . format_plural($dogs, t('1 dog'), '@count ' . t('dogs')) : '';
+    $sum_headline_desc .= ($p['cats'] > 0) ? ', ' . format_plural($p['cats'], t('1 cat'), '@count ' . t('cats')) : '';
 
     $accommodation_rates = array(
       'id' => $a->nid,
