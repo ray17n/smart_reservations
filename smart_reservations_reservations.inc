@@ -1738,19 +1738,19 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['number_of_cats'] = $res->number_of_cats;
 
       $txt = format_plural($res->number_of_adults, t('1 adult'), '@count ' . t('adults'));
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_adults > 0) ? ", {$txt}" : '';
+      $desc_people[$ac_id] = ($res->number_of_adults > 0) ? ", {$txt}" : '';
 
       $txt = format_plural($res->number_of_children, t('1 child'), '@count ' . t('children'));
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_children > 0) ? ", {$txt}" : '';
+      $desc_people[$ac_id] .= ($res->number_of_children > 0) ? ", {$txt}" : '';
 
       $txt = format_plural($res->number_of_babies, t('1 baby'), '@count ' . t('babies'));
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_babies > 0) ? ", {$txt}" : '';
+      $desc_people[$ac_id] .= ($res->number_of_babies > 0) ? ", {$txt}" : '';
 
       $txt = format_plural($res->number_of_dogs, t('1 dog'), '@count ' . t('dogs'));
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_dogs  > 0) ? ", {$txt}" : '';
+      $desc_people[$ac_id] .= ($res->number_of_dogs  > 0) ? ", {$txt}" : '';
 
       $txt = format_plural($res->number_of_cats, t('1 cat'), '@count ' . t('cats'));
-      $a[$ac_id]['summary']['headline_desc'] .= ($res->number_of_cats > 0) ? ", {$txt}" : '';
+      $desc_people[$ac_id] .= ($res->number_of_cats > 0) ? ", {$txt}" : '';
 
       $a[$ac_id]['summary']['enough_capacity'] = TRUE;
       $a[$ac_id]['summary']['exceeds_minimum_guests'] = TRUE;
@@ -1782,18 +1782,19 @@ function smres_get_reservation_info($res_id) {
         $a[$ac_id]['summary']['total_amount_adults'] / $res->number_of_adults / $a[$ac_id]['summary']['total_nights'];
 
       $a[$ac_id]['summary']['total_amount_children'] += $res->amount_per_night_children;
-      $a[$ac_id]['summary']['rate_per_night_children'] = ($res->number_of_children == 0) ? 0 :
-        $a[$ac_id]['summary']['total_amount_children'] / $res->number_of_children / $a[$ac_id]['summary']['total_nights'];
+      $a[$ac_id]['summary']['rate_per_night_children'] = ($res->number_of_children == 0) ? 0 : $a[$ac_id]['summary']['total_amount_children'] / $res->number_of_children / $a[$ac_id]['summary']['total_nights'];
+
     }
+      // Add the number of nights to the summary txt
+      $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
+      $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . $desc_people[$ac_id];
+//        . $a[$ac_id]['summary']['headline_desc'];
     $i++;
 
 
   }
 
-  // Add the number of nights to the summary txt
-  $txt = format_plural($a[$ac_id]['summary']['total_nights'], t('1 night'), '@count ' . t('nights'));
-  $a[$ac_id]['summary']['headline_desc'] = "{$txt}" . $a[$ac_id]['summary']['headline_desc'];
-  
+
   // Array of summaries for accommodation unit
   $summary['acc_units_sum'] = array();
   foreach ($a as $ac_item) {
