@@ -15,10 +15,10 @@ function smart_reservations_reservations_form($form, &$form_state) {
   $form = array();
   $header = array(
     'title' => t('Reservation ID'),
-    'comments' => t('Comments'),
     'customer_name' => t('Customer name'),
     'customer_email' => t('Customer email'),
     'customer_phone' => t('Customer phone'),
+    'comments' => t('Comments'),
   );
 
   $reservations = node_load_multiple(array(), array('type' => 'sr_reservation'));
@@ -26,11 +26,11 @@ function smart_reservations_reservations_form($form, &$form_state) {
   $rows = array();
   foreach ($reservations as $reservation ) {
     $rows[] = array (
-      'title' => $reservation->title,
-      'comments' => $reservation->smres_comments['und'][0]['value'],
+      'title' => l($reservation->title, 'node/'.$reservation->nid),
       'customer_name' => $reservation->smres_contact_name['und'][0]['value'],
       'customer_email' => $reservation->smres_contact_email['und'][0]['value'],
       'customer_phone' => $reservation->smres_contact_phone['und'][0]['value'],
+      'comments' => $reservation->smres_comments['und'][0]['value'],
     );
   }
 
