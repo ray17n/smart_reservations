@@ -64,14 +64,37 @@ function smart_reservations_menu() {
   $items = array();
 
   $items['admin/smart-reservations'] = array(
+
     'title' => 'Smart Reservations',
-    'description' => 'Smart Reservations settings, rates and log.',
+    'description' => 'Smart Reservations: reservations, settings, rates, log, etc.',
     'page callback' => 'drupal_get_form',
-    'access arguments' => array('administer smart reservations'),
-    'file' => 'smart_reservations_settings.inc',
-    'page arguments' => array('smart_reservations_configuration_form'),
+    'page arguments' => array('smart_reservations_reservations_form'),
+    'file' => 'smart_reservations_reservations_page.inc',
+    'access arguments' => array('access smart_reservations content'),
+
+
+//    'title' => 'Smart Reservations',
+//    'description' => 'Smart Reservations settings, rates and log.',
+//    'page callback' => 'drupal_get_form',
+//    'access arguments' => array('administer smart reservations'),
+//    'file' => 'smart_reservations_settings.inc',
+//    'page arguments' => array('smart_reservations_configuration_form'),
     'weight' => -13,
   );
+
+
+  $items['admin/smart-reservations/reservations'] = array(
+    'title' => 'Reservations',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_log_form'),
+    'file' => 'smart_reservations_logs.inc',
+    'access arguments' => array('access smart_reservations content'),
+    // Will appear in Navigation menu.
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+
+
 
   $items['admin/smart-reservations/settings'] = array(
     'title' => 'Settings',
@@ -80,7 +103,7 @@ function smart_reservations_menu() {
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_settings.inc',
     'page arguments' => array('smart_reservations_configuration_form'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
     'weight' => 1,
   );
 
