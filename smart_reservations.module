@@ -497,7 +497,8 @@ function smart_reservations_preprocess_node(&$variables) {
 
   if ($variables['type'] == 'sr_accommodation_unit') {
     $base_rate = variable_get('sr_default_base_rate');
-    $mult = $variables['smres_rate_multiplier'][0]['value'];
+
+    $mult = number_format($variables['smres_rate_multiplier']['und'][0]['value'], 2);
 
     $desc = t('Each rate per night for this accommodation unit is multiplied for this value. Example:
       <br>- Current default base rate: @cur
@@ -517,8 +518,12 @@ function smart_reservations_preprocess_node(&$variables) {
 
     $o = smres_get_reservation_info($variables['nid']);
 
+    $variables['reservation_summary'] = $o['reservation_summary'];
+    $variables['reservation_details'] = $o['reservation_details'];
+
     // Accommodation - details (additional info).
 
+    // OLD CODE
   //  $o = markup_accommodation_details($a, $p);
 /*    $build_form['accommodation_units'][$id]['data']['details'] = array(
       '#type' => 'markup',
@@ -549,8 +554,6 @@ function smart_reservations_preprocess_node(&$variables) {
       '#suffix' => '</div>',
     ); */
 
-    $variables['reservation_summary'] = $o['reservation_summary'];
-    $variables['reservation_details'] = $o['reservation_details'];
 
   }
 }
