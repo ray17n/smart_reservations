@@ -63,7 +63,6 @@ function smart_reservations_menu() {
   /* Reminder: there's no need to used t() in title and description.  */
   $items = array();
 
-
   $items['admin/smart-reservations'] = array(
     'title' => 'Smart Reservations',
     'description' => 'Smart Reservations: reservations, settings, rates, log, etc.',
@@ -72,6 +71,7 @@ function smart_reservations_menu() {
     'file' => 'smart_reservations.admin.inc',
   );
 
+  // Reservations
   $items['admin/smart-reservations/reservations'] = array(
     'title' => 'Reservations',
     'description' => 'Management of reservations.',
@@ -91,7 +91,7 @@ function smart_reservations_menu() {
     'access arguments' => array('access smart_reservations content'),
   );
 
-
+  // Accommodations
   $items['admin/smart-reservations/accommodations'] = array(
     'title' => 'Accommodations',
     'description' => 'Management of accommodations.',

@@ -17,13 +17,9 @@ function smart_reservations_admin() {
     drupal_set_message(t('One or more problems were detected with your Drupal installation. Check the <a href="@status">status report</a> for more information.', array('@status' => url('admin/reports/status'))), 'error');
   }
 
-
   $blocks = array();
 
-
-
   if ($admin = db_query("SELECT menu_name, mlid FROM {menu_links} WHERE link_path = 'admin/smart-reservations' AND module = 'system'")->fetchAssoc()) {
-
 
     $result = db_query("
       SELECT m.*, ml.*
@@ -31,16 +27,7 @@ function smart_reservations_admin() {
       INNER JOIN {menu_router} m ON ml.router_path = m.path
       WHERE ml.link_path != 'admin/help' AND menu_name = :menu_name AND ml.plid = :mlid AND hidden = 0", $admin, array('fetch' => PDO::FETCH_ASSOC));
 
-//    $result = db_query("
-//      SELECT m.*, ml.*
-//      FROM {menu_links} ml
-//      INNER JOIN {menu_router} m ON ml.router_path = m.path
-//      WHERE ml.link_path != 'admin/help' AND menu_name = :menu_name AND ml.plid = :mlid", $admin, array('fetch' => PDO::FETCH_ASSOC));
-//
-
     foreach ($result as $item) {
-//      dsm($item);
-
 
       // Localize menu item
       _menu_link_translate($item);
@@ -58,9 +45,6 @@ function smart_reservations_admin() {
       $block = $item;
       $block['content'] = theme('admin_block_content', array('content' => system_admin_menu_block($item)));
 
-//      dsm($block);
-
-//        $block['show'] = TRUE;
       if (!empty($block['content'])) {
         $block['show'] = TRUE;
       }
@@ -76,7 +60,6 @@ function smart_reservations_admin() {
     '#theme' => 'admin_page',
     '#blocks' => $blocks,
   );
-
 
   return $build;
 
