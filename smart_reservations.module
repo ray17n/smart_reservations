@@ -71,30 +71,28 @@ function smart_reservations_menu() {
     'page arguments' => array('smart_reservations_reservations_form'),
     'file' => 'smart_reservations_reservations_page.inc',
     'access arguments' => array('access smart_reservations content'),
-
-
-//    'title' => 'Smart Reservations',
-//    'description' => 'Smart Reservations settings, rates and log.',
-//    'page callback' => 'drupal_get_form',
-//    'access arguments' => array('administer smart reservations'),
-//    'file' => 'smart_reservations_settings.inc',
-//    'page arguments' => array('smart_reservations_configuration_form'),
     'weight' => -13,
   );
 
-
   $items['admin/smart-reservations/reservations'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
     'title' => 'Reservations',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('smart_reservations_log_form'),
-    'file' => 'smart_reservations_logs.inc',
+    'page arguments' => array('smart_reservations_reservations_form'),
+    'file' => 'smart_reservations_reservations_page.inc',
     'access arguments' => array('access smart_reservations content'),
-    // Will appear in Navigation menu.
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => 0,
+    'weight' => -1,
   );
 
-
+  $items['admin/smart-reservations/accommodations'] = array(
+    'type' => MENU_LOCAL_TASK,
+    'title' => 'Accommodations',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_accommodations_form'),
+    'file' => 'smart_reservations_accommodations.inc',
+    'access arguments' => array('access smart_reservations content'),
+    'weight' => 0,
+  );
 
   $items['admin/smart-reservations/settings'] = array(
     'title' => 'Settings',
@@ -131,7 +129,6 @@ function smart_reservations_menu() {
 
   $items['admin/smart-reservations/search-log'] = array(
     'title' => 'Log',
-    // 'page callback' => '_smart_reservations_list_search_log',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_log_form'),
     'file' => 'smart_reservations_logs.inc',
@@ -151,7 +148,7 @@ function smart_reservations_menu() {
     'file' => 'smart_reservations_reservations.inc',
   );
 
-  // Accommodation Unit: tab Reservations.
+  // Accommodation Unit content type: tab Reservations.
   $items['node/%node/reservations'] = array(
     'title' => 'Reservations',
     // 'page callback' => '_smart_reservations_acc_unit_reservations',
@@ -167,7 +164,7 @@ function smart_reservations_menu() {
     'weight' => 10,
   );
 
-  // Accommodation Unit: tab Rates.
+  // Accommodation Unit content type: tab Rates.
   $items['node/%node/rates'] = array(
     'title' => 'Rates',
     'page callback' => 'drupal_get_form',
