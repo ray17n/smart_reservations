@@ -1761,6 +1761,8 @@ function smres_get_reservation_info($res_id) {
       $a[$ac_id]['summary']['rate_per_night_adult'] = $res->amount_per_night_adults / $res->number_of_adults;
       $a[$ac_id]['summary']['total_amount_children'] = $res->amount_per_night_children;
       $a[$ac_id]['summary']['rate_per_night_children'] = $res->amount_per_night_children / $res->number_of_children ;
+      $a[$ac_id]['summary']['total_amount_dogs'] = $res->amount_per_night_dogs;
+      $a[$ac_id]['summary']['rate_per_night_dogs'] = $res->amount_per_night_dogs / $res->number_of_dogs ;
 
 
     }
