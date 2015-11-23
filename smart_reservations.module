@@ -64,59 +64,95 @@ function smart_reservations_menu() {
   $items = array();
 
   $items['admin/smart-reservations'] = array(
-
     'title' => 'Smart Reservations',
     'description' => 'Smart Reservations: reservations, settings, rates, log, etc.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('smart_reservations_reservations_form'),
-    'file' => 'smart_reservations_reservations_page.inc',
-    'access arguments' => array('access smart_reservations content'),
-    'weight' => -13,
+    'page callback' => 'smart_reservations_admin',
+    'access arguments' => array('administer smart reservations'),
+    'file' => 'smart_reservations.admin.inc',
+    'weight' => -30,
   );
 
+  // Reservations
   $items['admin/smart-reservations/reservations'] = array(
-    'type' => MENU_DEFAULT_LOCAL_TASK,
     'title' => 'Reservations',
+    'description' => 'Management of reservations.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_reservations_form'),
     'file' => 'smart_reservations_reservations_page.inc',
     'access arguments' => array('access smart_reservations content'),
-    'weight' => -1,
+    'position' => 'left',
+    'weight' => 10,
+  );
+  $items['admin/smart-reservations/reservations/list'] = array(
+    'title' => 'Reservation orders',
+    'description' => 'View and manage reservation orders',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_reservations_form'),
+    'file' => 'smart_reservations_reservations_page.inc',
+    'access arguments' => array('access smart_reservations content'),
   );
 
+  // Accommodations
   $items['admin/smart-reservations/accommodations'] = array(
-    'type' => MENU_LOCAL_TASK,
     'title' => 'Accommodations',
+    'description' => 'Management of accommodations.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_accommodations_form'),
     'file' => 'smart_reservations_accommodations.inc',
     'access arguments' => array('access smart_reservations content'),
-    'weight' => 0,
+    'position' => 'left',
+    'weight' => 20,
+  );
+  $items['admin/smart-reservations/accommodations/units'] = array(
+    'title' => 'Accommodation units',
+    'description' => 'View and manage accommodation units.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_accommodations_form'),
+    'file' => 'smart_reservations_accommodations.inc',
+    'access arguments' => array('access smart_reservations content'),
   );
 
+  // Settings
   $items['admin/smart-reservations/settings'] = array(
+    'title' => 'Configuration',
+    'description' => 'Adjust configuration settings for Smart Reservations.',
+    'page callback' => 'smart_reservations_configuration_page',
+    'access arguments' => array('administer smart reservations'),
+    'file' => 'smart_reservations.admin.inc',
+    'position' => 'right',
+    'weight' => 30,
+  );
+
+  $items['admin/smart-reservations/settings/general'] = array(
     'title' => 'Settings',
     'description' => 'Settings of Smart Reservations',
     'page callback' => 'drupal_get_form',
+    'description' => 'Adjust the configuration settings of Smart Reservations.',
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_settings.inc',
     'page arguments' => array('smart_reservations_configuration_form'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 1,
   );
 
-  $items['admin/smart-reservations/default-rates'] = array(
+  $items['admin/smart-reservations/settings/rates'] = array(
+    'title' => 'Rates',
+    'description' => 'Set the rates to apply.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_default_rates_form'),
+    'access arguments' => array('administer smart reservations'),
+    'file' => 'smart_reservations_rates.inc',
+  );
+
+  $items['admin/smart-reservations/settings/rates/default-rates'] = array(
     'title' => 'Default rates',
     'description' => 'Configure default rates.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_default_rates_form'),
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_rates.inc',
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 2,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
-  $items['admin/smart-reservations/rates'] = array(
+  $items['admin/smart-reservations/settings/rates/rates-night'] = array(
     'title' => 'Rates per night',
     'description' => 'Configure rates per night.',
     'page callback' => 'drupal_get_form',
@@ -124,29 +160,48 @@ function smart_reservations_menu() {
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_rates.inc',
     'type' => MENU_LOCAL_TASK,
-    'weight' => 3,
   );
 
-  $items['admin/smart-reservations/search-log'] = array(
-    'title' => 'Log',
+  // Reports
+  $items['admin/smart-reservations/reports'] = array(
+    'title' => 'Reports',
+    'description' => 'Browse various Smart Reservations reports.',
+    'page callback' => 'smart_reservations_reports',
+    'access arguments' => array('administer smart reservations'),
+    'weight' => 20,
+    'file' => 'smart_reservations.admin.inc',
+    'position' => 'right',
+    'weight' => 40,
+  );
+
+  $items['admin/smart-reservations/reports/general'] = array(
+    'title' => 'Queries submitted',
+    'description' => 'See the log of searches for available accommodation units.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_log_form'),
     'file' => 'smart_reservations_logs.inc',
-    'access arguments' => array('access smart_reservations content'),
-    // Will appear in Navigation menu.
+    'access arguments' => array('administer smart reservations'),
+  );
+  $items['admin/smart-reservations/reports/general/search-log'] = array(
+    'title' => 'Queries submitted.',
+    'description' => 'See the queries looking for available accommodation units submitted.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('smart_reservations_log_form'),
+    'file' => 'smart_reservations_logs.inc',
+    'access arguments' => array('administer smart reservations'),
     'type' => MENU_LOCAL_TASK,
-    'weight' => 4,
   );
 
+
+  // Path for availability form
   $items[variable_get('sr_search_available_url')] = array(
-    'title' => 'Availability',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('smart_reservations_multiform'),
-    // Public available if anonymous use has accec content privilege
-    'access arguments' => array('access content'),
-//    'access callback' => TRUE,
-    'file' => 'smart_reservations_reservations.inc',
-  );
+      'title' => 'Availability',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('smart_reservations_multiform'),
+      // Public available if anonymous use has accec content privilege
+      'access arguments' => array('access content'),
+      'file' => 'smart_reservations_reservations.inc',
+    );
 
   // Accommodation Unit content type: tab Reservations.
   $items['node/%node/reservations'] = array(
@@ -155,8 +210,6 @@ function smart_reservations_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_acc_unit_tab_reservations',1),
     'file' => 'smart_reservations_reservations.inc',
-
-//    'access arguments' => array('administer smart reservations'),
     'access callback' => 'tab_acc_unit_access_callback',
     'access arguments' => array(1),
 
@@ -170,11 +223,8 @@ function smart_reservations_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_acc_unit_tab_rates',1),
     'file' => 'smart_reservations_rates.inc',
-
-//    'access arguments' => array('administer smart reservations'),
     'access callback' => 'tab_acc_unit_access_callback',
     'access arguments' => array(1),
-
     'type' => MENU_LOCAL_TASK,
     'weight' => 20,
   );

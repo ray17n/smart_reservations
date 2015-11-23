@@ -71,42 +71,10 @@ More info at www.ramon.click/smart-reservations.
 - If an Accommodation unit is unpublished will not appear at the search availability results.
 
 
-##Todo
-
-### Issues 
-  - Reservations:
-    - When creating a new reservation, in the last screen, when there is a comment in a Reservation, the summary does not show the information. 
-
-
-### Currently working
-  - Reservations:
-    - Improve editing workflow.
-    - Add discounts functionality. 
-    - Calendar. Localize the name of the month. 
-    - After submitting, add more info into the message to the administrator.
-    - After submitting, add more info into the message to the client.
-    - Improve workflow when creating a new reservation with an admin account.
-    - Improve editing functionality.
-    - Improve status workflow.
-  - Rates per night. Improve entry data workflow.
-  - When making a reservation, control if user goes back with the back button of the web browser.
-
-### Ideas / new features to add
-  - Limit submission searches per hour. Analyze if honeypot module can be useful.
-  - Accomodation units. Show an image in search results form.
-  - Ubercart support.
-  - Support for other pets and options.
-  - Calendar in search results: change range with a click.
-  - Add Discounts per date.
-  - Reports of searched reservations per day.
-  - Limit the number of search queries per minute / create a parameter.
-  - Automatically localize the first day of the week when showing results.
-  - When listing rates, add a calendar view.
-  - Change module structure folder to allow having other modules in the same main folder.
-
 ## Change log
 
 ### v7.x-1.1
+  - Main management pane added.
   - Reservations:
     - Total amount aligned to the right.
     - New status field: Created, Submitted, Pending customer verification, Pending confirmation payments, Confirmed, Checked-in, Completed, Cancelled.
@@ -152,6 +120,37 @@ Date: 2012-06-14
 - Custom module developed for Casafont Rural Holiday Apartments.
 
 
+##Todo
+
+### Issues
+  - Reservations:
+    - When creating a new reservation, in the last screen, when there is a comment in a Reservation, the summary does not show the information.
+
+### Currently working
+  - Reservations:
+    - Improve editing workflow.
+    - Add discounts functionality.
+    - After submitting, add more info into the message to the administrator.
+    - After submitting, add more info into the message to the client.
+    - Improve workflow when creating a new reservation with an admin account.
+    - Improve editing functionality.
+    - Improve status workflow.
+  - Rates per night. Improve entry data workflow.
+  - When making a reservation, control if user goes back with the back button of the web browser.
+
+### Ideas / new features to add
+  - Limit submission searches per hour. Analyze if honeypot module can be useful.
+  - Accomodation units. Show an image in search results form.
+  - Ubercart support.
+  - Support for other pets and options.
+  - Calendar in search results: change range with a click.
+  - Add Discounts per date.
+  - Reports of searched reservations per day.
+  - Limit the number of search queries per minute / create a parameter.
+  - Automatically localize the first day of the week when showing results.
+  - When listing rates, add a calendar view.
+  - Change module structure folder to allow having other modules in the same main folder.
+
 
 ## Screenshots
 -------------------
@@ -165,16 +164,26 @@ Date: 2012-06-14
 #### Submit a reservation
 ![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-make-reservation-b1.png "smart reservations screenshot")
 
+#### Main management panel
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-main-page.png "smart reservations screenshot")
 
 #### Default rates
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-default-rates-2.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-default-rates-00.png "smart reservations screenshot")
+
 #### Rates per night
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-rates-per-night.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-rates-per-night-0.png "smart reservations screenshot")
+
 #### General settings
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-1.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-01.png "smart reservations screenshot")
+
 #### Currency format settings
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-2.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-02.png "smart reservations screenshot")
+
 #### Search parameters settings
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-3-new.png "smart reservations screenshot")
-#### Messages settings
-![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-4.png "smart reservations screenshot")
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-03.png "smart reservations screenshot")
+
+#### Payment options
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-04.png "smart reservations screenshot")
+
+#### Message settings
+![screenshot](http://www.ramon.click/sites/default/files/smart_reservations/screenshots/smart-reservations-settings-05.png "smart reservations screenshot")
