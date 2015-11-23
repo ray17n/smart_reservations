@@ -69,6 +69,7 @@ function smart_reservations_menu() {
     'page callback' => 'smart_reservations_admin',
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations.admin.inc',
+    'weight' => -30,
   );
 
   // Reservations
@@ -80,7 +81,7 @@ function smart_reservations_menu() {
     'file' => 'smart_reservations_reservations_page.inc',
     'access arguments' => array('access smart_reservations content'),
     'position' => 'left',
-    'weight' => 1,
+    'weight' => 10,
   );
   $items['admin/smart-reservations/reservations/list'] = array(
     'title' => 'Reservation orders',
@@ -100,7 +101,7 @@ function smart_reservations_menu() {
     'file' => 'smart_reservations_accommodations.inc',
     'access arguments' => array('access smart_reservations content'),
     'position' => 'left',
-    'weight' => 2,
+    'weight' => 20,
   );
   $items['admin/smart-reservations/accommodations/units'] = array(
     'title' => 'Accommodation units',
@@ -119,13 +120,14 @@ function smart_reservations_menu() {
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations.admin.inc',
     'position' => 'right',
+    'weight' => 30,
   );
 
   $items['admin/smart-reservations/settings/general'] = array(
     'title' => 'Settings',
     'description' => 'Settings of Smart Reservations',
     'page callback' => 'drupal_get_form',
-    'description' => 'Adjust configuration settings for Smart Reservations.',
+    'description' => 'Adjust the configuration settings of Smart Reservations.',
     'access arguments' => array('administer smart reservations'),
     'file' => 'smart_reservations_settings.inc',
     'page arguments' => array('smart_reservations_configuration_form'),
@@ -169,11 +171,12 @@ function smart_reservations_menu() {
     'weight' => 20,
     'file' => 'smart_reservations.admin.inc',
     'position' => 'right',
+    'weight' => 40,
   );
 
   $items['admin/smart-reservations/reports/general'] = array(
     'title' => 'Queries submitted',
-    'description' => 'See the searches for available accommodation units.',
+    'description' => 'See the log of searches for available accommodation units.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('smart_reservations_log_form'),
     'file' => 'smart_reservations_logs.inc',
