@@ -4,9 +4,7 @@ Smart Reservations is a Drupal module consisting of a reservation system of holi
 
 Its main goal is to provide a simple way of managing and maintaining the rates and fees per person and night.
 
-Originally created for Casafont rural holiday apartments by [ray17n](http://www.ramon.click/), and now publicly available and licensed with a GNU General Public License.
-
-More info at www.ramon.click/smart-reservations.
+Originally created for a rural holiday apartments by ray17n, and now publicly available and licensed with a GNU General Public License.
 
 ## Rates
 
